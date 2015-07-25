@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)http://bri8school.in/demo/gps/displaymap.php -->
+<html lang="en"><script id="tinyhippos-injected">if (window.top.ripple) { window.top.ripple("bootstrap").inject(window, document); }</script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link type="text/css" rel="stylesheet" href="./Gps Tracker_files/css"><style type="text/css">.gm-style .gm-style-cc span,.gm-style .gm-style-cc a,.gm-style .gm-style-mtc div{font-size:10px}</style><style type="text/css">@media print {  .gm-style .gmnoprint, .gmnoprint {    display:none  }}@media screen {  .gm-style .gmnoscreen, .gmnoscreen {    display:none  }}</style><style type="text/css">.gm-style{font-family:Roboto,Arial,sans-serif;font-size:11px;font-weight:400;text-decoration:none}.gm-style img{max-width:none}</style>
+    <meta charset="UTF-8">
+    <title>Gps Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+  
+    <link rel="stylesheet" href="js/leaflet-0.7.3/leaflet.css">    
+    <!-- 
+        to change themes, select a theme here:  http://www.bootstrapcdn.com/#bootswatch_tab 
+        and then change the word after 3.2.0 in the following link to the new theme name
+    -->    
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/cerulean/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+   </head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-4" id="toplogo">
+               <h2>GPS Tracker</h2>
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="col-sm-12" id="mapdiv">
+                <div id="map-canvas"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" id="selectdiv">
+	            <span id="messages"></span>
+                <select id="routeSelect" tabindex="1"></select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 deletediv">
+                <input type="button" id="delete" value="Delete" tabindex="2" class="btn btn-primary">
+            </div>
+            <div class="col-sm-3 autorefreshdiv">
+                <input type="button" id="autorefresh" value="Auto Refresh Off" tabindex="3" class="btn btn-primary">
+            </div>
+            <div class="col-sm-3 refreshdiv">
+                <input type="button" id="refresh" value="Refresh" tabindex="4" class="btn btn-primary">
+            </div>
+            <div class="col-sm-3 viewalldiv">
+                <input type="button" id="viewall" value="View All" tabindex="5" class="btn btn-primary">
+            </div>
+        </div>
+    </div>              
+    
+     <script type="text/javascript" src="js/libs/fastclick.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" src="js/libs/jquery.mobile-1.3.2.min.js"></script>
+   
+    <script src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=adsense"></script>
+    <script src="js/leaflet-0.7.3/leaflet.js"></script>
+    <script src="js/leaflet-plugins/google.js"></script>
+    <script src="js/leaflet-plugins/bing.js"></script>
+    <script src="js/maps.js"></script>
+
+
+    </body></html>

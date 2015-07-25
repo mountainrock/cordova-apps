@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+		<title>Super Gps</title>
+        <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"/>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi" />
+		<link rel="stylesheet"  href="css/themes/default/jquery.mobile-1.3.2.min.css">
+		<link rel="stylesheet" type="text/css" href="css/index.css" />
+		 <link rel="stylesheet" href="js/leaflet-0.7.3/leaflet.css">
+		<link rel="stylesheet" href="css/styles.css">
+	 <!-- <script src="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953"></script> -->
+    </head>
+    <body >
+
+	<div id="app">
+		<div  id="statusPage" class="content_div">
+			<div data-role="content" >
+				<table align="center">
+					<tr><td colspan="2">&nbsp;</td></tr>
+					<tr><td colspan="2">&nbsp;</td></tr>
+					<tr>
+						<td><label>User Name</label></td>
+						<td><input type="text" id="userName" placeholder="Shiva" value="Shiva"/></td>
+					</tr>
+					<tr><td colspan="2">&nbsp;</td></tr>
+					<tr>
+						<td><label>GPS</label></td>
+						<td>
+							<select name="flip-1" id="locationToggle" data-role="slider">
+		                        <option value="false">Off</option>
+		                        <option value="true" selected="selected">On</option>
+		                    </select>
+		               </td>
+					</tr>
+					<tr><td colspan="2">&nbsp;</td></tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td>
+						<a href="#" id="submit-passcode" data-role="button" data-inline="true">Submit</a>
+						</td>
+						
+					</tr>
+				
+				</table>
+				<fieldset>
+				<table align="center">
+					<tr>
+						<td><span id="connectionInfo">Internet</span>&nbsp;<span id="locationInfo">Location</span></td>
+					</tr>
+					<tr>
+						<td> <span id="serverResponse"></span></td>
+					</tr>
+				</table>
+				</fieldset>
+				
+			</div>
+		</div><!-- /page  -->
+
+
+		<div  id="settingsPage" class="content_div">
+			<div data-role="content" >
+				
+			</div><!-- /content -->
+		</div><!-- /page  -->
+
+		<div id="historyPage" class="content_div">
+			<div data-role="content" >
+					<div id="legal">
+						<h1>History</h1>
+						<div class="container-fluid">
+					        <div class="row">
+					            <div class="col-sm-12" id="mapdiv">
+					                <div id="map-canvas"></div>
+					            </div>
+					        </div>
+					        <div class="row">
+					            <div class="col-sm-12" id="selectdiv">
+						            <span id="messages"></span>
+					                <select id="routeSelect" tabindex="1"></select>
+					            </div>
+					        </div>
+					        <div class="row">
+					                <input type="button" id="autorefresh" value="Auto Refresh Off" tabindex="3" class="btn btn-primary">
+					                <input type="button" id="refresh" value="Refresh" tabindex="4" class="btn btn-primary">
+					                <input type="button" id="viewall" value="View All" tabindex="5" class="btn btn-primary">
+					        </div>
+					    </div>              
+					
+
+					</div>
+
+
+				</div><!-- /content -->
+		</div><!-- /page  -->
+
+		<div id="privacyPage" class="content_div">
+			<div data-role="content" >
+					<div id="legal">
+						<h1>Privacy Policy</h1>
+						<p>This app collects and transmits your position. It will continue to run in the background unless you turn off the GPS toggle. Your position is sent with a unique id, but no other identifying information. Your data will not be resold or distributed to any third parties.</p>
+					</div>
+
+
+				</div><!-- /content -->
+		</div><!-- /page  -->
+
+        <div id="footer" data-role="footer" data-id="foo1" data-position="fixed" data-tap-toggle="false">
+            <div id="navbar" data-role="navbar">
+                <ul>
+                    <li><a id="statusButton" href="#" data-href="statusPage" data-icon="nb-settings">Status</a></li>
+                    <li><a id="historyButton" href="#" data-href="historyPage" data-icon="nb-status">History</a></li>
+                    <li><a id="privacyButton" href="#" data-href="privacyPage" data-icon="nb-privacy">Information</a></li>
+                </ul>
+            </div><!-- /navbar -->
+        </div><!-- /footer -->
+    </div>
+
+
+
+		<script type="text/javascript" src="js/libs/fastclick.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" src="js/libs/jquery.mobile-1.3.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="cordova_plugin.js"></script>
+
+        <!-- note: index.js must be first because it initializes app object literal -->
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/serverCommunication.js"></script>
+        <script type="text/javascript" src="js/gps.js"></script>
+
+
+
+               <!--  map -->
+	    <script src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=adsense"></script>
+	    <script src="js/leaflet-0.7.3/leaflet.js"></script>
+	    <script src="js/leaflet-plugins/google.js"></script>
+	    <script src="js/leaflet-plugins/bing.js"></script>
+	    <script src="js/maps.js"></script>
+	   
+
+	     <script type="text/javascript">
+
+            app.initialize();
+
+        </script>
+    </body>
+</html>
