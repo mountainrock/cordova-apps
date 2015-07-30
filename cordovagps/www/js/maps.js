@@ -6,9 +6,6 @@
     var sessionIDArray = [];
     var viewingAllRoutes = false;
         
-    getAllRoutesForMap();
-    loadRoutesIntoDropdownBox();
-    
     $("#routeSelect").change(function() {
         if (hasMap()) {
             viewingAllRoutes = false;
@@ -18,13 +15,9 @@
     });
        
     $("#refresh").click(function() {
-        if (viewingAllRoutes) {
-            getAllRoutesForMap(); 
-        } else {
             if (hasMap()) {
                 getRouteForMap();
             }             
-        }
     });
        
     $("#delete").click(function() {
@@ -38,10 +31,6 @@
             turnOnAutoRefresh();                     
         }
     }); 
-    
-    $("#viewall").click(function() {
-        getAllRoutesForMap();
-    });
     
  function loadRoutes(json) {      
 
@@ -62,7 +51,7 @@
             // iterate through the routes and load them into the dropdwon box.
             $(json.routes).each(function(key, value){
                 var option = document.createElement('option');
-                option.setAttribute('value', '?sessionid=' + $(this).attr('sessionID'));
+                option.setAttribute('value', $(this).attr('sessionID'));
 
                 sessionIDArray.push($(this).attr('sessionID'));
 
@@ -165,30 +154,10 @@
             }
     }
 
-    function getAllRoutesForMap() {
-        viewingAllRoutes = true;
-        routeSelect.selectedIndex = 0;
-        showPermanentMessage('Please select a route below');
-           		
-        $.ajax({
-            url: "http://bri8school.in/demo/gps/getallroutesformap.php",
-            type: 'GET',
-			jsonpCallback :"loadGPSLocations",			
-            dataType: 'jsonp',
-            success: function(data) {
-                loadGPSLocations(data);
-        },
-        error: function (xhr, status, errorThrown) {
-            console.log("error status: " + xhr.status);
-            console.log("errorThrown: " + errorThrown);
-        }
-        });
-    }           
-        
     function loadRoutesIntoDropdownBox() {      
-       
+       console.log("loadRoutesIntoDropdownBox :"+ app.SERVER_URL + "/getRoutesForUser?deviceId="+ device.uuid);
 		$.ajax({
-            url: "http://bri8school.in/demo/gps/getroutes.php",
+            url: app.SERVER_URL + "/getRoutesForUser?deviceId="+ device.uuid,
             type: 'GET',
 			jsonpCallback :"loadRoutes",			
             dataType: 'jsonp',
@@ -208,7 +177,7 @@
             // console.log($("#routeSelect").prop("selectedIndex"));
 
 			$.ajax({
-				url: "http://bri8school.in/demo/gps/getrouteformap.php"+ $('#routeSelect').val(),
+				url: app.SERVER_URL + "/getRoutesForMapBySession?sessionId="+ $('#routeSelect').val(),
 				type: 'GET',
 				jsonpCallback :"loadGPSLocations",			
 				dataType: 'jsonp',
@@ -379,55 +348,7 @@
         // and not getRouteForMap 
 
         clearInterval(intervalID);
-        
-        if (viewingAllRoutes) {
-            intervalID = setInterval(getAllRoutesForMap, 60 * 1000); // one minute 
-        } else {
-            intervalID = setInterval(getRouteForMap, 60 * 1000);          
-        }          
-    }
-
-    function deleteRoute() {
-        if (hasMap()) {
-		
-    		// comment out these two lines to get delete working
-    		// confirm("Disabled here on test website, this works fine.");
-    		// return false;
-		
-            var answer = confirm("This will permanently delete this route\n from the database. Do you want to delete?");
-            if (answer){
-                var url = 'deleteroute.php' + $('#routeSelect').val();
-
-                $.ajax({
-                       url: url,
-                       type: 'GET',
-                       success: function() {
-                          deleteRouteResponse();
-                          getAllRoutesForMap();
-                       }
-                   });
-            }
-            else {
-                return false;
-            }
-        }
-        else {
-            alert("Please select a route before trying to delete.");
-        }
-    }
-
-    function deleteRouteResponse() {
-        routeSelect.length = 0;
-
-        document.getElementById('map-canvas').outerHTML = "<div id='map-canvas'></div>";
-
-        $.ajax({
-               url: 'getroutes.php',
-               type: 'GET',
-               success: function(data) {
-                  loadRoutes(data);
-               }
-           });
+        intervalID = setInterval(getRouteForMap, 60 * 1000);          
     }
 
     // message visible for 7 seconds
@@ -454,11 +375,4 @@
             }
         }
         return str;
-    }
-    
-    function setTheme() {
-        //var bodyBackgroundColor = $('body').css('backgroundColor');
-        //$('.container').css('background-color', bodyBackgroundColor);
-        //$('body').css('background-color', '#ccc');
-        // $('head').append('<link rel="stylesheet" href="style2.css" type="text/css" />');        
     }

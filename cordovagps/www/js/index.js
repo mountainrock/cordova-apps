@@ -1,10 +1,11 @@
 
 var app = {
-	SERVER_URL : "http://bri8school.in/demo/gps/updatelocation.php",
+	SERVER_URL : "http://bri8school.in/demo/gps2/index.php/Gps/",
+	CUSTOMER_ID : 1,
 	HIGH_GPS_ACCURACY : true,	// some emulators require true.
 
 	position : null,
-	deviceId : 0,
+	deviceId : "",
 	passcode : 0,
 	timeLastSubmit : 0,
 	forcedSubmit : false, // set if user explicitly presses submit button.
@@ -14,18 +15,19 @@ var app = {
 	initialize : function() {
 		this.bindEvents();
 		this.initFastClick();
-		this.initUserId();
 		this.initPasscode();
 		this.initView();
+		this.initUserId();
 		app.timeLastSubmit = (new Date().getTime() / 1000) - 60; 
 	},
 	onDeviceReady : function() {
 		navigator.splashscreen.hide();
+		this.initUserId();
 		app.checkConnection();
 		gps.init();
+		loadRoutesIntoDropdownBox(); //maps
 	},
 	bindEvents : function() {
-		
 		document.addEventListener('deviceready', this.onDeviceReady, false);
 		//this.onDeviceReady();
 	},
@@ -37,12 +39,13 @@ var app = {
 	},
 	initUserId : function() {
 		var permanentStorage = window.localStorage;
+		
 		this.deviceId = permanentStorage.getItem("deviceId");
 		if (this.deviceId === null) {
-			permanentStorage.setItem("deviceId", Math
-					.floor((Math.random() * 100000)));
+			permanentStorage.setItem("deviceId", device.uuid);
 			this.deviceId = permanentStorage.getItem("deviceId");
 		}
+		$('#deviceId').text(this.deviceId);
 	},
 	initPasscode : function() {
 		var permanentStorage = window.localStorage;
@@ -61,6 +64,7 @@ var app = {
 			$('#historyPage').hide();
 			//$('#settingsPage').hide();
 			$('#statusPage').show();
+			
 		}
 	},
 	checkConnection : function() {

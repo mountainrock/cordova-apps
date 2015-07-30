@@ -1,0 +1,1 @@
+adb install -r D:\Sandeep\JAVA\android-apps\cordova\cordova-apps\cordovagps\platforms\android\build\outputs\apk\android-debug.apk

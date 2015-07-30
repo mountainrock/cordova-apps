@@ -1,0 +1,8 @@
+         keytool -genkey -v -keystore super-gps2.keystore -alias super-gps2 -keyalg RSA -keysize 2048 -validity 100000
+	
+       m*
+
+cmd \c jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore super-gps.keystore android-release-unsigned.apk  super-gps
+cmd \c zipalign -v -f 4 android-release-unsigned.apk supergps2-0.5.apk
+cmd \c zipalign -v -c 4  supergps2-0.5.apk
+

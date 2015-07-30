@@ -11,7 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="css/index.css" />
 		 <link rel="stylesheet" href="js/leaflet-0.7.3/leaflet.css">
 		<link rel="stylesheet" href="css/styles.css">
-	 <!-- <script src="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953"></script> -->
+		<script src="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953"></script> 
     </head>
     <body >
 
@@ -20,12 +20,9 @@
 			<div data-role="content" >
 				<table align="center">
 					<tr><td colspan="2">&nbsp;</td></tr>
-					<tr><td colspan="2">&nbsp;</td></tr>
-					<tr>
-						<td><label>User Name</label></td>
-						<td><input type="text" id="userName" placeholder="Shiva" value="Shiva"/></td>
+					<tr><td><label>Device Id</label></td>
+						<td colspan="2"><label id="deviceId"></label></td>
 					</tr>
-					<tr><td colspan="2">&nbsp;</td></tr>
 					<tr>
 						<td><label>GPS</label></td>
 						<td>
@@ -71,11 +68,7 @@
 					<div id="legal">
 						<h1>History</h1>
 						<div class="container-fluid">
-					        <div class="row">
-					            <div class="col-sm-12" id="mapdiv">
-					                <div id="map-canvas"></div>
-					            </div>
-					        </div>
+					        
 					        <div class="row">
 					            <div class="col-sm-12" id="selectdiv">
 						            <span id="messages"></span>
@@ -83,9 +76,13 @@
 					            </div>
 					        </div>
 					        <div class="row">
+					            <div class="col-sm-12" id="mapdiv">
+					                <div id="map-canvas"></div>
+					            </div>
+					        </div>
+					        <div class="row">
 					                <input type="button" id="autorefresh" value="Auto Refresh Off" tabindex="3" class="btn btn-primary">
 					                <input type="button" id="refresh" value="Refresh" tabindex="4" class="btn btn-primary">
-					                <input type="button" id="viewall" value="View All" tabindex="5" class="btn btn-primary">
 					        </div>
 					    </div>              
 					

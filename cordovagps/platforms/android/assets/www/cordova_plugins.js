@@ -40,6 +40,13 @@ module.exports = [
         "file": "plugins/cordova-plugin-whitelist/whitelist.js",
         "id": "cordova-plugin-whitelist.whitelist",
         "runs": true
+    },
+    {
+        "file": "plugins/cordova-plugin-device/www/device.js",
+        "id": "cordova-plugin-device.device",
+        "clobbers": [
+            "device"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -50,7 +57,8 @@ module.exports.metadata =
     "cordova-plugin-geolocation": "1.0.2-dev",
     "cordova-plugin-network-information": "1.0.2-dev",
     "cordova-plugin-splashscreen": "2.1.1-dev",
-    "cordova-plugin-whitelist": "1.0.0"
+    "cordova-plugin-whitelist": "1.0.0",
+    "cordova-plugin-device": "1.0.1"
 }
 // BOTTOM OF METADATA
 });

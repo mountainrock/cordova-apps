@@ -1,27 +1,25 @@
 
 app.submitToServer = function() {
-	var username = document.getElementById('userName').value;
+	var username = "NA";
     var distance=0;
     var locationmethod="NA";
-    var phonenumber ="gpsTracker1";
+    var phonenumber ="";
     var sessionid = (new Date()).toDateString();
-    var eventtype="gGps tracker";
+    var eventtype="Gps";
     var date1 = (new Date()).toISOString().replace(/z|t/gi,' ').substr(0, 19);
 
     if(app.position!=undefined && app.position!=null){
     	 var accuracy= app.position.coords.accuracy;
     	 var extrainfo ="time : "+app.position.timestamp;
     	    
-		if (((new Date().getTime() / 1000) - app.timeLastSubmit) > 59
-				|| app.forcedSubmit) {
+		if (((new Date().getTime() / 1000) - app.timeLastSubmit) > 59 || app.forcedSubmit) {
 			app.timeLastSubmit = new Date().getTime() / 1000;
 			app.checkConnection();
-
-			$.ajax(app.SERVER_URL, {
+			var createGpsLocUrl = app.SERVER_URL + "/"+ createGpsLocation;
+			$.ajax(createGpsLocUrl, {
 				contentType : "application/json",
 				type : "GET",
 				data : {
-                    
 					"username" : username,
 					"latitude"  : app.position.coords.latitude,
 					"longitude" : app.position.coords.longitude,
@@ -34,10 +32,13 @@ app.submitToServer = function() {
 					"accuracy": accuracy,
 					"extrainfo": extrainfo,
 					"eventtype": eventtype,
-					"date": date1
+					"date": date1,
+					"deviceId":device.uuid,
+					"customerId": app.CUSTOMER_ID
+					
 					
 				},
-				timeout : 10000,
+				timeout : 20000,
 				success : function(response) {
 					app.serverSuccess(response);
 				},
