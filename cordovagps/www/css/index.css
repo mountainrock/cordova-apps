@@ -19,11 +19,14 @@ body {
     );*/
     background-attachment:fixed;
     font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
-    font-size:12px;
+    font-size:14px;
     height:100%;
     margin:0px;
     padding:0px;
     width:100%;
+}
+p{
+	font-size:16px;
 }
 
 /* Portrait layout (default) */
@@ -40,7 +43,7 @@ body {
 }
 
 #app {
-        font-size:30px;
+        font-size:24px;
     }
 /* Landscape layout (with min-width) */
 @media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
@@ -53,7 +56,7 @@ body {
 }
 
 h1 {
-    font-size:24px;
+    font-size:34px;
     font-weight:normal;
     margin:0px;
     overflow:visible;
@@ -287,4 +290,13 @@ padding-bottom:.2em;
 }
 .ui-content {
     padding: 1px;
+}
+
+.ui-btn-up-a {
+    border: 1px solid #7C64EC;
+    background: #101365;
+    font-weight: 700;
+    color: #C1B6F1;
+    text-shadow: none;
+    background-image:none;
 }

@@ -18,38 +18,55 @@
 	<div id="app">
 		<div  id="statusPage" class="content_div">
 			<div data-role="content" >
-				<table align="center">
-					<tr><td colspan="2">&nbsp;</td></tr>
-					<tr><td><label>Device Id</label></td>
-						<td colspan="2"><label id="deviceId"></label></td>
+				<table align="left" width="100%"  style="border-collapse:collapse">
+					<tr><td colspan="4"><br/><h1><span style="color:#F75874">Super</span><span style="color:#7B7EF5"> GPS</span></h1></td></tr>
+					<tr><td colspan="4"><hr/></td></tr>
+					<tr>
+						<td width="20%">&nbsp;</td>
+						<td align="left" ><label>Device Id</label></td>
+						<td align="left"><label id="deviceId">NA</label></td>
+						<td width="20%">&nbsp;</td>
 					</tr>
 					<tr>
-						<td><label>GPS</label></td>
-						<td>
+						<td width="20%">&nbsp;</td>
+						<td align="left"><label>GPS</label></td>
+						<td align="left">
 							<select name="flip-1" id="locationToggle" data-role="slider">
 		                        <option value="false">Off</option>
 		                        <option value="true" selected="selected">On</option>
 		                    </select>
 		               </td>
+		               <td width="20%">&nbsp;</td>
 					</tr>
-					<tr><td colspan="2">&nbsp;</td></tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
+						<td width="20%">&nbsp;</td>
 						<td>&nbsp;</td>
-						<td>
+						<td align="left">
 						<a href="#" id="submit-passcode" data-role="button" data-inline="true">Submit</a>
 						</td>
+						<td width="20%">&nbsp;</td>
 						
+					</tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr>
+						<td width="20%">&nbsp;</td>
+						<td align="left">Status </td>
+						<td align="left"> <span id="connectionInfo">Internet /</span>&nbsp;<span id="locationInfo">Location</span></td>
+						<td width="20%">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20%">&nbsp;</td>
+						<td align="left">Server response </td>
+						<td  align="left"> <span id="serverResponse">NA</span></td>
+						<td width="20%">&nbsp;</td>
 					</tr>
 				
 				</table>
 				<fieldset>
 				<table align="center">
-					<tr>
-						<td><span id="connectionInfo">Internet</span>&nbsp;<span id="locationInfo">Location</span></td>
-					</tr>
-					<tr>
-						<td> <span id="serverResponse"></span></td>
-					</tr>
+					
 				</table>
 				</fieldset>
 				
@@ -66,13 +83,14 @@
 		<div id="historyPage" class="content_div">
 			<div data-role="content" >
 					<div id="legal">
-						<h1>History</h1>
 						<div class="container-fluid">
 					        
 					        <div class="row">
 					            <div class="col-sm-12" id="selectdiv">
 						            <span id="messages"></span>
 					                <select id="routeSelect" tabindex="1"></select>
+					                <input type="button" id="autorefresh" value="Auto Refresh Off" tabindex="3" class="btn btn-primary">
+					                <input type="button" id="refresh" value="Refresh" tabindex="4" class="btn btn-primary">
 					            </div>
 					        </div>
 					        <div class="row">
@@ -80,10 +98,7 @@
 					                <div id="map-canvas"></div>
 					            </div>
 					        </div>
-					        <div class="row">
-					                <input type="button" id="autorefresh" value="Auto Refresh Off" tabindex="3" class="btn btn-primary">
-					                <input type="button" id="refresh" value="Refresh" tabindex="4" class="btn btn-primary">
-					        </div>
+					       
 					    </div>              
 					
 
@@ -108,7 +123,7 @@
             <div id="navbar" data-role="navbar">
                 <ul>
                     <li><a id="statusButton" href="#" data-href="statusPage" data-icon="nb-settings">Status</a></li>
-                    <li><a id="historyButton" href="#" data-href="historyPage" data-icon="nb-status">History</a></li>
+                    <li><a id="historyButton" href="javascript:loadRoutesIntoDropdownBox()" data-href="historyPage" data-icon="nb-status">History</a></li>
                     <li><a id="privacyButton" href="#" data-href="privacyPage" data-icon="nb-privacy">Information</a></li>
                 </ul>
             </div><!-- /navbar -->

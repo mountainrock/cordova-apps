@@ -15,6 +15,7 @@
     });
        
     $("#refresh").click(function() {
+    		loadRoutesIntoDropdownBox();
             if (hasMap()) {
                 getRouteForMap();
             }             
@@ -24,7 +25,7 @@
         deleteRoute();
     });       
         
-    $('#autorefresh').click(function() { 
+    $('#autorefresh').click(function() {
         if (autoRefresh) {
             turnOffAutoRefresh();           
         } else {
@@ -39,9 +40,15 @@
         }
         else {
             // create the first option of the dropdown box
+        	$('#routeSelect').find('option').remove().end();
+        	
             var option = document.createElement('option');
             option.setAttribute('value', '0');
-            option.innerHTML = 'Select Route...';
+            if(json.locations.length==0){
+            	 option.innerHTML = 'No Routes found';
+            }else{
+            	option.innerHTML = 'Select Route...';
+            }
             routeSelect.appendChild(option);
 
             // when a user taps on a marker, the position of the sessionID in this array is the position of the route
@@ -49,13 +56,13 @@
             sessionIDArray = [];
             
             // iterate through the routes and load them into the dropdwon box.
-            $(json.routes).each(function(key, value){
+            $(json.locations).each(function(key, value){
                 var option = document.createElement('option');
                 option.setAttribute('value', $(this).attr('sessionID'));
 
                 sessionIDArray.push($(this).attr('sessionID'));
 
-                option.innerHTML = $(this).attr('userName') + " " + $(this).attr('times');
+                option.innerHTML = $(this).attr('sessionID') + " " + $(this).attr('gpsTime');
                 routeSelect.appendChild(option);
             });
 
@@ -157,12 +164,12 @@
     function loadRoutesIntoDropdownBox() {      
        console.log("loadRoutesIntoDropdownBox :"+ app.SERVER_URL + "/getRoutesForUser?deviceId="+ device.uuid);
 		$.ajax({
-            url: app.SERVER_URL + "/getRoutesForUser?deviceId="+ device.uuid,
+            url: app.SERVER_URL + "/getRoutesForUser?deviceId="+  device.uuid,
             type: 'GET',
 			jsonpCallback :"loadRoutes",			
             dataType: 'jsonp',
             success: function(data) {
-                loadRoutes(data);
+                console.log("loadRoutes: "+data); //should call loadRoutes() callback
 			},
 			error: function (xhr, status, errorThrown) {
 				console.log("error status: " + xhr.status);
@@ -182,7 +189,7 @@
 				jsonpCallback :"loadGPSLocations",			
 				dataType: 'jsonp',
 				success: function(data) {
-					loadGPSLocations(data);
+					console.log("loadGPSLocations : "+data);
 				},
 				error: function (xhr, status, errorThrown) {
 					console.log("error status: " + xhr.status);

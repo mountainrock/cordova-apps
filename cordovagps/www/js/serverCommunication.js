@@ -15,7 +15,7 @@ app.submitToServer = function() {
 		if (((new Date().getTime() / 1000) - app.timeLastSubmit) > 59 || app.forcedSubmit) {
 			app.timeLastSubmit = new Date().getTime() / 1000;
 			app.checkConnection();
-			var createGpsLocUrl = app.SERVER_URL + "/"+ createGpsLocation;
+			var createGpsLocUrl = app.SERVER_URL + "/createGpsLocation";
 			$.ajax(createGpsLocUrl, {
 				contentType : "application/json",
 				type : "GET",
@@ -81,7 +81,7 @@ app.serverSuccess = function(response) {
 		$(serverResponse).addClass("fail");
 	} else {
 		if (app.forcedSubmit) {
-			navigator.notification.alert("Success. Thank you!" + serverResponse, null,
+			navigator.notification.alert("Success. Thank you!", null,
 					"gps Tracker");
 			app.forcedSubmit = false;
 		}

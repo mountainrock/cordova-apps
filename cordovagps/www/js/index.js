@@ -13,18 +13,29 @@ var app = {
 
 	// Application Constructor
 	initialize : function() {
+		console.log("initialize() - bindEvents()");
 		this.bindEvents();
+		console.log("initFastClick()");
 		this.initFastClick();
-		this.initPasscode();
+		console.log("initView()");
 		this.initView();
-		this.initUserId();
 		app.timeLastSubmit = (new Date().getTime() / 1000) - 60; 
 	},
 	onDeviceReady : function() {
+		console.log("onDeviceReady called");
 		navigator.splashscreen.hide();
-		this.initUserId();
+		console.log("check net connection");
 		app.checkConnection();
+		console.log("gps init()");
 		gps.init();
+		
+		console.log("device id "+device.uuid);
+		var permanentStorage = window.localStorage;
+		permanentStorage.setItem("deviceId", device.uuid);
+		this.deviceId = device.uuid;
+		$('#deviceId').text(this.deviceId);
+		
+		console.log("loadRoutesIntoDropdownBox");
 		loadRoutesIntoDropdownBox(); //maps
 	},
 	bindEvents : function() {
@@ -36,27 +47,6 @@ var app = {
 		window.addEventListener('load', function() {
 			FastClick.attach(document.body);
 		}, false);
-	},
-	initUserId : function() {
-		var permanentStorage = window.localStorage;
-		
-		this.deviceId = permanentStorage.getItem("deviceId");
-		if (this.deviceId === null) {
-			permanentStorage.setItem("deviceId", device.uuid);
-			this.deviceId = permanentStorage.getItem("deviceId");
-		}
-		$('#deviceId').text(this.deviceId);
-	},
-	initPasscode : function() {
-		var permanentStorage = window.localStorage;
-		this.passcode = permanentStorage.getItem("passcode");
-		var passcodeText = '';
-		if (this.passcode === null) {
-			passcodeText = '';
-		} else {
-			passcodeText = this.passcode;
-		}
-		$('#userPasscode').val(passcodeText);
 	},
 	initView : function() {
 		if (this.passcode === null) {
@@ -110,17 +100,6 @@ var app = {
 	}
 };
 $(function() {
-	$("#userPasscode").focusout(
-			function() {
-				var permanentStorage = window.localStorage;
-				permanentStorage.setItem("passcode", $("#userPasscode").val());
-				this.passcode = $("#userPasscode").val();
-				if ($("#userPasscode").val() !== ""
-						&& $('#settingsPage #enterPasswordInstruction').is(
-								":visible")) {
-					$('#settingsPage #enterPasswordInstruction').hide();
-				}
-			});
 
 	$("#submit-passcode").click(function() {
 		app.forcedSubmit = true; // forces pop-up
