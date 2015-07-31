@@ -23,44 +23,42 @@
 					<tr><td colspan="4"><hr/></td></tr>
 					<tr>
 						<td width="20%">&nbsp;</td>
-						<td align="left" ><label>Device Id</label></td>
-						<td align="left"><label id="deviceId">NA</label></td>
-						<td width="20%">&nbsp;</td>
+						<td align="left" ><label class="bold">Device Id</label></td>
+						<td align="left"><label id="deviceId">--</label></td>
+						<td width="10%">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20%">&nbsp;</td>
-						<td align="left"><label>GPS</label></td>
+						<td align="left"><label class="bold">GPS</label></td>
 						<td align="left">
 							<select name="flip-1" id="locationToggle" data-role="slider">
 		                        <option value="false">Off</option>
 		                        <option value="true" selected="selected">On</option>
 		                    </select>
 		               </td>
-		               <td width="20%">&nbsp;</td>
+		               <td width="10%">&nbsp;</td>
 					</tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="20%">&nbsp;</td>
-						<td>&nbsp;</td>
-						<td align="left">
+						<td align="left" valign="top"><label class="bold">Send gps location</label></td>
+						<td align="left" valign="top">
 						<a href="#" id="submit-passcode" data-role="button" data-inline="true">Submit</a>
 						</td>
-						<td width="20%">&nbsp;</td>
+						<td width="10%">&nbsp;</td>
 						
 					</tr>
 					<tr><td colspan="4">&nbsp;</td></tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="20%">&nbsp;</td>
-						<td align="left">Status </td>
+						<td align="left"><label class="bold">Status </label></td>
 						<td align="left"> <span id="connectionInfo">Internet /</span>&nbsp;<span id="locationInfo">Location</span></td>
-						<td width="20%">&nbsp;</td>
+						<td width="10%">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20%">&nbsp;</td>
-						<td align="left">Server response </td>
-						<td  align="left"> <span id="serverResponse">NA</span></td>
-						<td width="20%">&nbsp;</td>
+						<td align="left" valign="top"><label class="bold">Server response</label> </td>
+						<td  align="left"> <span id="serverResponse">--</span></td>
+						<td width="10%">&nbsp;</td>
 					</tr>
 				
 				</table>
@@ -88,9 +86,14 @@
 					        <div class="row">
 					            <div class="col-sm-12" id="selectdiv">
 						            <span id="messages"></span>
-					                <select id="routeSelect" tabindex="1"></select>
-					                <input type="button" id="autorefresh" value="Auto Refresh Off" tabindex="3" class="btn btn-primary">
-					                <input type="button" id="refresh" value="Refresh" tabindex="4" class="btn btn-primary">
+						            <table>
+						            <tr>
+						            	<td width="60%"><select id="routeSelect" tabindex="1"></select></td>
+						            	<td width="20%"><input type="button" id="autorefresh" value="Auto Refresh Off" tabindex="3" class="btn btn-primary"></td>
+						            	<td width="20%"><input type="button" id="refresh" value="Refresh" tabindex="4" class="btn btn-primary"></select></td>
+						            </tr>
+						            </table>
+					                
 					            </div>
 					        </div>
 					        <div class="row">

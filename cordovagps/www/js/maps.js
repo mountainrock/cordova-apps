@@ -40,7 +40,7 @@
         }
         else {
             // create the first option of the dropdown box
-        	$('#routeSelect').find('option').remove().end();
+        	$('#routeSelect').find('option').remove();
         	
             var option = document.createElement('option');
             option.setAttribute('value', '0');
