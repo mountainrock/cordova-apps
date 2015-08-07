@@ -6,7 +6,8 @@ app.submitToServer = function() {
     var phonenumber ="";
     var sessionid = (new Date()).toDateString();
     var eventtype="Gps";
-    var date1 = (new Date()).toISOString().replace(/z|t/gi,' ').substr(0, 19);
+    var date1 = (new Date()).format("YYYY-MM-DD HH:m:s");
+    var serverUrl= $('#serverUrl').val();
 
     if(app.position!=undefined && app.position!=null){
     	 var accuracy= app.position.coords.accuracy;
@@ -15,7 +16,7 @@ app.submitToServer = function() {
 		if (((new Date().getTime() / 1000) - app.timeLastSubmit) > 59 || app.forcedSubmit) {
 			app.timeLastSubmit = new Date().getTime() / 1000;
 			app.checkConnection();
-			var createGpsLocUrl = app.SERVER_URL + "/createGpsLocation";
+			var createGpsLocUrl = serverUrl + "/createGpsLocation";
 			$.ajax(createGpsLocUrl, {
 				contentType : "application/json",
 				type : "GET",
@@ -96,8 +97,7 @@ app.serverError = function(request, errorType, errorMessage) {
 	var serverError = document.getElementById('serverResponse');
 	$(serverError).removeClass("success");
 	$(serverError).addClass("fail");
-	serverError.innerHTML = "Error: " + errorMessage + " "
-			+ app.getReadableTime(new Date());
+	serverError.innerHTML = "Error: " + errorMessage + " " + app.getReadableTime(new Date());
 	if (app.forcedSubmit) {
 		navigator.notification.alert(
 				"Error, please check your internet connection", null,

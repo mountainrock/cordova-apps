@@ -21,45 +21,53 @@
 				<table align="left" width="100%"  style="border-collapse:collapse">
 					<tr><td colspan="4"><br/><h1><span style="color:#F75874">Super</span><span style="color:#7B7EF5"> GPS</span></h1></td></tr>
 					<tr><td colspan="4"><hr/></td></tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
-						<td width="20%">&nbsp;</td>
+						<td width="10%">&nbsp;</td>
 						<td align="left" ><label class="bold">Device Id</label></td>
 						<td align="left"><label id="deviceId">--</label></td>
-						<td width="10%">&nbsp;</td>
 					</tr>
+					
+					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
-						<td width="20%">&nbsp;</td>
+						<td width="10%">&nbsp;</td>
+						<td align="left" nowrap><label class="bold">Server Url </label></td>
+						<td align="left"> <span id="serverUrlTxt">--</span></td>
+					</tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr>
+						<td width="10%">&nbsp;</td>
+						<td align="left"><label class="bold">Status </label></td>
+						<td align="left"> <span id="connectionInfo">Internet /</span>&nbsp;<span id="locationInfo">Location</span></td>
+					</tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+				
+					<tr>
+						<td width="10%">&nbsp;</td>
+						<td align="left" valign="top" nowrap><label class="bold">Server response</label> </td>
+						<td  align="left"> <span id="serverResponse">--</span></td>
+					</tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr>
+						<td width="10%">&nbsp;</td>
 						<td align="left"><label class="bold">GPS</label></td>
 						<td align="left">
-							<select name="flip-1" id="locationToggle" data-role="slider">
+							<select name="flip-1" id="locationToggle" data-role="slider" data-theme="e">
 		                        <option value="false">Off</option>
 		                        <option value="true" selected="selected">On</option>
 		                    </select>
 		               </td>
-		               <td width="10%">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20%">&nbsp;</td>
-						<td align="left" valign="top"><label class="bold">Send gps location</label></td>
-						<td align="left" valign="top">
-						<a href="#" id="submit-passcode" data-role="button" data-inline="true">Submit</a>
-						</td>
-						<td width="10%">&nbsp;</td>
-						
 					</tr>
 					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
-						<td width="20%">&nbsp;</td>
-						<td align="left"><label class="bold">Status </label></td>
-						<td align="left"> <span id="connectionInfo">Internet /</span>&nbsp;<span id="locationInfo">Location</span></td>
 						<td width="10%">&nbsp;</td>
+						<td align="left" nowrap><label class="bold">Send gps location</label></td>
+						<td align="left" valign="top">
+						<a href="#" id="submit-passcode" data-role="button" data-inline="true" data-theme="e">Submit</a>
+						</td>
+						
 					</tr>
-					<tr>
-						<td width="20%">&nbsp;</td>
-						<td align="left" valign="top"><label class="bold">Server response</label> </td>
-						<td  align="left"> <span id="serverResponse">--</span></td>
-						<td width="10%">&nbsp;</td>
-					</tr>
+					
 				
 				</table>
 				<fieldset>
@@ -74,23 +82,46 @@
 
 		<div  id="settingsPage" class="content_div">
 			<div data-role="content" >
-				
+				<table align="left" width="100%"  style="border-collapse:collapse">
+					<tr><td colspan="4"><h1>Settings</h1></td></tr>
+					<tr><td colspan="4"><hr/></td></tr>
+					<tr><td colspan="4"><hr/></td></tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" nowrap><label class="bold">Server URL</label></td>
+						<td width="90%"><input id="serverUrl" type="text" value="http://bri8school.in/demo/gps2/index.php/Gps"/></td>
+					</tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr>
+						<td width="10%">&nbsp;</td>
+						<td align="left" nowrap>&nbsp;</td>
+						<td align="left" valign="top">
+						<a href="#" id="saveSettings" data-role="button" data-inline="true" data-theme="e" data-icon="check">Save</a>
+						</td>
+						<td width="80%">&nbsp;</td>
+						
+					</tr>
+				</table>
 			</div><!-- /content -->
 		</div><!-- /page  -->
 
 		<div id="historyPage" class="content_div">
 			<div data-role="content" >
-					<div id="legal">
-						<div class="container-fluid">
-					        
 					        <div class="row">
 					            <div class="col-sm-12" id="selectdiv">
-						            <span id="messages"></span>
+						            
 						            <table>
+						            <tr><td colspan="4"><h1>History</h1></td></tr>
+									<tr><td colspan="4"><hr/></td></tr>
+									
 						            <tr>
-						            	<td width="30%"><select id="routeSelect" tabindex="1"></select></td>
-						            	<td width="30%"><input type="button" id="autorefresh" value="Auto Refresh Off" tabindex="3" class="btn btn-primary"></td>
-						            	<td width="30%"><input type="button" id="refresh" value="Refresh" tabindex="4" class="btn btn-primary"></select></td>
+						            	<td width="40%"><select id="routeSelect" tabindex="1" width="50%"></select></td>
+						            	<td width="10%"><input type="button" id="refresh" value="Refresh" tabindex="4" class="btn btn-primary" data-theme="e" ></select></td>
+						            </tr>
+						            <tr>
+						            	<td colspan="3"><span id="messages"></span></td>
 						            </tr>
 						            </table>
 					                
@@ -102,22 +133,21 @@
 					            </div>
 					        </div>
 					       
-					    </div>              
-					
-
-					</div>
-
 
 				</div><!-- /content -->
 		</div><!-- /page  -->
 
 		<div id="privacyPage" class="content_div">
 			<div data-role="content" >
-					<div id="legal">
-						<h1>Privacy Policy</h1>
-						<p>This app collects and transmits your position. It will continue to run in the background unless you turn off the GPS toggle. Your position is sent with a unique id, but no other identifying information. Your data will not be resold or distributed to any third parties.</p>
-					</div>
-
+				<table align="left" width="100%"  style="border-collapse:collapse">
+					<tr><td colspan="4"><h1>Privacy Policy</h1></td></tr>
+					<tr><td colspan="4"><hr/></td></tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left"><label><p>This app collects and transmits your position. It will continue to run in the background unless you turn off the GPS toggle. Your position is sent with a unique id, but no other identifying information. Your data will not be resold or distributed to any third parties.</p>
+			            </label></td>
+					</tr>
+				</table>
 
 				</div><!-- /content -->
 		</div><!-- /page  -->
@@ -125,8 +155,9 @@
         <div id="footer" data-role="footer" data-id="foo1" data-position="fixed" data-tap-toggle="false">
             <div id="navbar" data-role="navbar">
                 <ul>
-                    <li><a id="statusButton" href="#" data-href="statusPage" data-icon="nb-settings">Status</a></li>
-                    <li><a id="historyButton" href="javascript:loadRoutesIntoDropdownBox()" data-href="historyPage" data-icon="nb-status">History</a></li>
+                    <li><a id="statusButton" href="#" data-href="statusPage" data-icon="nb-status">Status</a></li>
+                    <li><a id="historyButton" href="javascript:loadRoutesIntoDropdownBox()" data-href="historyPage" data-icon="nb-history">History</a></li>
+                     <li><a id="settingsButton" href="#" data-href="settingsPage" data-icon="nb-settings">Settings</a></li>
                     <li><a id="privacyButton" href="#" data-href="privacyPage" data-icon="nb-privacy">Information</a></li>
                 </ul>
             </div><!-- /navbar -->
@@ -140,13 +171,12 @@
 		<script type="text/javascript" src="js/libs/jquery.mobile-1.3.2.min.js"></script>
 		<script type="text/javascript" src="cordova.js"></script>
 		<script type="text/javascript" src="cordova_plugin.js"></script>
-
+ 		<script src="js/libs/js-date-format.js"></script>
+ 		
         <!-- note: index.js must be first because it initializes app object literal -->
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" src="js/serverCommunication.js"></script>
         <script type="text/javascript" src="js/gps.js"></script>
-
-
 
                <!--  map -->
 	    <script src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=adsense"></script>
@@ -154,10 +184,8 @@
 	    <script src="js/leaflet-plugins/google.js"></script>
 	    <script src="js/leaflet-plugins/bing.js"></script>
 	    <script src="js/maps.js"></script>
-	   
 
 	     <script type="text/javascript">
-
             app.initialize();
 
         </script>

@@ -34,7 +34,7 @@
     }); 
     
  function loadRoutes(json) {      
-
+        console.log("loadRoutes "+ json);
         if (json.length == 0) {
             showPermanentMessage('There are no routes available to view');
         }
@@ -74,7 +74,7 @@
     }
 
       function loadGPSLocations(json) {
-        // console.log(JSON.stringify(json));
+         console.log("loadGPSLocations " + json);
         
         if (json.length == 0) {
             showPermanentMessage('There is no tracking data to view');
@@ -161,10 +161,11 @@
             }
     }
 
-    function loadRoutesIntoDropdownBox() {      
-       console.log("loadRoutesIntoDropdownBox :"+ app.SERVER_URL + "/getRoutesForUser?deviceId="+ device.uuid);
+    function loadRoutesIntoDropdownBox() {  
+       var serverUrl= $('#serverUrl').val();
+       console.log("loadRoutesIntoDropdownBox :"+ serverUrl + "/getRoutesForUser?deviceId="+ device.uuid);
 		$.ajax({
-            url: app.SERVER_URL + "/getRoutesForUser?deviceId="+  device.uuid,
+            url: serverUrl + "/getRoutesForUser?deviceId="+  device.uuid,
             type: 'GET',
 			jsonpCallback :"loadRoutes",			
             dataType: 'jsonp',
@@ -181,10 +182,10 @@
    
     function getRouteForMap() { 
         if (hasMap()) {
-            // console.log($("#routeSelect").prop("selectedIndex"));
-
+             console.log("Loading route for :"+$("#routeSelect").val() );
+        	var serverUrl= $('#serverUrl').val();
 			$.ajax({
-				url: app.SERVER_URL + "/getRoutesForMapBySession?sessionId="+ $('#routeSelect').val(),
+				url: serverUrl + "/getRoutesForMapBySession?sessionId="+ $('#routeSelect').val() + "&deviceId=" + device.uuid,
 				type: 'GET',
 				jsonpCallback :"loadGPSLocations",			
 				dataType: 'jsonp',
@@ -257,7 +258,7 @@
             gpstrackerMarker.unbindPopup();
             
             gpstrackerMarker.on("click", function() {        
-                var url = 'getrouteformap.php?sessionid=' + sessionID;
+                var url = serverUrl + '/getrouteformap.php?sessionid=' + sessionID;
 
                 viewingAllRoutes = false;
  

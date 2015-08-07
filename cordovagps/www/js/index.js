@@ -1,9 +1,8 @@
+var KEY_SERVER_URL="serverUrl";
 
 var app = {
-	SERVER_URL : "http://bri8school.in/demo/gps2/index.php/Gps/",
 	CUSTOMER_ID : 1,
 	HIGH_GPS_ACCURACY : true,	// some emulators require true.
-
 	position : null,
 	deviceId : "",
 	passcode : 0,
@@ -30,8 +29,7 @@ var app = {
 		gps.init();
 		
 		console.log("device id "+device.uuid);
-		var permanentStorage = window.localStorage;
-		permanentStorage.setItem("deviceId", device.uuid);
+		window.localStorage.setItem("deviceId", device.uuid);
 		this.deviceId = device.uuid;
 		$('#deviceId').text(this.deviceId);
 		
@@ -40,7 +38,6 @@ var app = {
 	},
 	bindEvents : function() {
 		document.addEventListener('deviceready', this.onDeviceReady, false);
-		//this.onDeviceReady();
 	},
 	
 	initFastClick : function() {
@@ -49,13 +46,13 @@ var app = {
 		}, false);
 	},
 	initView : function() {
-		if (this.passcode === null) {
-			$('#settingsPage #enterPasswordInstruction').show();
+			console.log("Initializing view");
 			$('#historyPage').hide();
-			//$('#settingsPage').hide();
+			$('#settingsPage').hide();
 			$('#statusPage').show();
-			
-		}
+			var permStorage=window.localStorage;
+			$('#serverUrl').val(permStorage.getItem(KEY_SERVER_URL));
+			$("#serverUrlTxt").html(permStorage.getItem(KEY_SERVER_URL));
 	},
 	checkConnection : function() {
 		var networkState = navigator.connection.type;
@@ -104,6 +101,15 @@ $(function() {
 	$("#submit-passcode").click(function() {
 		app.forcedSubmit = true; // forces pop-up
 		app.submitToServer();
+	});
+	
+	$("#saveSettings").click(function() {
+		console.log("Saving settings");
+		 //save settings
+		var permStorage=window.localStorage;
+		permStorage.setItem(KEY_SERVER_URL, $('#serverUrl').val());
+		$("#serverUrlTxt").html(permStorage.getItem(KEY_SERVER_URL));
+		alert("Saved");
 	});
 
 	$(document).delegate('.ui-navbar a', 'click', function() {
