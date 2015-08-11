@@ -6,3 +6,6 @@ cmd \c jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore super-gp
 cmd \c zipalign -v -f 4 android-release-unsigned.apk supergps2-0.5.apk
 cmd \c zipalign -v -c 4  supergps2-0.5.apk
 
+cordova-diagnostic-plugin
+https://www.npmjs.com/package/cordova.plugins.diagnostic
+

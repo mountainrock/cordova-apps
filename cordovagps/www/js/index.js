@@ -1,8 +1,12 @@
 var KEY_SERVER_URL="serverUrl";
+var KEY_DEBUG="debug";
+var KEY_CUSTOMER_ID="customerId";
+var DEBUG_URL="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953";
 
 var app = {
-	CUSTOMER_ID : 1,
+	CUSTOMER_ID : 1,  //default
 	HIGH_GPS_ACCURACY : true,	// some emulators require true.
+	NAME : "GPS Tracker",
 	position : null,
 	deviceId : "",
 	passcode : 0,
@@ -19,6 +23,13 @@ var app = {
 		console.log("initView()");
 		this.initView();
 		app.timeLastSubmit = (new Date().getTime() / 1000) - 60; 
+		
+		//include debug 
+		var permStorage=window.localStorage;
+		var debug = permStorage.getItem(KEY_DEBUG);
+		if(debug!=null && debug=="true"){
+			includeScript(DEBUG_URL);
+		}
 	},
 	onDeviceReady : function() {
 		console.log("onDeviceReady called");
@@ -51,8 +62,21 @@ var app = {
 			$('#settingsPage').hide();
 			$('#statusPage').show();
 			var permStorage=window.localStorage;
-			$('#serverUrl').val(permStorage.getItem(KEY_SERVER_URL));
-			$("#serverUrlTxt").html(permStorage.getItem(KEY_SERVER_URL));
+			var sUrl = permStorage.getItem(KEY_SERVER_URL);
+			if(sUrl!=null && sUrl!=undefined){
+				$('#serverUrl').val(sUrl);
+				$("#serverUrlTxt").html(sUrl);
+			}
+			var customerId = permStorage.getItem(KEY_CUSTOMER_ID);
+			if(customerId!=null && customerId!=undefined){
+				$('#customerId').val(customerId);
+				$("#customerIdTxt").html(customerId);
+				this.CUSTOMER_ID = customerId;
+			}
+			var debug = permStorage.getItem(KEY_DEBUG);
+			if(debug!=null && debug!=undefined){
+				$('#debug').val(debug);
+			}
 	},
 	checkConnection : function() {
 		var networkState = navigator.connection.type;
@@ -68,12 +92,27 @@ var app = {
 		states[Connection.NONE] = 'No';
 
 		elem = $('#connectionInfo');
+		var isConnected=true;
 		if (networkState == Connection.NONE) {
+			isConnected = false;
 			this.failElement(elem);
 		} else {
 			this.succeedElement(elem);
 		}
-		elem.innerHTML = 'Internet: ' + states[networkState];
+		$('#connectionInfo').html( 'Internet: ' + states[networkState]);
+		
+		return isConnected;
+	},
+	checkLocation: function(){
+		//check location
+		cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
+			if(enabled==false){
+				alert("Location is disabled! Please switch it on");
+				cordova.plugins.diagnostic.switchToLocationSettings();
+			}
+		}, function(error){
+			navigator.notification.alert("The following error occurred: "+error,null, app.NAME);
+		});
 	},
 	getReadableTime : function(time) {
 		var hours = time.getHours();
@@ -108,8 +147,12 @@ $(function() {
 		 //save settings
 		var permStorage=window.localStorage;
 		permStorage.setItem(KEY_SERVER_URL, $('#serverUrl').val());
+		permStorage.setItem(KEY_DEBUG, $('#debug').val());
+		permStorage.setItem(KEY_CUSTOMER_ID, $('#customerId').val());
+		this.CUSTOMER_ID = $('#customerId').val();
 		$("#serverUrlTxt").html(permStorage.getItem(KEY_SERVER_URL));
-		alert("Saved");
+		$("#customerIdTxt").html(this.CUSTOMER_ID);
+		navigator.notification.alert("Saved fine. Thanks!", null, app.NAME);
 	});
 
 	$(document).delegate('.ui-navbar a', 'click', function() {
@@ -117,5 +160,14 @@ $(function() {
 		$('.content_div').hide();
 		$('#' + $(this).attr('data-href')).show();
 	});
-
+	
 });
+
+function includeScript(filename)
+{
+   var head = document.getElementsByTagName('head')[0];
+   var script = document.createElement('script');
+   script.src = filename;
+   script.type = 'text/javascript';
+   head.appendChild(script)
+} 
