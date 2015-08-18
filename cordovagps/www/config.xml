@@ -1,14 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.smewebsites.nuitblanche" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>99RedBeaconsTracker</name>
-    <description>
-        99 Red Beacons Tracker is the application that goes alongside the artwork "99 Red Beacons" for Nuit Blanche Ottawa + Gatineau. 
-
-99 flashing red balloons tour the city, each one with a morse code message of a member of the Canadian Armed Forces. Inspired by the Cold War song 99 Luftballons, "99 Red Beacons" deals with the themes of invisible communication &amp; military influence. This is the application that tracks the participants of the artwork during the night to be displayed at SAW Gallery. This application was made possible because of the generosity of Nuit Blanche Ottawa + Gatineau and SAW Gallery.
-    </description>
-    <author email="david@smewebsites.com" href="http://www.smewebsites.com">
-        SMEWebsites
-    </author>
+<widget id="com.bri8s.supergps" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>SuperGps2</name>
+    <description>GPS Tracker</description>
     <feature name="http://api.phonegap.com/1.0/device" />
     <preference name="permissions" value="none" />
     <preference name="orientation" value="portrait" />

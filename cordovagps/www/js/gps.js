@@ -26,10 +26,18 @@ var gps = {
 			maximumAge : 1 * 1000
 		};
 		gps.GPSWatchId = navigator.geolocation.watchPosition(gps.onSuccess, gps.onError, gpsOptions);
-		//alert("GPS started id: "+ gps.GPSWatchId );
+		if(bgGeo!=null){
+			console.log("Background geo location starting");
+			bgGeo.start();
+		}
+		console.log("GPS started id: "+ gps.GPSWatchId );
 	},
 	stop : function() {
 		navigator.geolocation.clearWatch(gps.GPSWatchId);
+		 // If you wish to turn OFF background-tracking, call the #stop method.
+		console.log("Background geo location stopping");
+	    bgGeo.stop();
+	    console.log("Foreground geo location stopped");
 		alert("GPS stopped " );
 	},
 	onSuccess : function(position) {

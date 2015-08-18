@@ -16,8 +16,13 @@ app.submitToServer = function() {
 		if (((new Date().getTime() / 1000) - app.timeLastSubmit) > 59 || app.forcedSubmit) {
 			app.timeLastSubmit = new Date().getTime() / 1000;
 			var isConnected = app.checkConnection();
-			if(isConnected == false){
-				navigator.notification.alert("No internet : lat : "+app.position.coords.latitude +" , Long :"+ app.position.coords.longitude,null, app.NAME);
+			
+			if(isConnected == false ){
+				if(app.forcedSubmit){
+					navigator.notification.alert("No internet : lat : "+app.position.coords.latitude +" , Long :"+ app.position.coords.longitude,null, app.NAME);
+				}else{
+					console.log("No internet : lat : "+app.position.coords.latitude +" , Long :"+ app.position.coords.longitude,null, app.NAME);
+				}
 				app.checkLocation();
 				return;
 			}
