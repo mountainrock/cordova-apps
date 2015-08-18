@@ -15,7 +15,17 @@ app.submitToServer = function() {
     	    
 		if (((new Date().getTime() / 1000) - app.timeLastSubmit) > 59 || app.forcedSubmit) {
 			app.timeLastSubmit = new Date().getTime() / 1000;
-			app.checkConnection();
+			var isConnected = app.checkConnection();
+			
+			if(isConnected == false ){
+				if(app.forcedSubmit){
+					navigator.notification.alert("No internet : lat : "+app.position.coords.latitude +" , Long :"+ app.position.coords.longitude,null, app.NAME);
+				}else{
+					console.log("No internet : lat : "+app.position.coords.latitude +" , Long :"+ app.position.coords.longitude,null, app.NAME);
+				}
+				app.checkLocation();
+				return;
+			}
 			var createGpsLocUrl = serverUrl + "/createGpsLocation";
 			$.ajax(createGpsLocUrl, {
 				contentType : "application/json",
@@ -44,6 +54,7 @@ app.submitToServer = function() {
 					app.serverSuccess(response);
 				},
 				error : function(request, errorType, errorMessage) {
+					navigator.notification.alert("Failed to submit on internet : lat : "+app.position.coords.latitude +" , Long :"+ app.position.coords.longitude, null, app.NAME);
 					app.serverError(request, errorType, errorMessage);
 				}
 			});
@@ -57,8 +68,8 @@ app.submitToServer = function() {
 		}		
 	}
 	else{
-	navigator.notification.alert("No position available to submit.", null,
-							"GPS Tracker");
+		app.checkLocation();
+		navigator.notification.alert("No position available to submit.", null, app.NAME);
 	}
 };
 
@@ -73,17 +84,13 @@ app.serverSuccess = function(response) {
 		if (app.forcedSubmit) {
 			app.forcedSubmit = false;
 			navigator.notification
-					.alert(
-							"Not authorized. Your device id is: "
-									+ app.deviceId, null,
-							"GPS Tracker");
+					.alert("Not authorized. Your device id is: "+ app.deviceId, null, app.NAME);
 		}
 		$(serverResponse).removeClass("success");
 		$(serverResponse).addClass("fail");
 	} else {
 		if (app.forcedSubmit) {
-			navigator.notification.alert("Success. Thank you!", null,
-					"gps Tracker");
+			navigator.notification.alert("Success. Thank you!", null, app.NAME);
 			app.forcedSubmit = false;
 		}
 		$(serverResponse).removeClass("fail");
@@ -101,7 +108,7 @@ app.serverError = function(request, errorType, errorMessage) {
 	if (app.forcedSubmit) {
 		navigator.notification.alert(
 				"Error, please check your internet connection", null,
-				"GPS Tracker");
+				app.NAME);
 		app.forcedSubmit = false;
 	}
 };

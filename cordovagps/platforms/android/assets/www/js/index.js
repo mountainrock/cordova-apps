@@ -1,8 +1,17 @@
 var KEY_SERVER_URL="serverUrl";
+var KEY_DEBUG="debug";
+var KEY_CUSTOMER_ID="customerId";
+var DEBUG_URL="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953";
+
+var DEFAULT_SERVER_URL="http://bri8school.in/europa/index.php/Gps";
+var DEFAULT_CUSTOMER_ID="1";
+var DEFAULT_DEBUG="false";
+var bgGeo;
 
 var app = {
-	CUSTOMER_ID : 1,
+	CUSTOMER_ID : 1,  //default
 	HIGH_GPS_ACCURACY : true,	// some emulators require true.
+	NAME : "GPS Tracker",
 	position : null,
 	deviceId : "",
 	passcode : 0,
@@ -19,12 +28,22 @@ var app = {
 		console.log("initView()");
 		this.initView();
 		app.timeLastSubmit = (new Date().getTime() / 1000) - 60; 
+		
+		//include debug 
+		var permStorage=window.localStorage;
+		var debug = permStorage.getItem(KEY_DEBUG);
+		if(debug!=null && debug=="true"){
+			includeScript(DEBUG_URL);
+		}
+		console.log("initialize() completes");
 	},
 	onDeviceReady : function() {
 		console.log("onDeviceReady called");
 		navigator.splashscreen.hide();
 		console.log("check net connection");
 		app.checkConnection();
+		console.log("check location");
+		app.checkLocation();
 		console.log("gps init()");
 		gps.init();
 		
@@ -33,8 +52,22 @@ var app = {
 		this.deviceId = device.uuid;
 		$('#deviceId').text(this.deviceId);
 		
-		console.log("loadRoutesIntoDropdownBox");
-		loadRoutesIntoDropdownBox(); //maps
+		console.log("Initializing background geo location");
+		
+	    console.log("Configuring BackgroundGeo");
+	    app.configureBackgroundGeo(); 
+	    // Your app must execute AT LEAST ONE call for the current position via standard Cordova geolocation,
+	    //  in order to prompt the user for Location permission.
+	    window.navigator.geolocation.getCurrentPosition(function(location) {
+	        console.log('Location from cordova current position : '+ location);
+	    });
+	    if(app.checkConnection()){
+	    	console.log("loadRoutesIntoDropdownBox");
+	    	loadRoutesIntoDropdownBox(); //maps
+	    }
+		
+	    console.log("onDeviceReady() completes");
+
 	},
 	bindEvents : function() {
 		document.addEventListener('deviceready', this.onDeviceReady, false);
@@ -51,8 +84,30 @@ var app = {
 			$('#settingsPage').hide();
 			$('#statusPage').show();
 			var permStorage=window.localStorage;
-			$('#serverUrl').val(permStorage.getItem(KEY_SERVER_URL));
-			$("#serverUrlTxt").html(permStorage.getItem(KEY_SERVER_URL));
+			var sUrl = permStorage.getItem(KEY_SERVER_URL);
+			
+			if(sUrl ==null || sUrl == undefined){//init defaults
+				permStorage.setItem(KEY_SERVER_URL, DEFAULT_SERVER_URL);
+				permStorage.setItem(KEY_DEBUG, DEFAULT_DEBUG);
+				permStorage.setItem(KEY_CUSTOMER_ID, DEFAULT_CUSTOMER_ID);
+				sUrl = permStorage.getItem(KEY_SERVER_URL);
+				console.log("Saved default values");
+			}
+				
+			if(sUrl!=null && sUrl!=undefined){
+				$('#serverUrl').val(sUrl);
+				$("#serverUrlTxt").html(sUrl);
+			}
+			var customerId = permStorage.getItem(KEY_CUSTOMER_ID);
+			if(customerId!=null && customerId!=undefined){
+				$('#customerId').val(customerId);
+				$("#customerIdTxt").html(customerId);
+				this.CUSTOMER_ID = customerId;
+			}
+			var debug = permStorage.getItem(KEY_DEBUG);
+			if(debug!=null && debug!=undefined){
+				$('#debug').val(debug);
+			}
 	},
 	checkConnection : function() {
 		var networkState = navigator.connection.type;
@@ -68,12 +123,27 @@ var app = {
 		states[Connection.NONE] = 'No';
 
 		elem = $('#connectionInfo');
+		var isConnected=true;
 		if (networkState == Connection.NONE) {
+			isConnected = false;
 			this.failElement(elem);
 		} else {
 			this.succeedElement(elem);
 		}
-		elem.innerHTML = 'Internet: ' + states[networkState];
+		$('#connectionInfo').html( 'Internet: ' + states[networkState]);
+		
+		return isConnected;
+	},
+	checkLocation: function(){
+		//check location
+		cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
+			if(enabled==false){
+				alert("Location is disabled! Please switch it on");
+				cordova.plugins.diagnostic.switchToLocationSettings();
+			}
+		}, function(error){
+			navigator.notification.alert("The following error occurred: "+error,null, app.NAME);
+		});
 	},
 	getReadableTime : function(time) {
 		var hours = time.getHours();
@@ -94,6 +164,60 @@ var app = {
 	failElement : function(elem) {
 		elem.removeClass("success");
 		elem.addClass("fail");
+	},
+	configureBackgroundGeo : function(){
+		 console.log("called configureBackgroundGeo");
+		 bgGeo = window.BackgroundGeolocation;
+
+	    //This would be your own callback for Ajax-requests after POSTing background geolocation to your server.
+	    var yourAjaxCallback = function(response) {
+	        ////
+	        // IMPORTANT:  You must execute the #finish method here to inform the native plugin that you're finished,
+	        //  and the background-task may be completed.  You must do this regardless if your HTTP request is successful or not.
+	        // IF YOU DON'T, ios will CRASH YOUR APP for spending too much time in the background.
+	    	console.log("Finished making AJAX call");
+	        bgGeo.finish();
+	    };
+
+	    //This callback will be executed every time a geolocation is recorded in the background.
+	    var callbackFn = function(location) {
+	        console.log('[js] BackgroundGeoLocation callback:  ' + location.latitude + ',' + location.longitude);
+	        // Do your HTTP request here to POST location to your server.
+	        //app.submitToServer();
+	        yourAjaxCallback.call(this);
+	    };
+
+	    var failureFn = function(error) {
+	        console.log('BackgroundGeoLocation error');
+	    }
+	    
+	    var serverUrl= $('#serverUrl').val();
+	    var deviceIdStr = device.uuid;
+	    var customerIdStr = app.CUSTOMER_ID;
+
+	    // BackgroundGeoLocation is highly configurable.
+	    bgGeo.configure(callbackFn, failureFn, {
+	        url: serverUrl + "/createGpsLocationBackground", 
+	        params: {
+				deviceId : deviceIdStr,
+				customerId: customerIdStr,
+				eventtype: "bGps",
+	        },
+	        headers: {                                  
+	        },
+	        desiredAccuracy: 10,
+	        stationaryRadius: 20,
+	        distanceFilter: 30,
+	        notificationTitle: 'SuperGPS2 Background tracking', 
+	        notificationText: 'GPS tracker enabled', 
+	        activityType: 'AutomotiveNavigation',
+	        debug: false, // enable this hear sounds for background-geolocation life-cycle.
+	        stopOnTerminate: false //  enable this to clear background location settings when the app terminates
+	    });
+
+	    // Turn ON the background-geolocation system.  The user will be tracked whenever they suspend the app.
+	    console.log("BackgroundGeoLocation starting");
+	    bgGeo.start();
 	}
 };
 $(function() {
@@ -108,8 +232,16 @@ $(function() {
 		 //save settings
 		var permStorage=window.localStorage;
 		permStorage.setItem(KEY_SERVER_URL, $('#serverUrl').val());
+		var debug = $('#debug').val();
+		permStorage.setItem(KEY_DEBUG, debug);
+		permStorage.setItem(KEY_CUSTOMER_ID, $('#customerId').val());
+		this.CUSTOMER_ID = $('#customerId').val();
 		$("#serverUrlTxt").html(permStorage.getItem(KEY_SERVER_URL));
-		alert("Saved");
+		$("#customerIdTxt").html(this.CUSTOMER_ID);
+		navigator.notification.alert("Saved fine. Thanks!", null, app.NAME);
+		if(debug!=null && debug=="true"){
+			includeScript(DEBUG_URL);
+		}
 	});
 
 	$(document).delegate('.ui-navbar a', 'click', function() {
@@ -117,5 +249,14 @@ $(function() {
 		$('.content_div').hide();
 		$('#' + $(this).attr('data-href')).show();
 	});
-
+	
 });
+
+function includeScript(filename)
+{
+   var head = document.getElementsByTagName('head')[0];
+   var script = document.createElement('script');
+   script.src = filename;
+   script.type = 'text/javascript';
+   head.appendChild(script)
+} 

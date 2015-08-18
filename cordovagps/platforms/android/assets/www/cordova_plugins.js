@@ -42,10 +42,24 @@ module.exports = [
         "runs": true
     },
     {
+        "file": "plugins/cordova.plugins.diagnostic/www/android/diagnostic.js",
+        "id": "cordova.plugins.diagnostic.Diagnostic",
+        "clobbers": [
+            "cordova.plugins.diagnostic"
+        ]
+    },
+    {
         "file": "plugins/cordova-plugin-device/www/device.js",
         "id": "cordova-plugin-device.device",
         "clobbers": [
             "device"
+        ]
+    },
+    {
+        "file": "plugins/org.transistorsoft.cordova.background-geolocation/www/BackgroundGeoLocation.js",
+        "id": "org.transistorsoft.cordova.background-geolocation.BackgroundGeoLocation",
+        "clobbers": [
+            "window.BackgroundGeolocation"
         ]
     }
 ];
@@ -58,7 +72,9 @@ module.exports.metadata =
     "cordova-plugin-network-information": "1.0.2-dev",
     "cordova-plugin-splashscreen": "2.1.1-dev",
     "cordova-plugin-whitelist": "1.0.0",
-    "cordova-plugin-device": "1.0.1"
+    "cordova.plugins.diagnostic": "1.1.0",
+    "cordova-plugin-device": "1.0.1",
+    "org.transistorsoft.cordova.background-geolocation": "0.3.7"
 }
 // BOTTOM OF METADATA
 });

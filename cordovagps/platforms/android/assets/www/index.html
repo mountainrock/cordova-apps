@@ -11,7 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="css/index.css" />
 		 <link rel="stylesheet" href="js/leaflet-0.7.3/leaflet.css">
 		<link rel="stylesheet" href="css/styles.css">
-		<script src="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953"></script> 
+		<!--  <script src="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953"></script> --> 
     </head>
     <body >
 
@@ -37,8 +37,14 @@
 					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="10%">&nbsp;</td>
+						<td align="left" nowrap><label class="bold">CustomerId </label></td>
+						<td align="left"> <span id="customerIdTxt">--</span></td>
+					</tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr>
+						<td width="10%">&nbsp;</td>
 						<td align="left"><label class="bold">Status </label></td>
-						<td align="left"> <span id="connectionInfo">Internet /</span>&nbsp;<span id="locationInfo">Location</span></td>
+						<td align="left"> <span id="connectionInfo">Internet </span>/&nbsp;<span id="locationInfo">Location</span></td>
 					</tr>
 					<tr><td colspan="4">&nbsp;</td></tr>
 				
@@ -85,14 +91,30 @@
 				<table align="left" width="100%"  style="border-collapse:collapse">
 					<tr><td colspan="4"><h1>Settings</h1></td></tr>
 					<tr><td colspan="4"><hr/></td></tr>
-					<tr><td colspan="4"><hr/></td></tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap><label class="bold">Server URL</label></td>
-						<td width="90%"><input id="serverUrl" type="text" value="http://bri8school.in/demo/gps2/index.php/Gps"/></td>
+						<td width="90%" align="left"><input id="serverUrl" type="text" value=""/></td>
 					</tr>
 					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" nowrap><label class="bold">Customer Id</label></td>
+						<td width="90%" align="left"><input id="customerId" type="text" value="1"/></td>
+					</tr>
 					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" nowrap><label class="bold">Debug</label></td>
+						<td width="90%" align="left">
+							<select name="flip-1" id="debug" data-role="slider" data-theme="e">
+		                        <option value="false" selected="selected">Off</option>
+		                        <option value="true" >On</option>
+		                    </select>
+		                  </td>
+					</tr>
+					
 					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="10%">&nbsp;</td>
