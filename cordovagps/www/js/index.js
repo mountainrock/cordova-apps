@@ -11,7 +11,7 @@ var KEY_AUTOSTART ="autostart";
 
 var DEBUG_URL="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953";
 
-var DEFAULT_SERVER_URL="http://bri8school.in/europa/index.php/Gps";
+var DEFAULT_SERVER_URL="TODO:";
 var DEFAULT_CUSTOMER_ID="1";
 var DEFAULT_DEBUG="false";
 var DEFAULT_GPS_MAX_AGE=10; //seconds - configurable
