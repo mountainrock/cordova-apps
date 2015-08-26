@@ -11,7 +11,9 @@ app.submitToServer = function() {
 
     if(app.position!=undefined && app.position!=null){
     	 var accuracy= app.position.coords.accuracy;
-    	 var extrainfo ="time : "+app.position.timestamp;
+    	 device.model, device.platform, device.version
+    	 var posDate = (new Date(app.position.timestamp)).format("YYYY-MM-DD HH:m:s")
+    	 var extrainfo ="time:" +posDate +", model: "+device.model+", platform: "+ device.platform+", version: "+device.version ;
     	    
 		if (((new Date().getTime() / 1000) - app.timeLastSubmit) > 59 || app.forcedSubmit) {
 			app.timeLastSubmit = new Date().getTime() / 1000;
@@ -83,8 +85,7 @@ app.serverSuccess = function(response) {
 	if (responseObj == "not authorized") {
 		if (app.forcedSubmit) {
 			app.forcedSubmit = false;
-			navigator.notification
-					.alert("Not authorized. Your device id is: "+ app.deviceId, null, app.NAME);
+			navigator.notification.alert("Not authorized. Your device id is: "+ app.deviceId, null, app.NAME);
 		}
 		$(serverResponse).removeClass("success");
 		$(serverResponse).addClass("fail");
@@ -106,9 +107,7 @@ app.serverError = function(request, errorType, errorMessage) {
 	$(serverError).addClass("fail");
 	serverError.innerHTML = "Error: " + errorMessage + " " + app.getReadableTime(new Date());
 	if (app.forcedSubmit) {
-		navigator.notification.alert(
-				"Error, please check your internet connection", null,
-				app.NAME);
+		navigator.notification.alert("Error, please check your internet connection", null, app.NAME);
 		app.forcedSubmit = false;
 	}
 };

@@ -69,7 +69,7 @@
             // need to reset this for firefox
             routeSelect.selectedIndex = 0;
 
-            showPermanentMessage('Please select a route below');
+            //showPermanentMessage('Please select a route below');
         }
     }
 

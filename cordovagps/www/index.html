@@ -11,7 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="css/index.css" />
 		 <link rel="stylesheet" href="js/leaflet-0.7.3/leaflet.css">
 		<link rel="stylesheet" href="css/styles.css">
-		<!--  <script src="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953"></script> --> 
+	 <!--  <script src="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953"></script>   -->
     </head>
     <body >
 
@@ -19,7 +19,7 @@
 		<div  id="statusPage" class="content_div">
 			<div data-role="content" >
 				<table align="left" width="100%"  style="border-collapse:collapse">
-					<tr><td colspan="4"><br/><h1><span style="color:#F75874">Super</span><span style="color:#7B7EF5"> GPS</span></h1></td></tr>
+					<tr><td colspan="4"><br/><h1><span style="color:#F75874">Super</span><span style="color:#7B7EF5"> GPS</span></h1> &nbsp;</td></tr>
 					<tr><td colspan="4"><hr/></td></tr>
 					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
@@ -28,18 +28,6 @@
 						<td align="left"><label id="deviceId">--</label></td>
 					</tr>
 					
-					<tr><td colspan="4">&nbsp;</td></tr>
-					<tr>
-						<td width="10%">&nbsp;</td>
-						<td align="left" nowrap><label class="bold">Server Url </label></td>
-						<td align="left"> <span id="serverUrlTxt">--</span></td>
-					</tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
-					<tr>
-						<td width="10%">&nbsp;</td>
-						<td align="left" nowrap><label class="bold">CustomerId </label></td>
-						<td align="left"> <span id="customerIdTxt">--</span></td>
-					</tr>
 					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="10%">&nbsp;</td>
@@ -56,15 +44,11 @@
 					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="10%">&nbsp;</td>
-						<td align="left"><label class="bold">GPS</label></td>
-						<td align="left">
-							<select name="flip-1" id="locationToggle" data-role="slider" data-theme="e">
-		                        <option value="false">Off</option>
-		                        <option value="true" selected="selected">On</option>
-		                    </select>
-		               </td>
+						<td align="left" valign="top" nowrap><label class="bold">Current location</label> </td>
+						<td  align="left"> <span id="currentLocation">--</span></td>
 					</tr>
 					<tr><td colspan="4">&nbsp;</td></tr>
+					
 					<tr>
 						<td width="10%">&nbsp;</td>
 						<td align="left" nowrap><label class="bold">Send gps location</label></td>
@@ -94,6 +78,12 @@
 					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
+						<td align="left" ><label class="bold">Build version</label></td>
+						<td widht="90%" align="left"><label id="appVersion"></label></td>
+					</tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap><label class="bold">Server URL</label></td>
 						<td width="90%" align="left"><input id="serverUrl" type="text" value=""/></td>
 					</tr>
@@ -106,9 +96,51 @@
 					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">Gps max age(seconds)</label></td>
+						<td width="90%" align="left"><input id="gpsMaxAge" type="text" value="1"/></td>
+					</tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">Gps accuracy(mtrs)</label></td>
+						<td width="70%" align="left"><input id="gpsAccuracy" type="text" value="10"/></td>
+						<td width="20%" align="left" nowrap>eg: 10,100,1000</td>
+					</tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" nowrap><label class="bold">Gps distance filter(mtrs)</label></td>
+						<td width="70%" align="left"><input id="gpsDistanceFilter" type="text" value="20"/></td>
+						<td width="20%" align="left" nowrap>eg: 10,20,etc</td>
+					</tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left"><label class="bold">GPS</label></td>
+						<td width="90%" align="left">
+							<select name="flip-1" id="locationToggle" data-role="slider" data-theme="e" disabled >
+		                        <option value="false">Off</option>
+		                        <option value="true" selected="selected">On</option>
+		                    </select>
+		               </td>
+					</tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap><label class="bold">Debug</label></td>
 						<td width="90%" align="left">
 							<select name="flip-1" id="debug" data-role="slider" data-theme="e">
+		                        <option value="false" selected="selected">Off</option>
+		                        <option value="true" >On</option>
+		                    </select>
+		                  </td>
+					</tr>
+					<tr><td colspan="4">&nbsp;</td></tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" nowrap><label class="bold">Auto startup</label></td>
+						<td width="90%" align="left">
+							<select name="autostart" id="autostart" data-role="slider" data-theme="e">
 		                        <option value="false" selected="selected">Off</option>
 		                        <option value="true" >On</option>
 		                    </select>
@@ -208,8 +240,15 @@
 	    <script src="js/maps.js"></script>
 
 	     <script type="text/javascript">
+	     try{
             app.initialize();
-
+	     }catch(e){
+	    	 console.log("An error occured "+e);
+	    	 var serverError = document.getElementById('serverResponse');
+    		 $(serverError).removeClass("success");
+    		 $(serverError).addClass("fail");
+    		 serverError.innerHTML = "Error: " + e + " " + new Date();
+	     }
         </script>
     </body>
 </html>
