@@ -1,0 +1,20 @@
+{
+    "version": "1.2.0",
+    "name": "com.tonikorin.cordova.plugin.autostart",
+    "cordova_name": "Autostart",
+    "description": "\r\n        The application will be automatically started after the every boot and the automatic update of your application. \r\n        You can enable or disable the autostart function in your app.\r\n    ",
+    "license": "Apache 2.0",
+    "repo": "https://github.com/ToniKorin/cordova-plugin-autostart",
+    "keywords": [
+        "autostart"
+    ],
+    "platforms": [
+        "android"
+    ],
+    "engines": [
+        {
+            "name": "cordova",
+            "version": ">=3.0.0"
+        }
+    ]
+}
