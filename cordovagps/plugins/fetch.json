@@ -52,6 +52,22 @@
         "is_top_level": true,
         "variables": {}
     },
+    "cordova.plugins.diagnostic": {
+        "source": {
+            "type": "registry",
+            "id": "cordova.plugins.diagnostic"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "org.apache.cordova.device": {
+        "source": {
+            "type": "registry",
+            "id": "org.apache.cordova.device"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
     "cordova-plugin-device": {
         "source": {
             "type": "registry",
@@ -60,10 +76,18 @@
         "is_top_level": true,
         "variables": {}
     },
-    "cordova.plugins.diagnostic": {
+    "org.transistorsoft.cordova.background-geolocation": {
+        "source": {
+            "type": "local",
+            "path": "D:\\Sandeep\\JAVA\\android-apps\\cordova\\cordova-apps\\cordova-plugin-background-geolocation"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "com.tonikorin.cordova.plugin.autostart": {
         "source": {
             "type": "registry",
-            "id": "cordova.plugins.diagnostic"
+            "id": "com.tonikorin.cordova.plugin.autostart"
         },
         "is_top_level": true,
         "variables": {}

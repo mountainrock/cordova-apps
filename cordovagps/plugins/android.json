@@ -27,6 +27,14 @@
                         {
                             "xml": "<feature name=\"Device\"><param name=\"android-package\" value=\"org.apache.cordova.device.Device\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"BackgroundGeoLocation\"><param name=\"android-package\" value=\"com.tenforwardconsulting.cordova.bgloc.BackgroundGpsPlugin\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"AutoStart\"><param name=\"android-package\" value=\"com.tonikorin.cordova.plugin.autostart.AutoStart\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -50,11 +58,11 @@
                     "/manifest": [
                         {
                             "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
-                            "count": 1
+                            "count": 2
                         },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
-                            "count": 1
+                            "count": 2
                         },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\" />",
@@ -63,6 +71,44 @@
                         {
                             "xml": "<uses-permission android:name=\"android.permission.BLUETOOTH\" />",
                             "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_LOCATION_EXTRA_COMMANDS\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.INTERNET\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.WAKE_LOCK\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\" />",
+                            "count": 1
+                        }
+                    ],
+                    "/manifest/application": [
+                        {
+                            "xml": "<service android:enabled=\"true\" android:name=\"com.tenforwardconsulting.cordova.bgloc.LocationUpdateService\" android:process=\":remote\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<receiver android:enabled=\"false\" android:name=\"com.tonikorin.cordova.plugin.autostart.BootCompletedReceiver\">&gt;\r\n                <intent-filter><action android:name=\"android.intent.action.BOOT_COMPLETED\" /></intent-filter></receiver>",
+                            "count": 2
+                        },
+                        {
+                            "xml": "<receiver android:enabled=\"false\" android:name=\"com.tonikorin.cordova.plugin.autostart.UserPresentReceiver\">&gt;\r\n                <intent-filter><action android:name=\"android.intent.action.USER_PRESENT\" /></intent-filter></receiver>",
+                            "count": 2
+                        },
+                        {
+                            "xml": "<receiver android:enabled=\"true\" android:name=\"com.tonikorin.cordova.plugin.autostart.PackageReplacedReceiver\">&gt;\r\n                <intent-filter><action android:name=\"android.intent.action.MY_PACKAGE_REPLACED\" /></intent-filter></receiver>",
+                            "count": 2
                         }
                     ]
                 }
@@ -98,10 +144,16 @@
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.bri8.gps"
         },
+        "cordova.plugins.diagnostic": {
+            "PACKAGE_NAME": "com.bri8.gps"
+        },
         "cordova-plugin-device": {
             "PACKAGE_NAME": "com.bri8.gps"
         },
-        "cordova.plugins.diagnostic": {
+        "org.transistorsoft.cordova.background-geolocation": {
+            "PACKAGE_NAME": "com.bri8.gps"
+        },
+        "com.tonikorin.cordova.plugin.autostart": {
             "PACKAGE_NAME": "com.bri8.gps"
         }
     },
