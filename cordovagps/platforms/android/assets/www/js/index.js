@@ -1,12 +1,23 @@
+var APP_VERSION="1.2";
+
 var KEY_SERVER_URL="serverUrl";
 var KEY_DEBUG="debug";
 var KEY_CUSTOMER_ID="customerId";
+var KEY_GPS_MAX_AGE="gpsMaxAge";
+var KEY_GPS_DESIRED_ACCURACY="gpsAccuracy";
+var KEY_GPS_DISTANCE_FILTER="gpsDistanceFilter";
+var KEY_APP_VERSION="appVersion";
+var KEY_AUTOSTART ="autostart";
+
 var DEBUG_URL="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953";
 
 var DEFAULT_SERVER_URL="http://bri8school.in/europa/index.php/Gps";
 var DEFAULT_CUSTOMER_ID="1";
 var DEFAULT_DEBUG="false";
-var bgGeo;
+var DEFAULT_GPS_MAX_AGE=10; //seconds - configurable
+var DEFAULT_DESIRED_ACCURACY = 10; //10=high, 100= medium, 1000 = low - configurable
+var DEFAULT_DISTANCE_FILTER = 20; // in meters - configurable
+var DEFAULT_AUTOSTART = "true";
 
 var app = {
 	CUSTOMER_ID : 1,  //default
@@ -16,9 +27,11 @@ var app = {
 	deviceId : "",
 	passcode : 0,
 	timeLastSubmit : 0,
+	gpsMaxAge : DEFAULT_GPS_MAX_AGE,
+	gpsDesiredAccuracy : DEFAULT_DESIRED_ACCURACY,
+	distanceFilter : DEFAULT_DISTANCE_FILTER,
 	forcedSubmit : false, // set if user explicitly presses submit button.
-							// Used to determine if we show alert boxes.
-
+    debug : false,
 	// Application Constructor
 	initialize : function() {
 		console.log("initialize() - bindEvents()");
@@ -54,8 +67,8 @@ var app = {
 		
 		console.log("Initializing background geo location");
 		
-	    console.log("Configuring BackgroundGeo");
-	    app.configureBackgroundGeo(); 
+	    console.log("Initializing BackgroundGeo");
+	    gps.start(); 
 	    // Your app must execute AT LEAST ONE call for the current position via standard Cordova geolocation,
 	    //  in order to prompt the user for Location permission.
 	    window.navigator.geolocation.getCurrentPosition(function(location) {
@@ -84,30 +97,50 @@ var app = {
 			$('#settingsPage').hide();
 			$('#statusPage').show();
 			var permStorage=window.localStorage;
-			var sUrl = permStorage.getItem(KEY_SERVER_URL);
+			var appVersion = permStorage.getItem(KEY_APP_VERSION);
 			
-			if(sUrl ==null || sUrl == undefined){//init defaults
+			if(appVersion ==null || appVersion != APP_VERSION){//init defaults
+				navigator.notification.alert("NOTE : Application settings not configured for app version "+APP_VERSION+". Using defaults!", null, app.NAME);
+				permStorage.setItem(KEY_APP_VERSION, APP_VERSION);
 				permStorage.setItem(KEY_SERVER_URL, DEFAULT_SERVER_URL);
 				permStorage.setItem(KEY_DEBUG, DEFAULT_DEBUG);
 				permStorage.setItem(KEY_CUSTOMER_ID, DEFAULT_CUSTOMER_ID);
-				sUrl = permStorage.getItem(KEY_SERVER_URL);
+				permStorage.setItem(KEY_GPS_MAX_AGE, ""+DEFAULT_GPS_MAX_AGE);
+				permStorage.setItem(KEY_GPS_DESIRED_ACCURACY, ""+DEFAULT_DESIRED_ACCURACY);
+				permStorage.setItem(KEY_GPS_DISTANCE_FILTER, ""+DEFAULT_DISTANCE_FILTER);
+				permStorage.setItem(KEY_AUTOSTART, ""+DEFAULT_AUTOSTART);
+				
+				appVersion = permStorage.getItem(KEY_APP_VERSION);
 				console.log("Saved default values");
 			}
 				
-			if(sUrl!=null && sUrl!=undefined){
-				$('#serverUrl').val(sUrl);
-				$("#serverUrlTxt").html(sUrl);
-			}
+			$('#serverUrl').val( permStorage.getItem(KEY_SERVER_URL));
+			
 			var customerId = permStorage.getItem(KEY_CUSTOMER_ID);
-			if(customerId!=null && customerId!=undefined){
-				$('#customerId').val(customerId);
-				$("#customerIdTxt").html(customerId);
-				this.CUSTOMER_ID = customerId;
-			}
+			$('#customerId').val(customerId);
+			this.CUSTOMER_ID = customerId;
+
+			this.gpsMaxAge = parseInt(permStorage.getItem(KEY_GPS_MAX_AGE));
+			$('#gpsMaxAge').val(this.gpsMaxAge);
+
+			this.distanceFilter = permStorage.getItem(KEY_GPS_DISTANCE_FILTER);
+			this.gpsDesiredAccuracy = permStorage.getItem(KEY_GPS_DESIRED_ACCURACY);
+			$('#gpsDistanceFilter').val(this.distanceFilter);
+			$('#gpsAccuracy').val(this.gpsDesiredAccuracy);
+			
 			var debug = permStorage.getItem(KEY_DEBUG);
-			if(debug!=null && debug!=undefined){
-				$('#debug').val(debug);
-			}
+			$('#debug').val(debug);
+			app.debug = (debug == "true") ? true : false;
+			console.log(app.debug+ "debug :  "+ debug +", bool ="+  (debug == "true"));
+			
+			this.autostart = permStorage.getItem(KEY_AUTOSTART); 
+			$('#autostart').val(this.autostart);
+			$('#appVersion').html(appVersion);
+			
+			this.autostartup();
+			
+			
+			
 	},
 	checkConnection : function() {
 		var networkState = navigator.connection.type;
@@ -165,65 +198,21 @@ var app = {
 		elem.removeClass("success");
 		elem.addClass("fail");
 	},
-	configureBackgroundGeo : function(){
-		 console.log("called configureBackgroundGeo");
-		 bgGeo = window.BackgroundGeolocation;
-
-	    //This would be your own callback for Ajax-requests after POSTing background geolocation to your server.
-	    var yourAjaxCallback = function(response) {
-	        ////
-	        // IMPORTANT:  You must execute the #finish method here to inform the native plugin that you're finished,
-	        //  and the background-task may be completed.  You must do this regardless if your HTTP request is successful or not.
-	        // IF YOU DON'T, ios will CRASH YOUR APP for spending too much time in the background.
-	    	console.log("Finished making AJAX call");
-	        bgGeo.finish();
-	    };
-
-	    //This callback will be executed every time a geolocation is recorded in the background.
-	    var callbackFn = function(location) {
-	        console.log('[js] BackgroundGeoLocation callback:  ' + location.latitude + ',' + location.longitude);
-	        // Do your HTTP request here to POST location to your server.
-	        //app.submitToServer();
-	        yourAjaxCallback.call(this);
-	    };
-
-	    var failureFn = function(error) {
-	        console.log('BackgroundGeoLocation error');
+	autostartup : function(){
+		if(this.autostart=="true"){
+	    	console.log("autostart is enabled");
+	    	cordova.plugins.autoStart.enable();
+	    }else{
+	    	console.log("autostart is disabled");
+	    	cordova.plugins.autoStart.disable();
 	    }
-	    
-	    var serverUrl= $('#serverUrl').val();
-	    var deviceIdStr = device.uuid;
-	    var customerIdStr = app.CUSTOMER_ID;
-
-	    // BackgroundGeoLocation is highly configurable.
-	    bgGeo.configure(callbackFn, failureFn, {
-	        url: serverUrl + "/createGpsLocationBackground", 
-	        params: {
-				deviceId : deviceIdStr,
-				customerId: customerIdStr,
-				eventtype: "bGps",
-	        },
-	        headers: {                                  
-	        },
-	        desiredAccuracy: 10,
-	        stationaryRadius: 20,
-	        distanceFilter: 30,
-	        notificationTitle: 'SuperGPS2 Background tracking', 
-	        notificationText: 'GPS tracker enabled', 
-	        activityType: 'AutomotiveNavigation',
-	        debug: false, // enable this hear sounds for background-geolocation life-cycle.
-	        stopOnTerminate: false //  enable this to clear background location settings when the app terminates
-	    });
-
-	    // Turn ON the background-geolocation system.  The user will be tracked whenever they suspend the app.
-	    console.log("BackgroundGeoLocation starting");
-	    bgGeo.start();
 	}
 };
 $(function() {
 
 	$("#submit-passcode").click(function() {
 		app.forcedSubmit = true; // forces pop-up
+		gps.getGpsPosition();
 		app.submitToServer();
 	});
 	
@@ -231,17 +220,40 @@ $(function() {
 		console.log("Saving settings");
 		 //save settings
 		var permStorage=window.localStorage;
-		permStorage.setItem(KEY_SERVER_URL, $('#serverUrl').val());
+		var serverUrl = $('#serverUrl').val();
 		var debug = $('#debug').val();
+		var customerId = $('#customerId').val();
+		var gpsMaxAge = $('#gpsMaxAge').val();
+		var gpsDistanceFilter = $('#gpsDistanceFilter').val();
+		var gpsAccuracy = $('#gpsAccuracy').val();
+		var appAutostart =$("#autostart").val();
+		
+		if( (gpsMaxAge) =="" || (permStorage)=="" || (serverUrl)=="" || (customerId)=="" || gpsDistanceFilter=="" || gpsAccuracy =="" ){
+			alert("Fields can't be empty");
+			return;
+		}
+		permStorage.setItem(KEY_SERVER_URL, serverUrl);
 		permStorage.setItem(KEY_DEBUG, debug);
-		permStorage.setItem(KEY_CUSTOMER_ID, $('#customerId').val());
-		this.CUSTOMER_ID = $('#customerId').val();
-		$("#serverUrlTxt").html(permStorage.getItem(KEY_SERVER_URL));
-		$("#customerIdTxt").html(this.CUSTOMER_ID);
+		permStorage.setItem(KEY_CUSTOMER_ID, customerId);
+		permStorage.setItem(KEY_GPS_MAX_AGE, gpsMaxAge);
+		permStorage.setItem(KEY_GPS_DISTANCE_FILTER, gpsDistanceFilter);
+		permStorage.setItem(KEY_GPS_DESIRED_ACCURACY, gpsAccuracy);
+		permStorage.setItem(KEY_AUTOSTART, appAutostart);
+	
+		this.distanceFilter = parseInt(gpsDistanceFilter);
+		this.gpsDesiredAccuracy = parseInt(gpsAccuracy);
+		this.CUSTOMER_ID =customerId;
+		this.gpsMaxAge= parseInt(gpsMaxAge);
+		app.debug = debug == "true" ? true : false;
+		
 		navigator.notification.alert("Saved fine. Thanks!", null, app.NAME);
-		if(debug!=null && debug=="true"){
+		if(app.debug){
 			includeScript(DEBUG_URL);
 		}
+		gps.restart();
+		
+		this.autostart = appAutostart; 
+		app.autostartup();
 	});
 
 	$(document).delegate('.ui-navbar a', 'click', function() {

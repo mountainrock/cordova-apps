@@ -1,0 +1,1 @@
+adb logcat -v time LocationUpdateService:I CordovaLog:D *:S

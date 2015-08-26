@@ -61,6 +61,13 @@ module.exports = [
         "clobbers": [
             "window.BackgroundGeolocation"
         ]
+    },
+    {
+        "file": "plugins/com.tonikorin.cordova.plugin.autostart/www/auto-start.js",
+        "id": "com.tonikorin.cordova.plugin.autostart.AutoStart",
+        "clobbers": [
+            "cordova.plugins.autoStart"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -74,7 +81,8 @@ module.exports.metadata =
     "cordova-plugin-whitelist": "1.0.0",
     "cordova.plugins.diagnostic": "1.1.0",
     "cordova-plugin-device": "1.0.1",
-    "org.transistorsoft.cordova.background-geolocation": "0.3.7"
+    "org.transistorsoft.cordova.background-geolocation": "0.3.7",
+    "com.tonikorin.cordova.plugin.autostart": "1.2.0"
 }
 // BOTTOM OF METADATA
 });
