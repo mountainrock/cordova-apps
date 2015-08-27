@@ -28,9 +28,10 @@
         <param name="android-package" value="cordova.plugins.Diagnostic" />
     </feature>
     <allow-intent href="market:*" />
+    <preference name="loadUrlTimeoutValue" value="70000" />
     <name>Supergps2</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        A GPS tracker application.
     </description>
     <author email="dev@cordova.apache.org" href="http://cordova.io">
         Apache Cordova Team

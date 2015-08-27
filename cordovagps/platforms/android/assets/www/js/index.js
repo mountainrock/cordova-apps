@@ -1,4 +1,4 @@
-var APP_VERSION="1.2";
+var APP_VERSION="1.3";
 
 var KEY_SERVER_URL="serverUrl";
 var KEY_DEBUG="debug";
@@ -14,7 +14,7 @@ var DEBUG_URL="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA89
 var DEFAULT_SERVER_URL="http://bri8school.in/europa/index.php/Gps";
 var DEFAULT_CUSTOMER_ID="1";
 var DEFAULT_DEBUG="false";
-var DEFAULT_GPS_MAX_AGE=10; //seconds - configurable
+var DEFAULT_GPS_MAX_AGE=300; //seconds - configurable
 var DEFAULT_DESIRED_ACCURACY = 10; //10=high, 100= medium, 1000 = low - configurable
 var DEFAULT_DISTANCE_FILTER = 20; // in meters - configurable
 var DEFAULT_AUTOSTART = "true";
@@ -32,6 +32,7 @@ var app = {
 	distanceFilter : DEFAULT_DISTANCE_FILTER,
 	forcedSubmit : false, // set if user explicitly presses submit button.
     debug : false,
+    autostart : true,
 	// Application Constructor
 	initialize : function() {
 		console.log("initialize() - bindEvents()");
@@ -44,10 +45,7 @@ var app = {
 		
 		//include debug 
 		var permStorage=window.localStorage;
-		var debug = permStorage.getItem(KEY_DEBUG);
-		if(debug!=null && debug=="true"){
-			includeScript(DEBUG_URL);
-		}
+		this.debug = permStorage.getItem(KEY_DEBUG);
 		console.log("initialize() completes");
 	},
 	onDeviceReady : function() {
@@ -75,10 +73,14 @@ var app = {
 	        console.log('Location from cordova current position : '+ location);
 	    });
 	    if(app.checkConnection()){
+	    	if(this.debug!=null && this.debug=="true"){
+				includeScript(DEBUG_URL);
+			}
 	    	console.log("loadRoutesIntoDropdownBox");
 	    	loadRoutesIntoDropdownBox(); //maps
 	    }
 		
+	    app.autostartup();
 	    console.log("onDeviceReady() completes");
 
 	},
@@ -100,7 +102,7 @@ var app = {
 			var appVersion = permStorage.getItem(KEY_APP_VERSION);
 			
 			if(appVersion ==null || appVersion != APP_VERSION){//init defaults
-				navigator.notification.alert("NOTE : Application settings not configured for app version "+APP_VERSION+". Using defaults!", null, app.NAME);
+				alert("NOTE : Application settings not configured for app version "+APP_VERSION+". Using defaults!");
 				permStorage.setItem(KEY_APP_VERSION, APP_VERSION);
 				permStorage.setItem(KEY_SERVER_URL, DEFAULT_SERVER_URL);
 				permStorage.setItem(KEY_DEBUG, DEFAULT_DEBUG);
@@ -108,7 +110,7 @@ var app = {
 				permStorage.setItem(KEY_GPS_MAX_AGE, ""+DEFAULT_GPS_MAX_AGE);
 				permStorage.setItem(KEY_GPS_DESIRED_ACCURACY, ""+DEFAULT_DESIRED_ACCURACY);
 				permStorage.setItem(KEY_GPS_DISTANCE_FILTER, ""+DEFAULT_DISTANCE_FILTER);
-				permStorage.setItem(KEY_AUTOSTART, ""+DEFAULT_AUTOSTART);
+				permStorage.setItem(KEY_AUTOSTART, DEFAULT_AUTOSTART);
 				
 				appVersion = permStorage.getItem(KEY_APP_VERSION);
 				console.log("Saved default values");
@@ -134,12 +136,9 @@ var app = {
 			console.log(app.debug+ "debug :  "+ debug +", bool ="+  (debug == "true"));
 			
 			this.autostart = permStorage.getItem(KEY_AUTOSTART); 
+			console.log("autostart : "+this.autostart );
 			$('#autostart').val(this.autostart);
 			$('#appVersion').html(appVersion);
-			
-			this.autostartup();
-			
-			
 			
 	},
 	checkConnection : function() {
@@ -199,7 +198,7 @@ var app = {
 		elem.addClass("fail");
 	},
 	autostartup : function(){
-		if(this.autostart=="true"){
+		if(app.autostart=="true"){
 	    	console.log("autostart is enabled");
 	    	cordova.plugins.autoStart.enable();
 	    }else{
@@ -266,6 +265,7 @@ $(function() {
 
 function includeScript(filename)
 {
+   console.log("Including debug script "+filename);
    var head = document.getElementsByTagName('head')[0];
    var script = document.createElement('script');
    script.src = filename;

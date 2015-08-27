@@ -316,17 +316,24 @@
         }
     }
 
-    function displayCityName(latitude, longitude) {
+    function displayCityName(latitude, longitude, fieldName) {
+    	console.log("displaying address:::");
         var lat = parseFloat(latitude);
         var lng = parseFloat(longitude);
         var latlng = new google.maps.LatLng(lat, lng);
         var reverseGeocoder = new google.maps.Geocoder();
         reverseGeocoder.geocode({'latLng': latlng}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
+            	console.log("reverse geo :"+ results[0].formatted_address+'---' + results[1].formatted_address);
                 // results[0] is full address
                 if (results[1]) {
                     var reverseGeocoderResult = results[1].formatted_address; 
-                    showPermanentMessage(reverseGeocoderResult);
+                    if(fieldName!=null){
+                        $("#" + fieldName).html(results[0].formatted_address);
+                    }
+                    else{
+                    	showPermanentMessage(reverseGeocoderResult);
+                    }
                 }
             } else {
                 console.log('Geocoder failed due to: ' + status);

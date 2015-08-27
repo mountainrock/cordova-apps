@@ -1,0 +1,1 @@
+SELECT * FROM `gpslocations` where deviceId like '92f51e4%' order by gpsTime desc
