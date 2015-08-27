@@ -113,10 +113,14 @@ var gps = {
 		gpsErrorCount = 0;
 
 		app.position = position;
+		var latitude = position.coords.latitude;
+		var longitude = position.coords.longitude;
+		displayCityName(latitude.toString(), longitude.toString(), "gpsAddress");
+		
 		app.submitToServer();
 
 		$('#locationInfo').removeClass("fail").addClass("success");
-		$("#currentLocation").html('Latitude: ' + position.coords.latitude.toFixed(3) + '<br/>' + 'Longitude: ' + position.coords.longitude.toFixed(3) + '<br/>');
+		$("#currentLocation").html('Lat: ' + latitude.toFixed(3) + ',' + ' Long: ' + longitude.toFixed(3) + '<br/>');
 				//+ 'Last Update: ' + app.getReadableTime(position.timestamp));
 	},
 	onError : function(error) {
