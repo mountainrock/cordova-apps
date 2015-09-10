@@ -76,7 +76,7 @@
         "is_top_level": true,
         "variables": {}
     },
-    "org.transistorsoft.cordova.background-geolocation": {
+    "com.bri8.cordova.background-geolocation": {
         "source": {
             "type": "local",
             "path": "D:\\Sandeep\\JAVA\\android-apps\\cordova\\cordova-apps\\cordova-plugin-background-geolocation"
