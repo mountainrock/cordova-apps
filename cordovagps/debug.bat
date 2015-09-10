@@ -1,1 +1,1 @@
-adb logcat -v time LocationUpdateService:I CordovaLog:D *:S
+adb logcat -v time LocationUpdateService:I CordovaLog:D AndroidRuntime:E ActivityThread:E *:S
