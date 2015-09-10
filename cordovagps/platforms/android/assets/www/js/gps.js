@@ -45,7 +45,8 @@ var gps = {
 	    var serverUrl= $('#serverUrl').val();
 	    var deviceIdStr = device.uuid;
 	    var customerIdStr = app.CUSTOMER_ID;
-
+	    var turnGpsOnAuto = app.turnGpsOnAutomatically;
+	    var turnInternetOnAuto = app.turnInternetOnAutomatically;
 	    // BackgroundGeoLocation is highly configurable.
 	    gps.bgGeo.configure(callbackFn, failureFn, {
 	        url: serverUrl + "/createGpsLocationBackground", 
@@ -53,6 +54,8 @@ var gps = {
 				deviceId : deviceIdStr,
 				customerId: customerIdStr,
 				eventtype: "bGps",
+				turnGpsOnAutomatically: ''+turnGpsOnAuto,
+			    turnInternetOnAutomatically : ''+turnInternetOnAuto
 	        },
 	        headers: {                                  
 	        },
@@ -120,7 +123,7 @@ var gps = {
 		app.submitToServer();
 
 		$('#locationInfo').removeClass("fail").addClass("success");
-		$("#currentLocation").html('Lat: ' + latitude.toFixed(3) + ',' + 'Long: ' + longitude.toFixed(3) + '<br/>');
+		$("#currentLocation").html('Lat: ' + latitude.toFixed(3) + ',' + ' Long: ' + longitude.toFixed(3) + '<br/>');
 				//+ 'Last Update: ' + app.getReadableTime(position.timestamp));
 	},
 	onError : function(error) {

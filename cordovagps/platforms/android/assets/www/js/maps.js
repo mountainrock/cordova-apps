@@ -163,6 +163,11 @@
 
     function loadRoutesIntoDropdownBox() {  
        var serverUrl= $('#serverUrl').val();
+       var isConnected = app.checkConnection();
+       if(isConnected == false){
+    	   alert("No internet connection available to load history");
+    	   return;
+       }
        console.log("loadRoutesIntoDropdownBox :"+ serverUrl + "/getRoutesForUser?deviceId="+ device.uuid);
 		$.ajax({
             url: serverUrl + "/getRoutesForUser?deviceId="+  device.uuid,

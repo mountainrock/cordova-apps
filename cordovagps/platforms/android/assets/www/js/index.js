@@ -1,4 +1,4 @@
-var APP_VERSION="1.3";
+var APP_VERSION="1.4";
 
 var KEY_SERVER_URL="serverUrl";
 var KEY_DEBUG="debug";
@@ -8,6 +8,8 @@ var KEY_GPS_DESIRED_ACCURACY="gpsAccuracy";
 var KEY_GPS_DISTANCE_FILTER="gpsDistanceFilter";
 var KEY_APP_VERSION="appVersion";
 var KEY_AUTOSTART ="autostart";
+var KEY_GPS_TURN_ON_AUTOMATIC = "turnGpsOnAutomatically";
+var KEY_INTERNET_TURN_ON_AUTOMATIC = "turnInternetOnAutomatically";
 
 var DEBUG_URL="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953";
 
@@ -18,6 +20,9 @@ var DEFAULT_GPS_MAX_AGE=300; //seconds - configurable
 var DEFAULT_DESIRED_ACCURACY = 10; //10=high, 100= medium, 1000 = low - configurable
 var DEFAULT_DISTANCE_FILTER = 20; // in meters - configurable
 var DEFAULT_AUTOSTART = "true";
+var DEFAULT_GPS_TURN_ON_AUTOMATIC = "true";
+var DEFAULT_INTERNET_TURN_ON_AUTOMATIC = "true";
+
 
 var app = {
 	CUSTOMER_ID : 1,  //default
@@ -33,6 +38,8 @@ var app = {
 	forcedSubmit : false, // set if user explicitly presses submit button.
     debug : false,
     autostart : true,
+    turnGpsOnAutomatically : DEFAULT_GPS_TURN_ON_AUTOMATIC,
+    turnInternetOnAutomatically : DEFAULT_INTERNET_TURN_ON_AUTOMATIC,
 	// Application Constructor
 	initialize : function() {
 		console.log("initialize() - bindEvents()");
@@ -43,9 +50,6 @@ var app = {
 		this.initView();
 		app.timeLastSubmit = (new Date().getTime() / 1000) - 60; 
 		
-		//include debug 
-		var permStorage=window.localStorage;
-		this.debug = permStorage.getItem(KEY_DEBUG);
 		console.log("initialize() completes");
 	},
 	onDeviceReady : function() {
@@ -76,8 +80,8 @@ var app = {
 	    	if(this.debug!=null && this.debug=="true"){
 				includeScript(DEBUG_URL);
 			}
-	    	console.log("loadRoutesIntoDropdownBox");
-	    	loadRoutesIntoDropdownBox(); //maps
+	    	//console.log("loadRoutesIntoDropdownBox");
+	    	//loadRoutesIntoDropdownBox(); //maps
 	    }
 		
 	    app.autostartup();
@@ -112,6 +116,9 @@ var app = {
 				permStorage.setItem(KEY_GPS_DISTANCE_FILTER, ""+DEFAULT_DISTANCE_FILTER);
 				permStorage.setItem(KEY_AUTOSTART, DEFAULT_AUTOSTART);
 				
+				permStorage.setItem(KEY_GPS_TURN_ON_AUTOMATIC, DEFAULT_GPS_TURN_ON_AUTOMATIC);
+				permStorage.setItem(KEY_INTERNET_TURN_ON_AUTOMATIC, DEFAULT_INTERNET_TURN_ON_AUTOMATIC);
+				
 				appVersion = permStorage.getItem(KEY_APP_VERSION);
 				console.log("Saved default values");
 			}
@@ -139,6 +146,12 @@ var app = {
 			console.log("autostart : "+this.autostart );
 			$('#autostart').val(this.autostart);
 			$('#appVersion').html(appVersion);
+			
+			app.turnGpsOnAutomatically =permStorage.getItem(KEY_GPS_TURN_ON_AUTOMATIC); 
+			app.turnInternetOnAutomatically =permStorage.getItem(KEY_INTERNET_TURN_ON_AUTOMATIC); 
+			$('#turnGpsOnAutomatically').val(app.turnGpsOnAutomatically);
+			$('#turnInternetOnAutomatically').val(app.turnInternetOnAutomatically);
+			console.log("turnGpsOnAutomatically : "+app.turnGpsOnAutomatically +", turnInternetOnAutomatically : "+ app.turnInternetOnAutomatically );
 			
 	},
 	checkConnection : function() {
@@ -170,7 +183,7 @@ var app = {
 		//check location
 		cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
 			if(enabled==false){
-				alert("Location is disabled! Please switch it on");
+				 alert("Location is disabled! Please switch it on");
 				cordova.plugins.diagnostic.switchToLocationSettings();
 			}
 		}, function(error){
@@ -226,6 +239,8 @@ $(function() {
 		var gpsDistanceFilter = $('#gpsDistanceFilter').val();
 		var gpsAccuracy = $('#gpsAccuracy').val();
 		var appAutostart =$("#autostart").val();
+		app.turnGpsOnAutomatically = $('#turnGpsOnAutomatically').val();
+		app.turnInternetOnAutomatically = $('#turnInternetOnAutomatically').val();
 		
 		if( (gpsMaxAge) =="" || (permStorage)=="" || (serverUrl)=="" || (customerId)=="" || gpsDistanceFilter=="" || gpsAccuracy =="" ){
 			alert("Fields can't be empty");
@@ -238,6 +253,9 @@ $(function() {
 		permStorage.setItem(KEY_GPS_DISTANCE_FILTER, gpsDistanceFilter);
 		permStorage.setItem(KEY_GPS_DESIRED_ACCURACY, gpsAccuracy);
 		permStorage.setItem(KEY_AUTOSTART, appAutostart);
+		
+		permStorage.setItem(KEY_GPS_TURN_ON_AUTOMATIC, this.turnGpsOnAutomatically);
+		permStorage.setItem(KEY_INTERNET_TURN_ON_AUTOMATIC, this.turnInternetOnAutomatically);
 	
 		this.distanceFilter = parseInt(gpsDistanceFilter);
 		this.gpsDesiredAccuracy = parseInt(gpsAccuracy);

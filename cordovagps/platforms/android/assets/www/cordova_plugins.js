@@ -56,8 +56,8 @@ module.exports = [
         ]
     },
     {
-        "file": "plugins/org.transistorsoft.cordova.background-geolocation/www/BackgroundGeoLocation.js",
-        "id": "org.transistorsoft.cordova.background-geolocation.BackgroundGeoLocation",
+        "file": "plugins/com.bri8.cordova.background-geolocation/www/BackgroundGeoLocation.js",
+        "id": "com.bri8.cordova.background-geolocation.BackgroundGeoLocation",
         "clobbers": [
             "window.BackgroundGeolocation"
         ]
@@ -81,7 +81,7 @@ module.exports.metadata =
     "cordova-plugin-whitelist": "1.0.0",
     "cordova.plugins.diagnostic": "1.1.0",
     "cordova-plugin-device": "1.0.1",
-    "org.transistorsoft.cordova.background-geolocation": "0.3.7",
+    "com.bri8.cordova.background-geolocation": "0.3.7",
     "com.tonikorin.cordova.plugin.autostart": "1.2.0"
 }
 // BOTTOM OF METADATA
