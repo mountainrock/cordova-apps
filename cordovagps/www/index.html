@@ -11,7 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="css/index.css" />
 		 <link rel="stylesheet" href="js/leaflet-0.7.3/leaflet.css">
 		<link rel="stylesheet" href="css/styles.css">
-	  <script src="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953"></script>  
+	 <!--script src="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953"></script--> 
     </head>
     <body >
 
@@ -77,45 +77,38 @@
 				<table align="left" width="100%"  style="border-collapse:collapse">
 					<tr><td colspan="4"><h1>Settings</h1></td></tr>
 					<tr><td colspan="4"><hr/></td></tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
 						<td align="left" ><label class="bold">Build version</label></td>
 						<td widht="90%" align="left"><label id="appVersion"></label></td>
 					</tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap><label class="bold">Server URL</label></td>
 						<td width="90%" align="left"><input id="serverUrl" type="text" value=""/></td>
 					</tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap><label class="bold">Customer Id</label></td>
-						<td width="90%" align="left"><input id="customerId" type="text" value="1"/></td>
+						<td width="90%" align="left"><input id="customerId" type="text" value="1" disabled/></td>
 					</tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap ><label class="bold">Gps max age(seconds)</label></td>
 						<td width="90%" align="left"><input id="gpsMaxAge" type="text" value="1"/></td>
 					</tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap ><label class="bold">Gps accuracy(mtrs)</label></td>
 						<td width="70%" align="left"><input id="gpsAccuracy" type="text" value="10"/></td>
 						<td width="20%" align="left" nowrap>eg: 10,100,1000</td>
 					</tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap><label class="bold">Gps distance filter(mtrs)</label></td>
 						<td width="70%" align="left"><input id="gpsDistanceFilter" type="text" value="20"/></td>
 						<td width="20%" align="left" nowrap>eg: 10,20,etc</td>
 					</tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
 						<td align="left"><label class="bold">GPS</label></td>
@@ -126,7 +119,6 @@
 		                    </select>
 		               </td>
 					</tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap><label class="bold">Debug</label></td>
@@ -137,12 +129,32 @@
 		                    </select>
 		                  </td>
 					</tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap><label class="bold">Auto startup</label></td>
 						<td width="90%" align="left">
-							<select name="autostart" id="autostart" data-role="slider" data-theme="e">
+							<select name="autostart" id="autostart" data-role="slider" data-theme="e" >
+		                        <option value="false" selected="selected">Off</option>
+		                        <option value="true" >On</option>
+		                    </select>
+		                  </td>
+					</tr>
+					
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" nowrap><label class="bold">Enable GPS automatically</label></td>
+						<td width="90%" align="left">
+							<select name="turnGpsOnAutomatically" id="turnGpsOnAutomatically" data-role="slider" data-theme="e">
+		                        <option value="false" selected="selected">Off</option>
+		                        <option value="true" >On</option>
+		                    </select>
+		                  </td>
+					</tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" nowrap><label class="bold">Enable Internet automatically</label></td>
+						<td width="90%" align="left">
+							<select name="turnInternetOnAutomatically" id="turnInternetOnAutomatically" data-role="slider" data-theme="e" disabled>
 		                        <option value="false" selected="selected">Off</option>
 		                        <option value="true" >On</option>
 		                    </select>
@@ -151,12 +163,13 @@
 					
 					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
-						<td width="10%">&nbsp;</td>
+						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap>&nbsp;</td>
-						<td align="left" valign="top">
-						<a href="#" id="saveSettings" data-role="button" data-inline="true" data-theme="e" data-icon="check">Save</a>
+						<td align="left"  width="90%">
+							<a href="#" id="getServerSettings" data-role="button" data-inline="true" data-theme="e" data-icon="check">Get Server Settings</a>&nbsp;
+							<a href="#" id="checkForUpdateApp" data-role="button" data-inline="true" data-theme="e" data-icon="check">Update App</a>&nbsp;
+							<a href="#" id="saveSettings" data-role="button" data-inline="true" data-theme="e" data-icon="check">Save</a>
 						</td>
-						<td width="80%">&nbsp;</td>
 						
 					</tr>
 				</table>
