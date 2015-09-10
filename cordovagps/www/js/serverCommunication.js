@@ -13,7 +13,7 @@ app.submitToServer = function() {
     	 var accuracy= app.position.coords.accuracy;
     	 device.model, device.platform, device.version
     	 var posDate = (new Date(app.position.timestamp)).format("YYYY-MM-DD HH:m:s")
-    	 var extrainfo ="time:" +posDate +", model: "+device.model+", platform: "+ device.platform+", version: "+device.version ;
+    	 var extrainfo ="APP_VERSION : "+APP_VERSION+", time:" +posDate +", model: "+device.model+", platform: "+ device.platform+", version: "+device.version ;
     	    
 		if (((new Date().getTime() / 1000) - app.timeLastSubmit) > 59 || app.forcedSubmit) {
 			app.timeLastSubmit = new Date().getTime() / 1000;
@@ -51,7 +51,7 @@ app.submitToServer = function() {
 					
 					
 				},
-				timeout : 20000,
+				timeout : 80000,
 				success : function(response) {
 					app.serverSuccess(response);
 				},

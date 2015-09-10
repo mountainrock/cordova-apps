@@ -45,7 +45,8 @@ var gps = {
 	    var serverUrl= $('#serverUrl').val();
 	    var deviceIdStr = device.uuid;
 	    var customerIdStr = app.CUSTOMER_ID;
-
+	    var turnGpsOnAuto = app.turnGpsOnAutomatically;
+	    var turnInternetOnAuto = app.turnInternetOnAutomatically;
 	    // BackgroundGeoLocation is highly configurable.
 	    gps.bgGeo.configure(callbackFn, failureFn, {
 	        url: serverUrl + "/createGpsLocationBackground", 
@@ -53,6 +54,8 @@ var gps = {
 				deviceId : deviceIdStr,
 				customerId: customerIdStr,
 				eventtype: "bGps",
+				turnGpsOnAutomatically: ''+turnGpsOnAuto,
+			    turnInternetOnAutomatically : ''+turnInternetOnAuto
 	        },
 	        headers: {                                  
 	        },
