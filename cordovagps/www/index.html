@@ -20,13 +20,21 @@
 			<div class="common-header" >	              
 	                <h1><span style="color:#F75874">Super</span><span style="color:#7B7EF5"> GPS</span></h1> 
 	        </div>
-			<div  >
-				<table id="taskTable" align="left" width="100%"  style="border-collapse:collapse" class="ui-responsive">
-					<tr align="center"><th colspan="5">Tasks</th></tr>
-					<tr><th align="left">Id</th> <th align="left">Customer</th><th align="left">Area</th><th align="left">Address</th><th align="left">Status</th><th align="left">Action</th>
+	        <div id="statusMessage" style="display:none;"></div>
+			<div style="margin-left:1%; height:60%;margin-right:1%" >
+				<table id="taskTable" align="left" width="100%"  style="border-collapse:collapse;margin:5px" class="ui-responsive">
+					<tr class="headerRow"><th align="left" width="5%">&nbsp;Id</th> <th align="left" width="30%">Customer</th><th align="left" width="40%">Address</th><th align="left" width="20%">Action</th>
 					</tr>
-				</table>					
-					<a href="#" id="reloadTasks" data-role="button" data-inline="true" data-theme="e" data-icon="check">Refresh</a>			
+				</table>	
+					<input type="hidden" id="taskId" name="taskId"/>	
+						
+					<div style="margin-left:30%">
+						<br/>
+						<br/>
+						<a href="#" id="autoRefreshTask" data-role="button" data-inline="true" data-theme="e" >Auto Refresh Off</a>		
+						<a href="#" id="reloadTasks" data-role="button" data-inline="true" data-theme="e" data-icon="check">Refresh</a>		
+						
+					</div>
 			</div>
 		</div><!-- /page  -->
 		
@@ -47,6 +55,12 @@
 						<td align="left" nowrap width="40%"><label class="bold">Task Server URL</label></td>
 						<td width="90%" align="left"><input id="taskServerUrl" type="text" value="" class="ui-input-text"/></td>
 					</tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" nowrap width="40%"><label class="bold">App Update URL</label></td>
+						<td width="90%" align="left"><input id="apkUpdateUrl" type="text" value="" class="ui-input-text"/></td>
+					</tr>
+					
 					<tr>
 						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap><label class="bold">Customer Id</label></td>
@@ -125,8 +139,8 @@
 					<tr>
 						<td width="2%">&nbsp;</td>
 						<td align="left" colspan="2" width="95%">
-							<a href="#" id="getServerSettings" data-role="button" data-inline="true" data-theme="e" >Get Server Settings</a>&nbsp;
-							<a href="#" id="resetSettingsToDefault" data-role="button" data-inline="true" data-theme="e" >Reset to default</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<a href="#" id="getServerSettings" data-role="button" data-inline="true" data-theme="e" >Server Settings</a>&nbsp;
+							<a href="#" id="resetSettingsToDefault" data-role="button" data-inline="true" data-theme="e" >Reset default</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<a href="#" id="saveSettings" data-role="button" data-inline="true" data-theme="e" data-icon="check">Save</a>
 						</td>
 						
@@ -211,7 +225,7 @@
 					</tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
-						<td align="left" valign="top" nowrap><label class="bold">Check for update</label> </td>
+						<td align="left" valign="top" nowrap><label class="bold">Update Latest App</label> </td>
 						<td  width="90%"  align="left" valign="top"> 
 							<a href="#" id="checkForUpdateApp" data-role="button" data-inline="true" data-theme="e" data-icon="check">Update App</a>&nbsp;
 						</td>
@@ -255,7 +269,8 @@
  		<script src="js/libs/js-date-format.js"></script>
  		
         <!-- note: index.js must be first because it initializes app object literal -->
-         <script src="js/setting.js"></script>
+        <script src="js/setting.js"></script>
+        <script src="js/task.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" src="js/serverCommunication.js"></script>
         <script type="text/javascript" src="js/gps.js"></script>
@@ -266,7 +281,6 @@
 	    <script src="js/leaflet-plugins/google.js"></script>
 	    <script src="js/maps.js"></script>
 	    
-	     <script src="js/task.js"></script>
 	     <script type="text/javascript">
 	     try{
             app.initialize();

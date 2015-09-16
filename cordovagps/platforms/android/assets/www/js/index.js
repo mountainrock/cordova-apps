@@ -1,33 +1,12 @@
-var APP_VERSION="1.4";
-
-var KEY_SERVER_URL="serverUrl";
-var KEY_DEBUG="debug";
-var KEY_CUSTOMER_ID="customerId";
-var KEY_GPS_MAX_AGE="gpsMaxAge";
-var KEY_GPS_DESIRED_ACCURACY="gpsAccuracy";
-var KEY_GPS_DISTANCE_FILTER="gpsDistanceFilter";
-var KEY_APP_VERSION="appVersion";
-var KEY_AUTOSTART ="autostart";
-var KEY_GPS_TURN_ON_AUTOMATIC = "turnGpsOnAutomatically";
-var KEY_INTERNET_TURN_ON_AUTOMATIC = "turnInternetOnAutomatically";
-
-var DEBUG_URL="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953";
-
-var DEFAULT_SERVER_URL="http://bri8school.in/europa/index.php/Gps";
-var DEFAULT_CUSTOMER_ID="1";
-var DEFAULT_DEBUG="false";
-var DEFAULT_GPS_MAX_AGE=300; //seconds - configurable
-var DEFAULT_DESIRED_ACCURACY = 10; //10=high, 100= medium, 1000 = low - configurable
-var DEFAULT_DISTANCE_FILTER = 20; // in meters - configurable
-var DEFAULT_AUTOSTART = "true";
-var DEFAULT_GPS_TURN_ON_AUTOMATIC = "true";
-var DEFAULT_INTERNET_TURN_ON_AUTOMATIC = "true";
-
+var APP_VERSION="1.5";
 
 var app = {
 	CUSTOMER_ID : 1,  //default
 	HIGH_GPS_ACCURACY : true,	// some emulators require true.
 	NAME : "GPS Tracker",
+	serverUrl: DEFAULT_SERVER_URL,
+	taskServerUrl : DEFAULT_TASK_SERVER_URL,
+	apkUpdateUrl: DEFAULT_APK_UPDATE_URL,
 	position : null,
 	deviceId : "",
 	passcode : 0,
@@ -54,7 +33,8 @@ var app = {
 	},
 	onDeviceReady : function() {
 		console.log("onDeviceReady called");
-		navigator.splashscreen.hide();
+		//jQuery.mobile.changePage(jQuery('#taskPage'));
+		
 		console.log("check net connection");
 		app.checkConnection();
 		console.log("check location");
@@ -67,8 +47,9 @@ var app = {
 		this.deviceId = device.uuid;
 		$('#deviceId').text(this.deviceId);
 		
-		console.log("Initializing background geo location");
-		
+		console.log("Loading tasks");
+		task.getTasks();
+		    
 	    console.log("Initializing BackgroundGeo");
 	    gps.start(); 
 	    // Your app must execute AT LEAST ONE call for the current position via standard Cordova geolocation,
@@ -85,6 +66,7 @@ var app = {
 	    }
 		
 	    app.autostartup();
+	    navigator.splashscreen.hide();
 	    console.log("onDeviceReady() completes");
 
 	},
@@ -101,57 +83,21 @@ var app = {
 			console.log("Initializing view");
 			$('#historyPage').hide();
 			$('#settingsPage').hide();
-			$('#statusPage').show();
+			$('#taskDetailsPage').hide();
+			$('#taskPage').show();
+			
 			var permStorage=window.localStorage;
 			var appVersion = permStorage.getItem(KEY_APP_VERSION);
 			
-			if(appVersion ==null || appVersion != APP_VERSION){//init defaults
+			if(appVersion ==null || appVersion==undefined || APP_VERSION!=appVersion ){//init defaults
 				alert("NOTE : Application settings not configured for app version "+APP_VERSION+". Using defaults!");
-				permStorage.setItem(KEY_APP_VERSION, APP_VERSION);
-				permStorage.setItem(KEY_SERVER_URL, DEFAULT_SERVER_URL);
-				permStorage.setItem(KEY_DEBUG, DEFAULT_DEBUG);
-				permStorage.setItem(KEY_CUSTOMER_ID, DEFAULT_CUSTOMER_ID);
-				permStorage.setItem(KEY_GPS_MAX_AGE, ""+DEFAULT_GPS_MAX_AGE);
-				permStorage.setItem(KEY_GPS_DESIRED_ACCURACY, ""+DEFAULT_DESIRED_ACCURACY);
-				permStorage.setItem(KEY_GPS_DISTANCE_FILTER, ""+DEFAULT_DISTANCE_FILTER);
-				permStorage.setItem(KEY_AUTOSTART, DEFAULT_AUTOSTART);
-				
-				permStorage.setItem(KEY_GPS_TURN_ON_AUTOMATIC, DEFAULT_GPS_TURN_ON_AUTOMATIC);
-				permStorage.setItem(KEY_INTERNET_TURN_ON_AUTOMATIC, DEFAULT_INTERNET_TURN_ON_AUTOMATIC);
-				
+				appSetting.setDefaultSettings(permStorage);
 				appVersion = permStorage.getItem(KEY_APP_VERSION);
-				console.log("Saved default values");
+				console.log("Saved default values for version : "+ appVersion);
+			}else{
+				console.log("Using settings for version : "+ appVersion);
 			}
-				
-			$('#serverUrl').val( permStorage.getItem(KEY_SERVER_URL));
-			
-			var customerId = permStorage.getItem(KEY_CUSTOMER_ID);
-			$('#customerId').val(customerId);
-			this.CUSTOMER_ID = customerId;
-
-			this.gpsMaxAge = parseInt(permStorage.getItem(KEY_GPS_MAX_AGE));
-			$('#gpsMaxAge').val(this.gpsMaxAge);
-
-			this.distanceFilter = permStorage.getItem(KEY_GPS_DISTANCE_FILTER);
-			this.gpsDesiredAccuracy = permStorage.getItem(KEY_GPS_DESIRED_ACCURACY);
-			$('#gpsDistanceFilter').val(this.distanceFilter);
-			$('#gpsAccuracy').val(this.gpsDesiredAccuracy);
-			
-			var debug = permStorage.getItem(KEY_DEBUG);
-			$('#debug').val(debug);
-			app.debug = (debug == "true") ? true : false;
-			console.log(app.debug+ "debug :  "+ debug +", bool ="+  (debug == "true"));
-			
-			this.autostart = permStorage.getItem(KEY_AUTOSTART); 
-			console.log("autostart : "+this.autostart );
-			$('#autostart').val(this.autostart);
-			$('#appVersion').html(appVersion);
-			
-			app.turnGpsOnAutomatically =permStorage.getItem(KEY_GPS_TURN_ON_AUTOMATIC); 
-			app.turnInternetOnAutomatically =permStorage.getItem(KEY_INTERNET_TURN_ON_AUTOMATIC); 
-			$('#turnGpsOnAutomatically').val(app.turnGpsOnAutomatically);
-			$('#turnInternetOnAutomatically').val(app.turnInternetOnAutomatically);
-			console.log("turnGpsOnAutomatically : "+app.turnGpsOnAutomatically +", turnInternetOnAutomatically : "+ app.turnInternetOnAutomatically );
+			appSetting.updateSettingsView(permStorage);
 			
 	},
 	checkConnection : function() {
@@ -218,6 +164,11 @@ var app = {
 	    	console.log("autostart is disabled");
 	    	cordova.plugins.autoStart.disable();
 	    }
+	},
+	showMessage: function(str){
+		var date1 =(new Date()).format("DD/MM HH:m:s");
+		 $("#statusMessage").html(date1 + " : "+ str );
+		 $("#statusMessage").show();
 	}
 };
 $(function() {
@@ -227,49 +178,41 @@ $(function() {
 		gps.getGpsPosition();
 		app.submitToServer();
 	});
+	$("#showTaskDetails").click(function() {
+		task.showTaskDetails();
+	});
+	$("#reloadTasks").click(function() {
+		task.getTasks();
+	});
+	$("#autoRefreshTask").click(function() {
+		if($("#autoRefreshTask .ui-btn-text").text()=="Auto Refresh Off"){
+			$("#autoRefreshTask .ui-btn-text").text("Auto Refresh On");
+			task.restartInterval();
+		}else{
+			$("#autoRefreshTask .ui-btn-text").text("Auto Refresh Off");
+			task.stopAutoRefresh();
+		}
+	});
+	$("#checkForUpdateApp").click(function(){
+		appSetting.getLatestApp();
+	});
+	
+	$("#historyButton").click(function() {
+		loadRoutesIntoDropdownBox();
+	});
+	
+	$("#resetSettingsToDefault").click(function() {
+		console.log("resetSettingsToDefault");
+		appSetting.resetSettingsToDefault();
+		gps.restart();
+		app.autostartup();
+	});
 	
 	$("#saveSettings").click(function() {
 		console.log("Saving settings");
 		 //save settings
-		var permStorage=window.localStorage;
-		var serverUrl = $('#serverUrl').val();
-		var debug = $('#debug').val();
-		var customerId = $('#customerId').val();
-		var gpsMaxAge = $('#gpsMaxAge').val();
-		var gpsDistanceFilter = $('#gpsDistanceFilter').val();
-		var gpsAccuracy = $('#gpsAccuracy').val();
-		var appAutostart =$("#autostart").val();
-		app.turnGpsOnAutomatically = $('#turnGpsOnAutomatically').val();
-		app.turnInternetOnAutomatically = $('#turnInternetOnAutomatically').val();
-		
-		if( (gpsMaxAge) =="" || (permStorage)=="" || (serverUrl)=="" || (customerId)=="" || gpsDistanceFilter=="" || gpsAccuracy =="" ){
-			alert("Fields can't be empty");
-			return;
-		}
-		permStorage.setItem(KEY_SERVER_URL, serverUrl);
-		permStorage.setItem(KEY_DEBUG, debug);
-		permStorage.setItem(KEY_CUSTOMER_ID, customerId);
-		permStorage.setItem(KEY_GPS_MAX_AGE, gpsMaxAge);
-		permStorage.setItem(KEY_GPS_DISTANCE_FILTER, gpsDistanceFilter);
-		permStorage.setItem(KEY_GPS_DESIRED_ACCURACY, gpsAccuracy);
-		permStorage.setItem(KEY_AUTOSTART, appAutostart);
-		
-		permStorage.setItem(KEY_GPS_TURN_ON_AUTOMATIC, this.turnGpsOnAutomatically);
-		permStorage.setItem(KEY_INTERNET_TURN_ON_AUTOMATIC, this.turnInternetOnAutomatically);
-	
-		this.distanceFilter = parseInt(gpsDistanceFilter);
-		this.gpsDesiredAccuracy = parseInt(gpsAccuracy);
-		this.CUSTOMER_ID =customerId;
-		this.gpsMaxAge= parseInt(gpsMaxAge);
-		app.debug = debug == "true" ? true : false;
-		
-		navigator.notification.alert("Saved fine. Thanks!", null, app.NAME);
-		if(app.debug){
-			includeScript(DEBUG_URL);
-		}
+		appSetting.saveSettings();
 		gps.restart();
-		
-		this.autostart = appAutostart; 
 		app.autostartup();
 	});
 
@@ -279,14 +222,6 @@ $(function() {
 		$('#' + $(this).attr('data-href')).show();
 	});
 	
+	
 });
 
-function includeScript(filename)
-{
-   console.log("Including debug script "+filename);
-   var head = document.getElementsByTagName('head')[0];
-   var script = document.createElement('script');
-   script.src = filename;
-   script.type = 'text/javascript';
-   head.appendChild(script)
-} 

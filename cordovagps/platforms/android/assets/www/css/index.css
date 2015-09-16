@@ -59,13 +59,13 @@ p{
 }
 
 h1 {
-    font-size:34px;
+    font-size:30px;
     font-weight:normal;
     margin:0px;
     overflow:visible;
     padding:0px;
     text-align:center;
-    color:#FF051F;
+    color:#FE3F46;
 }
 
 .event {
@@ -210,7 +210,7 @@ background-size: 30px 30px;
 }
 
  #navbar .ui-icon-nb-history {
-    background: url("../img/icon/coolblue_small.png") 50% 50% no-repeat;
+    background: url("../img/icon/gps.png") 50% 50% no-repeat;
     }
     
 #navbar .ui-icon-nb-status {
@@ -236,7 +236,7 @@ padding-bottom:.2em;
     background: url("../img/iconL/status.png") 50% 50% no-repeat;
     }
     #navbar .ui-icon-nb-history {
-    background: url("../img/icon/coolblue_small.png") 50% 50% no-repeat;
+    background: url("../img/iconL/gps.png") 50% 50% no-repeat;
     }
     #navbar .ui-icon-nb-settings {
     background: url("../img/iconL/settings.png") 50% 50% no-repeat;
@@ -246,7 +246,7 @@ padding-bottom:.2em;
     background: url("../img/iconL/privacy.png") 50% 50% no-repeat;
     }
 
-    #navbar .ui-icon-nb-status, #navbar .ui-icon-nb-settings, #navbar .ui-icon-nb-privacy {
+    #navbar .ui-icon-nb-status, #navbar .ui-icon-nb-settings, #navbar .ui-icon-nb-privacy,#navbar .ui-icon-nb-history {
 		background-size: 30px 30px;
     }
 }
@@ -260,7 +260,7 @@ padding-bottom:.2em;
     background: url("../img/iconL/status.png") 50% 50% no-repeat;
     }
     #navbar .ui-icon-nb-history {
-    background: url("../img/icon/coolblue_small.png") 50% 50% no-repeat;
+    background: url("../img/iconL/gps.png") 50% 50% no-repeat;
     }
     #navbar .ui-icon-nb-settings {
     background: url("../img/iconL/settings.png") 50% 50% no-repeat;
@@ -270,7 +270,7 @@ padding-bottom:.2em;
     background: url("../img/iconL/privacy.png") 50% 50% no-repeat;
     }
 
-    #navbar .ui-icon-nb-status, #navbar .ui-icon-nb-settings, #navbar .ui-icon-nb-privacy {
+    #navbar .ui-icon-nb-status, #navbar .ui-icon-nb-settings, #navbar .ui-icon-nb-privacy,#navbar .ui-icon-nb-history {
 		background-size: 60px 60px;
     }
     
@@ -312,3 +312,21 @@ padding-bottom:.2em;
     text-shadow: none;
     background-image:none;
 }
+.ui-bar-a {
+    background: #FFFFFF;
+    border: 1px solid #f9f9b5 !important;
+    color: #fff;
+    text-shadow: none;
+}
+.ui-title{
+	font-size: 30px !important;
+}
+hr {
+    border: 1px solid #f9fc93;
+    color: #e8e3a1;
+}
+.common-header{
+	border-bottom: 1px solid #ffd60d;
+	padding:1%;
+}
+

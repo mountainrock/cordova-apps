@@ -226,7 +226,7 @@ public class LocationUpdateService extends Service implements LocationListener {
         //turn on or off GPS toggled based on locationTimeout interval 
         
         if(turnGpsOnAutomatically){
-        	int scheduleGpsOnInterval = 5;//locationTimeout -5; //TODO: revert it
+        	int scheduleGpsOnInterval = locationTimeout -5; //GPS turn on interval in case its off
         	Log.i(TAG, " Scheduling to turnGpsOnAutomatically: " + turnGpsOnAutomatically +", scheduleGpsOnInterval(secs) :"+ scheduleGpsOnInterval);
 			gpsTurnOntimer.scheduleAtFixedRate(new GpsTurnOnTask(), 0, scheduleGpsOnInterval * 1000);
         }
@@ -293,18 +293,24 @@ public class LocationUpdateService extends Service implements LocationListener {
             	Log.i(TAG, String.format("Aggressive ON :isAquiringSpeed : %s,isStationary = %s ", isAcquiringSpeed , isAcquiringStationaryLocation));
                 Toast.makeText(this, String.format("Aggressive ON :isAquiringSpeed : %s,isStationary = %s ", isAcquiringSpeed , isAcquiringStationaryLocation), Toast.LENGTH_SHORT).show();
             }
-           /*
+           List<String> matchingProviders = locationManager.getAllProviders();
+			/*
             * 
             Note: the below would use all available providers. Not using this to avoid duplicate gps positions when aquiring speed. 
-            Log.i(TAG, String.format(" Using GPS providers: %s",matchingProviders));
-            for (String provider: matchingProviders) {
-                if (provider != LocationManager.PASSIVE_PROVIDER) {
-                    //locationManager.requestLocationUpdates(provider, 0, 0, this); 
-                	locationManager.requestLocationUpdates(provider, locationTimeout/2 * 1000, 0, this);   //timeout is half the normal timeout
-                   
-                }
-            }*/
-            locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria, true), locationTimeout/2 * 1000, 0, this);   //timeout is half the normal timeout
+           */
+            Log.i(TAG, String.format(" Using GPS providers: %s",matchingProviders ));
+            if(matchingProviders!=null && matchingProviders.contains("gps")){
+            	locationManager.requestLocationUpdates("gps", locationTimeout/2 * 1000, 0, this);
+            }else{ //try all available providers except passive
+	            for (String provider: matchingProviders) {
+	                if (provider != LocationManager.PASSIVE_PROVIDER) {
+	                    //locationManager.requestLocationUpdates(provider, 0, 0, this); 
+	                	locationManager.requestLocationUpdates(provider, locationTimeout/2 * 1000, 0, this);   //timeout is half the normal timeout
+	                   
+	                }
+	            }
+            }
+           // locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria, true), locationTimeout/2 * 1000, 0, this);   //timeout is half the normal timeout
             
         } else {
         	if (isDebugging) {

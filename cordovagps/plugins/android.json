@@ -35,6 +35,10 @@
                         {
                             "xml": "<feature name=\"AutoStart\"><param name=\"android-package\" value=\"com.tonikorin.cordova.plugin.autostart.AutoStart\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"InAppBrowser\"><param name=\"android-package\" value=\"org.apache.cordova.inappbrowser.InAppBrowser\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -154,6 +158,9 @@
             "PACKAGE_NAME": "com.bri8.gps"
         },
         "com.tonikorin.cordova.plugin.autostart": {
+            "PACKAGE_NAME": "com.bri8.gps"
+        },
+        "org.apache.cordova.inappbrowser": {
             "PACKAGE_NAME": "com.bri8.gps"
         }
     },

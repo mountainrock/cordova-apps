@@ -56,6 +56,7 @@
             sessionIDArray = [];
             
             // iterate through the routes and load them into the dropdwon box.
+            var index=0;
             $(json.locations).each(function(key, value){
                 var option = document.createElement('option');
                 option.setAttribute('value', $(this).attr('sessionID'));
@@ -64,10 +65,11 @@
 
                 option.innerHTML = $(this).attr('sessionID') + " " + $(this).attr('gpsTime');
                 routeSelect.appendChild(option);
+                index++;
             });
 
             // need to reset this for firefox
-            routeSelect.selectedIndex = 0;
+            routeSelect.selectedIndex = index;
 
             //showPermanentMessage('Please select a route below');
         }

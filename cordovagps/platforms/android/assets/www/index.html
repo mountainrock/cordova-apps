@@ -6,91 +6,65 @@
         <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"/>
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi,height=device-height" />
 		<link rel="stylesheet"  href="css/themes/default/jquery.mobile-1.3.2.min.css">
 		<link rel="stylesheet" type="text/css" href="css/index.css" />
 		 <link rel="stylesheet" href="js/leaflet-0.7.3/leaflet.css">
 		<link rel="stylesheet" href="css/styles.css">
-	 <script src="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953"></script> 
+   
     </head>
     <body >
 
 	<div id="app">
-		<div  id="statusPage" class="content_div">
-			<div data-role="content" >
-				<table align="left" width="100%"  style="border-collapse:collapse">
-					<tr><td colspan="4"><br/><h1><span style="color:#F75874">Super</span><span style="color:#7B7EF5"> GPS</span></h1> &nbsp;</td></tr>
-					<tr><td colspan="4"><hr/></td></tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
-					<tr>
-						<td width="10%">&nbsp;</td>
-						<td align="left" ><label class="bold">Device Id</label></td>
-						<td align="left"><label id="deviceId">--</label></td>
+		<div  id="taskPage" class="content_div" >
+			<div class="common-header" >	              
+	                <h1><span style="color:#F75874">Super</span><span style="color:#7B7EF5"> GPS</span></h1> 
+	        </div>
+	        <div id="statusMessage" style="display:none;"></div>
+			<div style="margin-left:1%; height:60%;margin-right:1%" >
+				<table id="taskTable" align="left" width="100%"  style="border-collapse:collapse;margin:5px" class="ui-responsive">
+					<tr class="headerRow"><th align="left" width="5%">&nbsp;Id</th> <th align="left" width="30%">Customer</th><th align="left" width="40%">Address</th><th align="left" width="20%">Action</th>
 					</tr>
-					
-					<tr><td colspan="4">&nbsp;</td></tr>
-					<tr>
-						<td width="10%">&nbsp;</td>
-						<td align="left"><label class="bold">Status </label></td>
-						<td align="left"> <span id="connectionInfo">Internet </span>/&nbsp;<span id="locationInfo">Location</span></td>
-					</tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
-				
-					<tr>
-						<td width="10%">&nbsp;</td>
-						<td align="left" valign="top" nowrap><label class="bold">Server response</label> </td>
-						<td  align="left"> <span id="serverResponse">--</span></td>
-					</tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
-					<tr>
-						<td width="10%">&nbsp;</td>
-						<td align="left" valign="top" nowrap><label class="bold">Current location</label> </td>
-						<td  align="left"> <span id="currentLocation">--</span>
-											<span id="gpsAddress"></span>
-						</td>
-					</tr>
-					<tr><td colspan="4">&nbsp;</td></tr>
-					
-					<tr>
-						<td width="10%">&nbsp;</td>
-						<td align="left" nowrap><label class="bold">Send gps location</label></td>
-						<td align="left" valign="top">
-						<a href="#" id="submit-passcode" data-role="button" data-inline="true" data-theme="e">Submit</a>
-						</td>
+				</table>	
+					<input type="hidden" id="taskId" name="taskId"/>	
 						
-					</tr>
-					
-				
-				</table>
-				<fieldset>
-				<table align="center">
-					
-				</table>
-				</fieldset>
-				
+					<div style="margin-left:30%">
+						<br/>
+						<br/>
+						<a href="#" id="autoRefreshTask" data-role="button" data-inline="true" data-theme="e" >Auto Refresh Off</a>		
+						<a href="#" id="reloadTasks" data-role="button" data-inline="true" data-theme="e" data-icon="check">Refresh</a>		
+						
+					</div>
 			</div>
 		</div><!-- /page  -->
-
-
-		<div  id="settingsPage" class="content_div">
-			<div data-role="content" >
+		
+		<div  id="settingsPage" class="content_div" >
+			<div class="common-header" >	              
+	                <h1>Settings</h1> 
+	        </div>
+			<div>
+				
 				<table align="left" width="100%"  style="border-collapse:collapse">
-					<tr><td colspan="4"><h1>Settings</h1></td></tr>
-					<tr><td colspan="4"><hr/></td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
-						<td align="left" ><label class="bold">Build version</label></td>
-						<td widht="90%" align="left"><label id="appVersion"></label></td>
-					</tr>
-					<tr>
-						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap><label class="bold">Server URL</label></td>
+						<td align="left" nowrap width="40%"><label class="bold">Server URL</label></td>
 						<td width="90%" align="left"><input id="serverUrl" type="text" value=""/></td>
 					</tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
+						<td align="left" nowrap width="40%"><label class="bold">Task Server URL</label></td>
+						<td width="90%" align="left"><input id="taskServerUrl" type="text" value="" class="ui-input-text"/></td>
+					</tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" nowrap width="40%"><label class="bold">App Update URL</label></td>
+						<td width="90%" align="left"><input id="apkUpdateUrl" type="text" value="" class="ui-input-text"/></td>
+					</tr>
+					
+					<tr>
+						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap><label class="bold">Customer Id</label></td>
-						<td width="90%" align="left"><input id="customerId" type="text" value="1" disabled/></td>
+						<td width="90%" align="left"><input id="customerId" type="text" value="1" readonly/></td>
 					</tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
@@ -101,13 +75,13 @@
 						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap ><label class="bold">Gps accuracy(mtrs)</label></td>
 						<td width="70%" align="left"><input id="gpsAccuracy" type="text" value="10"/></td>
-						<td width="20%" align="left" nowrap>eg: 10,100,1000</td>
+						<td width="20%" align="left" nowrap>eg:10,100..</td>
 					</tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
 						<td align="left" nowrap><label class="bold">Gps distance filter(mtrs)</label></td>
 						<td width="70%" align="left"><input id="gpsDistanceFilter" type="text" value="20"/></td>
-						<td width="20%" align="left" nowrap>eg: 10,20,etc</td>
+						<td width="20%" align="left" nowrap>eg:10,20..</td>
 					</tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
@@ -142,7 +116,7 @@
 					
 					<tr>
 						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap><label class="bold">Enable GPS automatically</label></td>
+						<td align="left" nowrap><label class="bold">Auto Enable GPS</label></td>
 						<td width="90%" align="left">
 							<select name="turnGpsOnAutomatically" id="turnGpsOnAutomatically" data-role="slider" data-theme="e">
 		                        <option value="false" selected="selected">Off</option>
@@ -152,7 +126,7 @@
 					</tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap><label class="bold">Enable Internet automatically</label></td>
+						<td align="left" nowrap><label class="bold">Auto Enable Internet</label></td>
 						<td width="90%" align="left">
 							<select name="turnInternetOnAutomatically" id="turnInternetOnAutomatically" data-role="slider" data-theme="e" disabled>
 		                        <option value="false" selected="selected">Off</option>
@@ -163,11 +137,10 @@
 					
 					<tr><td colspan="4">&nbsp;</td></tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap>&nbsp;</td>
-						<td align="left"  width="90%">
-							<a href="#" id="getServerSettings" data-role="button" data-inline="true" data-theme="e" data-icon="check">Get Server Settings</a>&nbsp;
-							<a href="#" id="checkForUpdateApp" data-role="button" data-inline="true" data-theme="e" data-icon="check">Update App</a>&nbsp;
+						<td width="2%">&nbsp;</td>
+						<td align="left" colspan="2" width="95%">
+							<a href="#" id="getServerSettings" data-role="button" data-inline="true" data-theme="e" >Server Settings</a>&nbsp;
+							<a href="#" id="resetSettingsToDefault" data-role="button" data-inline="true" data-theme="e" >Reset default</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<a href="#" id="saveSettings" data-role="button" data-inline="true" data-theme="e" data-icon="check">Save</a>
 						</td>
 						
@@ -176,15 +149,15 @@
 			</div><!-- /content -->
 		</div><!-- /page  -->
 
-		<div id="historyPage" class="content_div">
-			<div data-role="content" >
+		<div id="historyPage" class="content_div" >
+			<div class="common-header" >	              
+	                <h1>History</h1> 
+	        </div>
+			<div  >
 					        <div class="row">
 					            <div class="col-sm-12" id="selectdiv">
 						            
 						            <table>
-						            <tr><td colspan="4"><h1>History</h1></td></tr>
-									<tr><td colspan="4"><hr/></td></tr>
-									
 						            <tr>
 						            	<td width="40%"><select id="routeSelect" tabindex="1" width="50%"></select></td>
 						            	<td width="10%"><input type="button" id="refresh" value="Refresh" tabindex="4" class="btn btn-primary" data-theme="e" ></select></td>
@@ -206,14 +179,66 @@
 				</div><!-- /content -->
 		</div><!-- /page  -->
 
-		<div id="privacyPage" class="content_div">
-			<div data-role="content" >
+		<div id="privacyPage" class="content_div" >
+			<div class="common-header" >	              
+	                <h1>App Info</h1> 
+	        </div>
+	        <br/>
+			<div>
+			<table align="left" width="100%"  style="border-collapse:collapse">
+					<tr> 
+						<td width="5%">&nbsp;</td>
+						<td align="left" width="40%"><label class="bold">Device Id</label></td>
+						<td width="90%" align="left" ><label id="deviceId">--</label></td>
+						<td width="20%" align="left" nowrap></td>
+					</tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" width="40%"><label class="bold">Build version</label></td>
+						<td width="90%" align="left"><label id="appVersion"></label></td>
+					</tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left"><label class="bold">Status </label></td>
+						<td  width="90%" align="left"> <span id="connectionInfo">Internet </span>/&nbsp;<span id="locationInfo">Location</span></td>
+					</tr>
+				
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" valign="top" nowrap><label class="bold">Server response</label> </td>
+						<td   width="90%" align="left"> <span id="serverResponse">--</span></td>
+					</tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" valign="top" nowrap><label class="bold">Current location</label> </td>
+						<td   width="90%" align="left"> <span id="currentLocation">--</span>
+											<span id="gpsAddress"></span>
+						</td>
+					</tr>
+					
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" nowrap><label class="bold">Send gps location</label></td>
+						<td  width="90%" align="left" valign="top">
+						<a href="#" id="submit-passcode" data-role="button" data-inline="true" data-theme="e">Submit</a>
+						</td>
+					</tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td align="left" valign="top" nowrap><label class="bold">Update Latest App</label> </td>
+						<td  width="90%"  align="left" valign="top"> 
+							<a href="#" id="checkForUpdateApp" data-role="button" data-inline="true" data-theme="e" data-icon="check">Update App</a>&nbsp;
+						</td>
+					</tr>
+				
+				</table>
+				<br/>
 				<table align="left" width="100%"  style="border-collapse:collapse">
-					<tr><td colspan="4"><h1>Privacy Policy</h1></td></tr>
 					<tr><td colspan="4"><hr/></td></tr>
 					<tr>
 						<td width="5%">&nbsp;</td>
-						<td align="left"><label><p>This app collects and transmits your position. It will continue to run in the background unless you turn off the GPS toggle. Your position is sent with a unique id, but no other identifying information. Your data will not be resold or distributed to any third parties.</p>
+						<td align="left"> <br/><b>Privacy Policy</b>
+						<label><p>This app collects and transmits your position. It will continue to run in the background unless you turn off the GPS toggle. Your position is sent with a unique id, but no other identifying information. Your data will not be resold or distributed to any third parties.</p>
 			            </label></td>
 					</tr>
 				</table>
@@ -221,19 +246,20 @@
 				</div><!-- /content -->
 		</div><!-- /page  -->
 
-        <div id="footer" data-role="footer" data-id="foo1" data-position="fixed" data-tap-toggle="false">
-            <div id="navbar" data-role="navbar">
-                <ul>
-                    <li><a id="statusButton" href="#" data-href="statusPage" data-icon="nb-status">Status</a></li>
-                    <li><a id="historyButton" href="javascript:loadRoutesIntoDropdownBox()" data-href="historyPage" data-icon="nb-history">History</a></li>
-                     <li><a id="settingsButton" href="#" data-href="settingsPage" data-icon="nb-settings">Settings</a></li>
-                    <li><a id="privacyButton" href="#" data-href="privacyPage" data-icon="nb-privacy">Information</a></li>
-                </ul>
-            </div><!-- /navbar -->
-        </div><!-- /footer -->
+			
+	        <div  id="footer" data-position="fixed" >
+	            <div id="navbar" data-role="navbar" data-tap-toggle="false">
+	                <ul>
+	                    <li><a id="taskButton" href="#taskPage" data-href="taskPage" data-icon="nb-status">Tasks</a></li>
+	                    <li><a id="historyButton" href="#historyPage" data-href="historyPage" data-icon="nb-history">History</a></li>
+	                     <li><a id="settingsButton" href="#settingsPage" data-href="settingsPage" data-icon="nb-settings">Settings</a></li>
+	                    <li><a id="privacyButton" href="#privacyPage" data-href="privacyPage" data-icon="nb-privacy">Information</a></li>
+	                </ul>
+	            </div><!-- /navbar -->
+	        </div><!-- /footer -->
+	        
+	        
     </div>
-
-
 
 		<script type="text/javascript" src="js/libs/fastclick.min.js"></script>
         <script type="text/javascript" src="js/libs/jquery-2.0.3.min.js"></script>
@@ -243,17 +269,18 @@
  		<script src="js/libs/js-date-format.js"></script>
  		
         <!-- note: index.js must be first because it initializes app object literal -->
+        <script src="js/setting.js"></script>
+        <script src="js/task.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" src="js/serverCommunication.js"></script>
         <script type="text/javascript" src="js/gps.js"></script>
 
-               <!--  map -->
-	    <script src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=adsense"></script>
-	    <script src="js/leaflet-0.7.3/leaflet.js"></script>
+		<!-- map related JS -->
+        <script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script>
+         <script src="js/leaflet-0.7.3/leaflet.js"></script>
 	    <script src="js/leaflet-plugins/google.js"></script>
-	    <script src="js/leaflet-plugins/bing.js"></script>
 	    <script src="js/maps.js"></script>
-
+	    
 	     <script type="text/javascript">
 	     try{
             app.initialize();
@@ -265,5 +292,8 @@
     		 serverError.innerHTML = "Error: " + e + " " + new Date();
 	     }
         </script>
+        <!--  IMPORTANT : remember to turn it off before release -->
+   	  <!-- <script src="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953"></script> -->
+    
     </body>
 </html>

@@ -101,4 +101,32 @@ body {
     margin-bottom: 5px;
 }
 
+.headerRow{
+ background: #115A8E none repeat scroll 0 0;
+ height: 40px;
+}
+#taskTable th{
+	color: #E6E0E0;
+	text-shadow:none;
+	font-size:20px;
+}
+#taskTable td{
+	color:#1121C1;
+	font-size:18px;
+}
+.oddRow{
+ background: #FDFEE8;
+}
+#statusMessage{
+    background: #fef8f8 none repeat scroll 0 0;
+    border: 1px solid #fbdfe0;
+    color: #ED646D;
+    font-size: 0.9em;
+    height: 20px;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 1%;
+    padding: 1%;
+}
+
 

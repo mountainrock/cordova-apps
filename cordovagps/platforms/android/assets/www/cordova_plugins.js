@@ -68,6 +68,13 @@ module.exports = [
         "clobbers": [
             "cordova.plugins.autoStart"
         ]
+    },
+    {
+        "file": "plugins/org.apache.cordova.inappbrowser/www/inappbrowser.js",
+        "id": "org.apache.cordova.inappbrowser.inappbrowser",
+        "clobbers": [
+            "window.open"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -82,7 +89,8 @@ module.exports.metadata =
     "cordova.plugins.diagnostic": "1.1.0",
     "cordova-plugin-device": "1.0.1",
     "com.bri8.cordova.background-geolocation": "0.3.7",
-    "com.tonikorin.cordova.plugin.autostart": "1.2.0"
+    "com.tonikorin.cordova.plugin.autostart": "1.2.0",
+    "org.apache.cordova.inappbrowser": "0.6.0"
 }
 // BOTTOM OF METADATA
 });

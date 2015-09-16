@@ -56,6 +56,7 @@
             sessionIDArray = [];
             
             // iterate through the routes and load them into the dropdwon box.
+            var index=0;
             $(json.locations).each(function(key, value){
                 var option = document.createElement('option');
                 option.setAttribute('value', $(this).attr('sessionID'));
@@ -64,10 +65,11 @@
 
                 option.innerHTML = $(this).attr('sessionID') + " " + $(this).attr('gpsTime');
                 routeSelect.appendChild(option);
+                index++;
             });
 
             // need to reset this for firefox
-            routeSelect.selectedIndex = 0;
+            routeSelect.selectedIndex = index;
 
             //showPermanentMessage('Please select a route below');
         }
@@ -88,13 +90,6 @@
                 // use leaflet (http://leafletjs.com/) to create our map and map layers
                 var gpsTrackerMap = new L.map('map-canvas');
             
-                var openStreetMapsURL = ('https:' == document.location.protocol ? 'https://' : 'http://') +
-                 '{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-                var openStreetMapsLayer = new L.TileLayer(openStreetMapsURL,
-                {attribution:'&copy;2014 <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'});
-
-                // need to get your own bing maps key, http://www.microsoft.com/maps/create-a-bing-maps-key.aspx
-                var bingMapsLayer = new L.BingLayer("AnH1IKGCBwAiBWfYAHMtIfIhMVybHFx2GxsReNP5W0z6P8kRa67_QwhM4PglI9yL");
                 var googleMapsLayer = new L.Google('ROADMAP');
             
                 // this fixes the zoom buttons from freezing
@@ -104,12 +99,6 @@
                 // this sets which map layer will first be displayed
                 gpsTrackerMap.addLayer(googleMapsLayer);
 
-                // this is the switcher control to switch between map types
-                gpsTrackerMap.addControl(new L.Control.Layers({
-                    'Bing Maps':bingMapsLayer,
-                    'Google Maps':googleMapsLayer,
-                    'OpenStreetMaps':openStreetMapsLayer
-                }, {}));
             }
 
                 var finalLocation = false;

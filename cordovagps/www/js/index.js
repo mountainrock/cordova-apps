@@ -6,6 +6,7 @@ var app = {
 	NAME : "GPS Tracker",
 	serverUrl: DEFAULT_SERVER_URL,
 	taskServerUrl : DEFAULT_TASK_SERVER_URL,
+	apkUpdateUrl: DEFAULT_APK_UPDATE_URL,
 	position : null,
 	deviceId : "",
 	passcode : 0,
@@ -92,7 +93,7 @@ var app = {
 				alert("NOTE : Application settings not configured for app version "+APP_VERSION+". Using defaults!");
 				appSetting.setDefaultSettings(permStorage);
 				appVersion = permStorage.getItem(KEY_APP_VERSION);
-				console.log("Saved default values");
+				console.log("Saved default values for version : "+ appVersion);
 			}else{
 				console.log("Using settings for version : "+ appVersion);
 			}
@@ -163,6 +164,11 @@ var app = {
 	    	console.log("autostart is disabled");
 	    	cordova.plugins.autoStart.disable();
 	    }
+	},
+	showMessage: function(str){
+		var date1 =(new Date()).format("DD/MM HH:m:s");
+		 $("#statusMessage").html(date1 + " : "+ str );
+		 $("#statusMessage").show();
 	}
 };
 $(function() {
@@ -177,6 +183,22 @@ $(function() {
 	});
 	$("#reloadTasks").click(function() {
 		task.getTasks();
+	});
+	$("#autoRefreshTask").click(function() {
+		if($("#autoRefreshTask .ui-btn-text").text()=="Auto Refresh Off"){
+			$("#autoRefreshTask .ui-btn-text").text("Auto Refresh On");
+			task.restartInterval();
+		}else{
+			$("#autoRefreshTask .ui-btn-text").text("Auto Refresh Off");
+			task.stopAutoRefresh();
+		}
+	});
+	$("#checkForUpdateApp").click(function(){
+		appSetting.getLatestApp();
+	});
+	
+	$("#historyButton").click(function() {
+		loadRoutesIntoDropdownBox();
 	});
 	
 	$("#resetSettingsToDefault").click(function() {
