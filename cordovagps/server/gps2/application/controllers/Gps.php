@@ -4,188 +4,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Gps extends CI_Controller {
 
+        private $CI;
+
 	public function __construct() {
-        parent::__construct();
-        $this->load->model("Gps_model", "gps", TRUE);
-        $this->load->database();
-        $this->load->helper(array('form', 'url', 'date', 'cookie'));
-        $this->load->library('session');
-        $this->load->helper('url');
-         $this->load->library('form_validation');
-                   date_default_timezone_set('asia/kolkata');
-    }
+	        parent::__construct();
+       	        header('Access-Control-Allow-Origin: *');
+	        $this->load->model("Gps_model", "gps", TRUE);
+	        $this->load->database();
+	        $this->load->helper(array('form', 'url', 'date', 'cookie'));
+	        $this->load->library('session');
+	        $this->load->helper('url');
+	        $this->load->library('form_validation');
+	        date_default_timezone_set('asia/kolkata');
+	        
+       }
 
-	public function login()
+        public function login()
 	{
-		$this->load->view('login');
+		$this->load->view('auth/login');
 	}
-
-	public function doLogin()
-	{
-		$this->form_validation->set_rules('userName', 'User Name', 'required');
-           	$this->form_validation->set_rules('password', 'password', 'required');
-              	$this->form_validation->set_rules('customerId', 'customerId', 'required');
-              	if ($this->form_validation->run() == FALSE){
-                   echo validation_errors();
-	           exit;
-        	}
-
-		$userName=   $_REQUEST['userName'];
-		$password=   $_REQUEST['password'];
-		$customerId=   $_REQUEST['customerId'];
-		$user1= $this->gps->loginUser($userName,$password, $customerId);
-
-            	if($user1!=null){
-            		$this->session->set_userdata("userName", $user1[0]->userName);
-			$this->session->set_userdata("customerId", $user1[0]->customerId);
-
-			echo "OK";
-
-		}else{
-			echo 'Invalid username or password or customerId';
-		}
-		exit;
-	}
-
-	function logout(){
-		$this->session->sess_destroy();
-		$this->load->view('login');
-	}
-
-	public function showManageUsers()
-	{
-
-		$this->load->view('panels');
-		$this->load->view('manage_users');
-	}
-
-	public function getUsersSelectDropDownByCustomerId(){
-		$customerId = $_REQUEST['customerId'];
-		$users = $this->loadUsersByCustomerId($customerId);
-		echo "<option value=-1>Select User...</option>";
-		foreach ($users as $row){
-
-		    $edit = base_url().'index.php/Gps/editUser';
-		    $delete = base_url().'index.php/Gps/deleteUser';
-		    echo "<option value='$row->userId'>$row->userName</option>";
-		}
-
-        }
-
-        protected function loadUsersByCustomerId($customerId){
-
-		$page = isset($_POST['page']) ? $_POST['page'] : 1;
-		$limit = isset($_POST['rows']) ? $_POST['rows'] : 10;
-		$sidx = isset($_POST['sidx']) ? $_POST['sidx'] : 'userName';
-		$sord = isset($_POST['sord']) ? $_POST['sord'] : '';
-		$start = $limit * $page - $limit;
-		$start = ($start < 0) ? 0 : $start;
-
-		if (!$sidx)
-			$sidx = 1;
-
-		$count = $this->db->count_all_results('user');
-		if ($count > 0) {
-			$total_pages = ceil($count / $limit);
-		} else {
-			$total_pages = 0;
-		}
-
-		if ($page > $total_pages)
-			$page = $total_pages;
-
-		$where = "customerId ='".$customerId ."'";
-		$users = $this->gps->getAllUsers($start, $limit, $sidx, $sord, $where);
-		return $users;
-        }
-
-	public function loadUsers(){
-
-		$customerId = $_REQUEST['customerId'];
-		$users = $this->loadUsersByCustomerId($customerId);
-
-		foreach ($users as $row){
-
-	            $edit = base_url().'index.php/Gps/editUser';
-	            $delete = base_url().'index.php/Gps/deleteUser';
-	            echo "<tr>
-                        <td>$row->userName</td>
-                        <td>$row->deviceId</td>
-                        <td>$row->phoneNumber</td>
-                        <td>$row->created</td>
-                        <td><a href='$edit' data-id='$row->userId' class='btnedit' title='edit'><i class='glyphicon glyphicon-pencil' title='edit'></i></a>&nbsp;&nbsp;&nbsp;&nbsp; <a href='$delete' data-id='$row->userId' class='btndelete' title='delete'><i class='glyphicon glyphicon-remove'></i></a></td>
-	                    </tr>";
-
-	        }
-        }
-
-
-         public function createUser(){
-            $this->form_validation->set_rules('userName', 'User Name', 'required');
-            $this->form_validation->set_rules('deviceId', 'deviceId', 'required');
-            $this->form_validation->set_rules('phoneNumber', 'Phone Number', 'required|numeric|max_length[15]|min_length[5]');
-            if ($this->form_validation->run() == FALSE){
-               echo'<div class="alert alert-danger">'.validation_errors().'</div>';
-               exit;
-            }
-            else{
-                $this->gps->createUser();
-            }
-        }
-
-        public function editUser(){
-            $id =  $this->uri->segment(3);
-            $this->db->where('userId',$id);
-            $data['users'] = $this->db->get('user');
-            $data['id'] = $id;
-            $this->load->view('editUser', $data);
-            }
-
-        public function updateUser(){
-		$res['error']="";
-		$res['success']="";
-		$this->form_validation->set_rules('userName', 'User Name', 'required');
-		$this->form_validation->set_rules('deviceId', 'deviceId', 'required');
-		$this->form_validation->set_rules('phoneNumber', 'Phone Number', 'required|numeric|max_length[15]|min_length[5]');
-		if ($this->form_validation->run() == FALSE){
-			$res['error']='<div class="alert alert-danger">'.validation_errors().'</div>';
-		}
-		else{
-			$data = array('userName'=>  $this->input->post('userName'),
-					'deviceId'=>$this->input->post('deviceId'),
-					'phoneNumber'=>$this->input->post('phoneNumber'));
-			$id= $this->input->post('userId');
-			$this->gps->updateUser($id, $data);
-			$res['success'] = '<div class="alert alert-success">Updated Successfully</div>';
-		}
-		header('Content-Type: application/json');
-		echo json_encode($res);
-		exit;
-        }
-
-
-        public function deleteUser(){
-            $id =  $this->input->POST('id');
-            $this->gps->deleteUser($id);
-            echo'<div class="alert alert-success">One record deleted Successfully</div>';
-            exit;
-        }
-
-
-
-//GPS
+        //GPS 
+        
 	public function showMap()
 	{
-		$this->load->view('panels');
+		$this->load->view('common/panels');
 		$this->load->view('displaymap');
 	}
-
-	public function showSettings()
-	{
-		$this->load->view('panels');
-		$this->load->view('settings');
-	}
-
+		
 	public function getRoutesForUser(){
 		if(isset($_REQUEST['userId'])){
 	       		 $routes = $this->gps->getRoutesForUser($_REQUEST['userId']);
@@ -194,41 +39,101 @@ class Gps extends CI_Controller {
 	        }
 	        $res['success']="";
 	        $locations= array();
-		foreach ($routes as $row){
-		    array_push($locations,$row);
+	        $sessionGroup = array();
+	        
+		foreach ($routes as $row){ //assumes locations are in ascending order of gpsTime
+		    $sessionId =  $row->sessionID;
+		    $gpsTime = $row->gpsTime;
+		   // echo $sessionId.'-'. $gpsTime.' = '.isset($sessionGroup[$sessionId]).'<br/>';
+		    if (isset($sessionGroup[$sessionId])==false) {
+		    	$sessionGroup[$sessionId] = array($gpsTime,'');	
+		    	array_push($locations,$row);
+		    }else{
+		    	$sessionGroup[$sessionId][1]=$gpsTime;
+		    }	     
 		}
+		foreach ($locations as $location){ //update gps start and end time
+			$sgroup = $sessionGroup[$location->sessionID];
+			$location->gpsTime = $sgroup[0].' - '.$sgroup[1];
+		}
+		
 		$res['locations']= $locations;
 		header('Content-Type: application/json');
 		if (isset($_REQUEST['jsonpCallback']) || isset($_REQUEST['callback'])){
 		    echo "loadRoutes(".json_encode($res).")";
 		}else{
-		    echo json_encode($res);
+		   echo json_encode($res);
 		}
 	}
 
-	public function getRoutesForMapBySession(){
+	public function getRoutesForMapBySession(){	
 		$sessionid = $_REQUEST['sessionId'];
-		$routes = $this->gps->getRouteForMapbySession($sessionid);
-
+		
+		if(isset($_REQUEST['userId']) ==false){
+		    $deviceId = $_REQUEST['deviceId'];
+		    $this->db->where('deviceId ',$deviceId );
+                    $userResult= $this->db->get('user');
+                    $userId= $userResult->row()->userId;
+		}else{
+		    $userId = $_REQUEST['userId'];
+		}
+		$routes = $this->gps->getRouteForMapbySession($sessionid, $userId);
+		 
 	        $res['success']="";
 	        $locations= array();
 		foreach ($routes as $row){
-		    array_push($locations,$row);
+		    array_push($locations,$row);		     
 		}
 		$res['locations']= $locations;
 		header('Content-Type: application/json');
 		if (isset($_REQUEST['jsonpCallback']) || isset($_REQUEST['callback'])){
-		    echo "loadRoutes(".json_encode($res).")";
+		    echo "loadGPSLocations(".json_encode($res).")";
 		}else{
 		    echo json_encode($res);
 		}
 	}
-
-
-
+	
 	public function createGpsLocation(){
 		$this->gps->createGpsLocation();
 		$date = new DateTime();
-		echo $date->format('U = Y-m-d H:i:s') . "";
+		$latitude       = isset($_GET['latitude']) ? $_GET['latitude'] : '0';
+		$longitude      = isset($_GET['longitude']) ? $_GET['longitude'] : '0';
+                $deviceId       = isset($_GET['deviceId']) ? $_GET['deviceId'] : '';
+
+	        $uri = base_url();
+       	        log_message('info','==== Foreground Submit : ' . $uri.', deviceId :'.$deviceId.',  lat ,long: ' . $latitude.', '.$longitude);
+
+		echo $date->format('Y-m-d H:i') . "";
 	}
+
+        public function createGpsLocationBackground(){
+		$this->request_logger();
+		$this->gps->createGpsLocationJson();
+		$date = new DateTime();
+		echo $date->format('Y-m-d H:i') . "";
+	}
+	
+	 public function request_logger(){
+		$data = file_get_contents('php://input');
+	 	$json = json_decode($data,true);
+
+	        $uri = base_url();
+	        log_message('debug', '====== Bakckground Submit: ' . $uri. ', data : '.$data);
+	      
+	 }
+
+	 function getCurrentUsersLocation(){
+	     $locations= $this->gps->getCurrentUsersLocation($_REQUEST['sessionId']);
+	     $res['locations']= $locations;
+	    
+	     $json = json_encode($res);
+	     echo $json;
+	 }
+
+	//util
+	function getTimestamp(){
+	
+	   echo date('Y-m-d H:i:s');
+	}
+	
 }

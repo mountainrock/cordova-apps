@@ -1,29 +1,41 @@
   <div class="content-wrap">
             <!-- main page content. the place to put widgets in. usually consists of .row > .col-md-* > .widget.  -->
             <main id="content" class="content" role="main">
-                <ol class="breadcrumb">
+                <!--ol class="breadcrumb">
                     <li>YOU ARE HERE</li>
                     <li class="active">GPS Tracker Map</li>
-                </ol>
+                </ol-->
       
                 <div class="row">
                     <div class="col-md-12">
-                        <section class="widget">
-                            <div class="widget-body">
-                                <div> <!--  class="container-fluid" -->
-				       
+                       
+                       	     <div class="panel panel-primary">
+                       	     		<div class="panel-heading"><h4 class="panel-title">Display map</h4></div>
+			 		<div class="panel-body">
+                              <!--  class="container-fluid" -->
+				        <div class="row">
+				            <div class="col-sm-12" id="selectdiv">
+					            <span id="messages"></span><br/>
+					            <form class="form-inline">
+	  						     <div class="form-group">
+							      <label>User </label> <select id="userSelect" tabindex="1"></select>
+							     </div>
+							     <div class="form-group">
+							      &nbsp;
+					            		 <label> Route </label> <select id="routeSelect" tabindex="1" style="width:140px"><option>No routes</option></select>
+						             </div>
+						             <div class="form-group" style="float:right">
+							      <input type="button" id="loadCurrentLocation" value="All Current Locations" tabindex="2" class="btn btn-primary"/>
+							     </div>
+					             </form>
+				            </div>
+				        </div>
 				        <div class="row">
 				            <div class="col-sm-12" id="mapdiv">
 				                <div id="map-canvas"></div>
 				            </div>
 				        </div>
-				        <div class="row">
-				            <div class="col-sm-12" id="selectdiv">
-					            <span id="messages"></span><br/>
-					        <select id="userSelect" tabindex="1"></select>
-				                <select id="routeSelect" tabindex="1" style="width:140px"><option>No routes</option></select>
-				            </div>
-				        </div>
+				       
 				        <div class="row">
 				           
 				            <div class="col-sm-3 autorefreshdiv">
@@ -32,13 +44,12 @@
 				            <div class="col-sm-3 refreshdiv">
 				                <input type="button" id="refresh" value="Refresh" tabindex="4" class="btn btn-primary">
 				            </div>				            
-				             <div class="col-sm-3 deletediv">
-				                <input type="button" id="delete" value="Delete" tabindex="2" class="btn btn-primary">
-				            </div>
+				          
 				        </div>
-				    </div>       
-                            </div>
-                        </section>
+				      
+				      </div>
+				  </div>
+                            
                     </div></div>
 
             </main>
@@ -72,8 +83,11 @@
        
         <!-- map specific -->
     <script src="//maps.google.com/maps/api/js?v=3&sensor=false&libraries=adsense"></script>
+<script src="<?php echo base_url(); ?>js/date.js"></script>
     <script src="<?php echo base_url(); ?>js/maps.js"></script>
-    <script src="<?php echo base_url(); ?>js/leaflet-0.7.3/leaflet.js"></script>
+    
+     <!--    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script-->
+   <script src="<?php echo base_url(); ?>js/leaflet-0.7.3/leaflet.js"></script>
     <script src="<?php echo base_url(); ?>js/leaflet-plugins/google.js"></script>
     <script src="<?php echo base_url(); ?>js/leaflet-plugins/bing.js"></script>
     <link rel="stylesheet" href="<?php echo base_url(); ?>js/leaflet-0.7.3/leaflet.css">    

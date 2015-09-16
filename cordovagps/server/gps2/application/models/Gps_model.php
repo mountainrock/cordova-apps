@@ -4,74 +4,34 @@ class Gps_model extends CI_Model {
 	
 	function __construct() {
 		parent::__construct();
+                date_default_timezone_set('asia/kolkata');
 	}
 	
 	function getRoutesForUser($userId){
 	
-	    $query = $this->db->query('SELECT * FROM gpslocations l join user u  on l.deviceId=u.deviceId where u.userId='.$userId);
+	    $query = $this->db->query('SELECT * FROM gpslocations l join user u  on l.deviceId=u.deviceId where u.userId='.$userId.' order by l.gpsTime asc');
 	    return $query->result();
 	}
 	
 	function getRoutesForDevice($deviceId){
-	    $query = $this->db->query('SELECT * FROM gpslocations where deviceId=\''.$deviceId.'\'');
+	    $query = $this->db->query('SELECT * FROM gpslocations where deviceId=\''.$deviceId.'\''.' order by gpsTime asc');
 	    return $query->result();
 	}
 	
-	function getRouteForMapbySession($sessionId){
-	     $query = $this->db->query("SELECT * FROM gpslocations where sessionID='".$sessionId."'");
+	function getRouteForMapbySession($sessionId, $userId){
+	     $query = $this->db->query("SELECT *,u.userName userName2 FROM gpslocations l join user u on l.deviceId=u.deviceId where l.sessionID='".$sessionId."' and u.userId=".$userId.' order by l.gpsTime asc' );
 	    return $query->result();   
 	    
 	}
     
+    function getAllUnmappedDevices($customerId) {
+	   $sql = "SELECT distinct l.deviceId from gpslocations l where l.deviceId not in (select deviceId from user u where u.customerId='".$customerId."')";
+	   $query = $this->db->query($sql);
+	   return $query->result(); 
+	   
+	}
     
-       //user     
-    
-	function loginUser($userName,$password, $customerId){
-		$this->db->select('userId,userName,deviceId,phoneNumber,created,customerId')
-			->where('userName',$userName)
-			->where('password',$password)
-			->where('customerId',$customerId);
-			
-		 return $this->db->get('user')->result(); 
-	}
-	
-	
-	
-	function getAllUsers($start, $limit, $sidx, $sord, $where1) {
-	
-	    $this->db->select('userId,userName,deviceId,phoneNumber,created,customerId');
-	    $this->db->limit($limit);
-	    if ($where1 != NULL)
-	        $this->db->where($where1, NULL, FALSE);
-	    $this->db->order_by($sidx, $sord);
-	    $query = $this->db->get('user', $limit, $start);
-	   // echo "users $limit $start --  $where1 --".implode(",", $query->result());
-	    return $query->result();
-	}
-	
-	
-	public function createUser(){
-	    $data = array('userName'=>  $this->input->post('userName'),
-	        'deviceId'=>$this->input->post('deviceId'),
-	        'phoneNumber'=>$this->input->post('phoneNumber'),
-	        'created'=>date('d/m/y'),
-	        'customerId'=>$this->input->post('customerId'));
-	    $this->db->insert('user', $data);
-	    echo'<div class="alert alert-success">One record inserted Successfully</div>';
-	    exit;
-	}
-	
-	function updateUser($id, $data) {
-		$this->db->where('userId', $id );
-		return $this->db->update('user', $data);
-			
-	}
-	
-	function deleteUser($id) {
-		 $this->db->where('userId', $id);
-	    	 $this->db->delete('user');
-	}
-	
+      	
 	function createGpsLocation(){
 	 	
 		$latitude       = isset($_GET['latitude']) ? $_GET['latitude'] : '0';
@@ -116,5 +76,68 @@ class Gps_model extends CI_Model {
 		$this->db->insert('gpslocations', $data);
 	
 	}
+
+
+        function createGpsLocationJson(){
+                $data = file_get_contents('php://input');	 	
+	 	$json = json_decode($data, true);
+
+	        if(isset($json['deviceId']) )
+		         log_message('debug', 'deviceId : '.$json['deviceId']);
+	 	
+		$latitude       = isset($json['location']) ? $json['location']['latitude'] : '0';
+		$latitude       = (float)str_replace(",", ".", $latitude); // to handle European locale decimals
+		$longitude      = isset($json['location']) ? $json['location']['longitude'] : '0';
+		$longitude      = (float)str_replace(",", ".", $longitude);    
+		$speed          = isset($json['location']['speed']) ? $json['location']['speed'] : 0;
+		$direction      = isset($json['location']['bearing']) ? $json['location']['bearing'] : 0;
+		$distance       = isset($json['location']['distance']) ? $json['location']['distance'] : '0';
+		$distance       = (float)str_replace(",", ".", $distance);
+		if(isset($json['location']['recorded_at'])){
+		 	 $dateStr=  strtotime($json['location']['recorded_at']);
+         		 $dateStr = ''.date('Y-m-d H:i:s', $dateStr);;
+       		 }
+		$date           = isset($json['location']['recorded_at']) ?  $dateStr : '0000-00-00 00:00:00';
+		$date           = urldecode($date);
+		$locationMethod = isset($json['locationmethod']) ? $json['locationmethod'] : '';
+		$locationMethod = urldecode($locationMethod);
+		$userName       = isset($json['username']) ? $json['username'] : '-';
+		$phoneNumber    = isset($json['phonenumber']) ? $json['phonenumber'] : '';
+		$sessionID      = isset($json['sessionid']) ? $json['sessionid'] :  date('D M d Y',strtotime($dateStr));
+		$accuracy       = isset($json['location']['accuracy']) ? $json['location']['accuracy'] : 0;
+		$extraInfo      = isset($json['extrainfo']) ? $json['extrainfo'] : '';
+		$eventType      = isset($json['eventtype']) ? $json['eventtype'] : '';
+		$deviceId       = isset($json['deviceId']) ? $json['deviceId'] : '';
+		$customerId	= isset($json['customerId']) ?$json['customerId'] : '';
+		
+		$data = array(
+	 		'latitude'  =>  $latitude,
+		        'longitude' => $longitude,
+		        'speed' => 	$speed,
+		        'direction' => $direction,
+		        'distance' => $distance,
+		        'gpsTime'  => $date, 
+		        'locationMethod' => $locationMethod, 
+		        'userName' => $userName, 
+		        'phoneNumber' => $phoneNumber,  
+		        'sessionID' => $sessionID, 
+		        'accuracy' => $accuracy, 
+		        'extraInfo' => $extraInfo, 
+		        'eventType' => $eventType,
+		        'deviceId'  => $deviceId,
+		        'customerId' => $customerId
+	        	);
+	        	
+		$this->db->insert('gpslocations', $data);
+	
+	}
+	
+	function getCurrentUsersLocation($sessionId){
+	    $query = "select u.userName, u.deviceId,gpsTime lastGpsTime, g.latitude, g.longitude from gpslocations g left join user u on g.deviceId=u.deviceId  where sessionID='".$sessionId."' and gpsTime IN  ( SELECT MAX(gpsTime) FROM gpslocations g1 where sessionID='".$sessionId."' and g1.deviceId=u.deviceId)  group by u.deviceId";
+
+	    $queryObj = $this->db->query($query);
+	    return $queryObj->result();
+	}
+
 }
 ?>
