@@ -1,4 +1,3 @@
-
 $(function(){
     /**
      * A global object containing theme specific colors, screen variables & color functions.
@@ -141,7 +140,7 @@ $(function(){
             'nav-static': false
         };
         this.settingName = 'sing-app-settings';
-        this._settings = JSON.parse(localStorage.getItem(this.settingName)) || defaultSettings;
+        this._settings = jQuery.parseJSON(localStorage.getItem(this.settingName)) || defaultSettings;
     };
 
     SingSettingsBundle.prototype.save = function(){

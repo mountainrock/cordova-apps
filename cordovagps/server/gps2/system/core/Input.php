@@ -153,7 +153,7 @@ class CI_Input {
 		// Sanitize global arrays
 		$this->_sanitize_globals();
 
-		log_message('info', 'Input Class Initialized');
+		log_message('debug', 'Input Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

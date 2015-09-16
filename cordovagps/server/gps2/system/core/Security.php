@@ -192,7 +192,7 @@ class CI_Security {
 
 		$this->charset = strtoupper(config_item('charset'));
 
-		log_message('info', 'Security Class Initialized');
+		log_message('debug', 'Security Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

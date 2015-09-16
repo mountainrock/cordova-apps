@@ -69,7 +69,7 @@ class CI_Lang {
 	 */
 	public function __construct()
 	{
-		log_message('info', 'Language Class Initialized');
+		log_message('debug', 'Language Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

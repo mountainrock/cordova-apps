@@ -102,7 +102,7 @@ class CI_Log {
 	 *
 	 * @var array
 	 */
-	protected $_levels = array('ERROR' => 1, 'DEBUG' => 2, 'INFO' => 3, 'ALL' => 4);
+	protected $_levels = array('ERROR' => 1,  'INFO' => 2, 'DEBUG' => 3, 'ALL' => 4);
 
 	// --------------------------------------------------------------------
 
@@ -145,6 +145,7 @@ class CI_Log {
 		{
 			$this->_file_permissions = $config['log_file_permissions'];
 		}
+              date_default_timezone_set('asia/kolkata');
 	}
 
 	// --------------------------------------------------------------------
