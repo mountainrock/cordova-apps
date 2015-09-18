@@ -10,10 +10,11 @@ var KEY_GPS_TURN_ON_AUTOMATIC = "turnGpsOnAutomatically";
 var KEY_INTERNET_TURN_ON_AUTOMATIC = "turnInternetOnAutomatically";
 var KEY_TASK_SERVER_URL="taskServerUrl";
 var KEY_APK_UPDATE_URL="apkUpdateUrl";
+var KEY_SETTING_TYPE ="settingType"; 
 
 var DEBUG_URL="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953";
 
-var DEFAULT_SERVER_URL="http://bri8school.in/europa/index.php/Gps";
+var DEFAULT_SERVER_URL="http://bri8school.in/demo/gps2/index.php";
 var DEFAULT_TASK_SERVER_URL="http://jsoft.duckdns.org:8085/jcrm";
 var DEFAULT_APK_UPDATE_URL="http://bri8school.in/app/superGps2-latest.apk";
 var DEFAULT_CUSTOMER_ID="1";
@@ -24,6 +25,7 @@ var DEFAULT_DISTANCE_FILTER = 20; // in meters - configurable
 var DEFAULT_AUTOSTART = "true";
 var DEFAULT_GPS_TURN_ON_AUTOMATIC = "true";
 var DEFAULT_INTERNET_TURN_ON_AUTOMATIC = "true";
+var DEFAULT_SETTING_TYPE ="default";
 
 var appSetting ={
 	setDefaultSettings: function(permStorage) {
@@ -42,9 +44,10 @@ var appSetting ={
 		
 		permStorage.setItem(KEY_GPS_TURN_ON_AUTOMATIC, DEFAULT_GPS_TURN_ON_AUTOMATIC);
 		permStorage.setItem(KEY_INTERNET_TURN_ON_AUTOMATIC, DEFAULT_INTERNET_TURN_ON_AUTOMATIC);
+		permStorage.setItem(KEY_SETTING_TYPE,DEFAULT_SETTING_TYPE);
 		
 	},
-	resetSettingsToDefault: function(permStorage){
+	resetSettingsToDefault: function(){
 		console.log("resetSettings()");
 		alert("Reset settings to default");
 		var permStorage=window.localStorage;
@@ -58,13 +61,13 @@ var appSetting ={
 			alert("serverUrl is empty :"+serverUrl);
 		}
 		app.taskServerUrl= permStorage.getItem(KEY_TASK_SERVER_URL);
-		app.CUSTOMER_ID = permStorage.getItem(KEY_CUSTOMER_ID);
+		app.customerId = permStorage.getItem(KEY_CUSTOMER_ID);
 		app.apkUpdateUrl = permStorage.getItem(KEY_APK_UPDATE_URL);
 
 		$('#serverUrl').val(app.serverUrl);
 		$('#taskServerUrl').val(app.taskServerUrl);
 		$('#apkUpdateUrl').val(app.apkUpdateUrl);
-		$('#customerId').val(app.CUSTOMER_ID);
+		$('#customerId').val(app.customerId);
 
 		app.gpsMaxAge = parseInt(permStorage.getItem(KEY_GPS_MAX_AGE));
 		app.distanceFilter = permStorage.getItem(KEY_GPS_DISTANCE_FILTER);
@@ -89,7 +92,8 @@ var appSetting ={
 		$('#turnGpsOnAutomatically').val(app.turnGpsOnAutomatically);
 		$('#turnInternetOnAutomatically').val(app.turnInternetOnAutomatically);
 		console.log("turnGpsOnAutomatically : "+app.turnGpsOnAutomatically +", turnInternetOnAutomatically : "+ app.turnInternetOnAutomatically );
-		
+		var settingType =permStorage.getItem(KEY_SETTING_TYPE); 
+		$("#settingType").html("("+settingType+")");
 	},
 	saveSettings: function(){
 		var permStorage=window.localStorage;
@@ -127,7 +131,7 @@ var appSetting ={
 		app.apkUpdateUrl = apkUpdateUrl;
 		app.distanceFilter = parseInt(gpsDistanceFilter);
 		app.gpsDesiredAccuracy = parseInt(gpsAccuracy);
-		app.CUSTOMER_ID =customerId;
+		app.customerId =customerId;
 		app.gpsMaxAge= parseInt(gpsMaxAge);
 		app.debug = debug == "true" ? true : false;
 		
@@ -150,7 +154,51 @@ var appSetting ={
 	getLatestApp: function(){
 		console.log("getLatestApp() "+ app.apkUpdateUrl);
 		navigator.app.loadUrl(app.apkUpdateUrl, {openExternal : true});
-		//window.open(app.apkUpdateUrl, '_system');
+	},
+	getSettingsFromServer: function(){
+		app.showMessage("Getting settings from server");
+	       if(app.checkConnection() == false){
+	    	   app.showMessage("No internet connection available to load settings");
+	    	   return;
+	       }
+	       var settingUrlPath=  app.serverUrl + "/Setting/getSettingsJson?customerId="+ app.customerId;
+	       console.log("getSettingsFromServer :"+settingUrlPath);
+			$.ajax({
+	            url: settingUrlPath,
+	            type: 'GET',
+				jsonpCallback :"loadSettingsFromServer",			
+	            dataType: 'jsonp',
+	            success: function(data) {
+	            	app.showMessage("Got settings from server sucessfully!");
+				},
+				error: function (xhr, status, errorThrown) {
+					console.log("error status: " + xhr.status);
+					console.log("errorThrown: " + errorThrown);
+					app.showMessage("error status: " + xhr.status + "<br/>errorThrown: " + errorThrown);
+				}
+	        });		
 	}
-
 };
+
+function loadSettingsFromServer(json){
+	app.showMessage("Got settings from server");
+	console.log("loadSettingsFromServer: "+json);
+	var permStorage=window.localStorage;
+	//"gpsMaxAge":"300","workHours":"","gpsAccuracy":"20","gpsDistanceFilter":"20","locationToggle":"false","debug":"false","autostart":"true","serverUrl":"http:\/\/bri8school.in\/demo\/gps2\/index.php\/Gps"}
+	
+	permStorage.setItem(KEY_SERVER_URL, json.serverUrl);
+	permStorage.setItem(KEY_TASK_SERVER_URL, json.taskServerUrl);
+	permStorage.setItem(KEY_APK_UPDATE_URL, json.apkServerUrl);
+	
+	permStorage.setItem(KEY_DEBUG, json.debug);
+	permStorage.setItem(KEY_GPS_MAX_AGE, ""+json.gpsMaxAge);
+	permStorage.setItem(KEY_GPS_DESIRED_ACCURACY, ""+json.gpsAccuracy);
+	permStorage.setItem(KEY_GPS_DISTANCE_FILTER, ""+json.gpsDistanceFilter);
+	permStorage.setItem(KEY_AUTOSTART, json.autostart);
+	
+	permStorage.setItem(KEY_GPS_TURN_ON_AUTOMATIC, json.autoTurnOnGps);
+	permStorage.setItem(KEY_INTERNET_TURN_ON_AUTOMATIC, json.autoTurnOnInternet);
+	permStorage.setItem(KEY_SETTING_TYPE,"server");
+	appSetting.updateSettingsView(permStorage);
+	alert("Settings retreived from server!");
+}

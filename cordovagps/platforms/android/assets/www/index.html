@@ -21,72 +21,69 @@
 	                <h1><span style="color:#F75874">Super</span><span style="color:#7B7EF5"> GPS</span></h1> 
 	        </div>
 	        <div id="statusMessage" style="display:none;"></div>
-			<div style="margin-left:1%; height:60%;margin-right:1%" >
+			<div id="taskDiv" >
 				<table id="taskTable" align="left" width="100%"  style="border-collapse:collapse;margin:5px" class="ui-responsive">
-					<tr class="headerRow"><th align="left" width="5%">&nbsp;Id</th> <th align="left" width="30%">Customer</th><th align="left" width="40%">Address</th><th align="left" width="20%">Action</th>
+					<tr class="headerRow"><th align="left" width="10%">&nbsp;Id</th> <th align="left" width="30%">Customer</th><th align="left" width="40%">Address</th><th align="left" width="15%">Action</th>
 					</tr>
 				</table>	
-					<input type="hidden" id="taskId" name="taskId"/>	
+			</div>
+			<input type="hidden" id="taskId" name="taskId"/>	
 						
-					<div style="margin-left:30%">
-						<br/>
-						<br/>
-						<a href="#" id="autoRefreshTask" data-role="button" data-inline="true" data-theme="e" >Auto Refresh Off</a>		
-						<a href="#" id="reloadTasks" data-role="button" data-inline="true" data-theme="e" data-icon="check">Refresh</a>		
-						
-					</div>
+			<div style="margin-left:30%">
+				<a href="#" id="autoRefreshTask" data-role="button" data-inline="true" data-theme="e" >Auto Refresh Off</a>		
+				<a href="#" id="reloadTasks" data-role="button" data-inline="true" data-theme="e" data-icon="check">Refresh</a>		
+				
 			</div>
 		</div><!-- /page  -->
 		
 		<div  id="settingsPage" class="content_div" >
 			<div class="common-header" >	              
-	                <h1>Settings</h1> 
+	                <h1>Settings <span id="settingType"></span></h1> 
 	        </div>
-			<div>
-				
+			<div id="settingsDiv" >
 				<table align="left" width="100%"  style="border-collapse:collapse">
 					<tr>
-						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap width="40%"><label class="bold">Server URL</label></td>
-						<td width="90%" align="left"><input id="serverUrl" type="text" value=""/></td>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap width="30%" ><label class="bold">Server URL</label></td>
+						<td width="90%" align="left" valign="top"><input id="serverUrl" type="text" value=""/></td>
 					</tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap width="40%"><label class="bold">Task Server URL</label></td>
-						<td width="90%" align="left"><input id="taskServerUrl" type="text" value="" class="ui-input-text"/></td>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">Task Server URL</label></td>
+						<td width="90%" align="left" valign="top"><input id="taskServerUrl" type="text" value="" class="ui-input-text"/></td>
 					</tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap width="40%"><label class="bold">App Update URL</label></td>
-						<td width="90%" align="left"><input id="apkUpdateUrl" type="text" value="" class="ui-input-text"/></td>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">App Update URL</label></td>
+						<td width="90%" align="left" valign="top"><input id="apkUpdateUrl" type="text" value="" class="ui-input-text"/></td>
 					</tr>
 					
 					<tr>
-						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap><label class="bold">Customer Id</label></td>
-						<td width="90%" align="left"><input id="customerId" type="text" value="1" readonly/></td>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">Customer Id</label></td>
+						<td width="90%" align="left" valign="top"><input id="customerId" type="text" value="1" readonly/></td>
 					</tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
+						<td width="2%">&nbsp;</td>
 						<td align="left" nowrap ><label class="bold">Gps max age(seconds)</label></td>
-						<td width="90%" align="left"><input id="gpsMaxAge" type="text" value="1"/></td>
+						<td width="90%" align="left" valign="top"><input id="gpsMaxAge" type="text" value="1"/></td>
 					</tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap ><label class="bold">Gps accuracy(mtrs)</label></td>
-						<td width="70%" align="left"><input id="gpsAccuracy" type="text" value="10"/></td>
-						<td width="20%" align="left" nowrap>eg:10,100..</td>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap valign="top"><label class="bold">Gps accuracy(mtrs)</label><br/><small>eg:10,100..</small></td>
+						<td width="90%" align="left" valign="top"><input id="gpsAccuracy" type="text" value="10"/>
+						</td>
 					</tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap><label class="bold">Gps distance filter(mtrs)</label></td>
-						<td width="70%" align="left"><input id="gpsDistanceFilter" type="text" value="20"/></td>
-						<td width="20%" align="left" nowrap>eg:10,20..</td>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap valign="top"><label class="bold">Gps distance filter(mtrs)</label><br/><small>eg:10,20.</small>.</td>
+						<td width="90%" align="left" valign="top"><input id="gpsDistanceFilter" type="text" value="20"/>
+						</td>
 					</tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
-						<td align="left"><label class="bold">GPS</label></td>
-						<td width="90%" align="left">
+						<td width="2%">&nbsp;</td>
+						<td align="left" valign="top"><label class="bold">Enable GPS</label></td>
+						<td width="90%" align="left" valign="top">
 							<select name="flip-1" id="locationToggle" data-role="slider" data-theme="e" disabled >
 		                        <option value="false">Off</option>
 		                        <option value="true" selected="selected">On</option>
@@ -94,9 +91,9 @@
 		               </td>
 					</tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap><label class="bold">Debug</label></td>
-						<td width="90%" align="left">
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap valign="top"><label class="bold">Debug</label></td>
+						<td width="90%" align="left" valign="top">
 							<select name="flip-1" id="debug" data-role="slider" data-theme="e">
 		                        <option value="false" selected="selected">Off</option>
 		                        <option value="true" >On</option>
@@ -104,9 +101,9 @@
 		                  </td>
 					</tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap><label class="bold">Auto startup</label></td>
-						<td width="90%" align="left">
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap valign="top"><label class="bold">Auto startup</label></td>
+						<td width="90%" align="left" valign="top">
 							<select name="autostart" id="autostart" data-role="slider" data-theme="e" >
 		                        <option value="false" selected="selected">Off</option>
 		                        <option value="true" >On</option>
@@ -115,9 +112,9 @@
 					</tr>
 					
 					<tr>
-						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap><label class="bold">Auto Enable GPS</label></td>
-						<td width="90%" align="left">
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap valign="top"><label class="bold">Auto Enable GPS</label></td>
+						<td width="90%" align="left" valign="top">
 							<select name="turnGpsOnAutomatically" id="turnGpsOnAutomatically" data-role="slider" data-theme="e">
 		                        <option value="false" selected="selected">Off</option>
 		                        <option value="true" >On</option>
@@ -125,9 +122,9 @@
 		                  </td>
 					</tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
-						<td align="left" nowrap><label class="bold">Auto Enable Internet</label></td>
-						<td width="90%" align="left">
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap valign="top"><label class="bold">Auto Enable Internet</label></td>
+						<td width="90%" align="left" valign="top">
 							<select name="turnInternetOnAutomatically" id="turnInternetOnAutomatically" data-role="slider" data-theme="e" disabled>
 		                        <option value="false" selected="selected">Off</option>
 		                        <option value="true" >On</option>
@@ -135,35 +132,33 @@
 		                  </td>
 					</tr>
 					
-					<tr><td colspan="4">&nbsp;</td></tr>
-					<tr>
-						<td width="2%">&nbsp;</td>
-						<td align="left" colspan="2" width="95%">
-							<a href="#" id="getServerSettings" data-role="button" data-inline="true" data-theme="e" >Server Settings</a>&nbsp;
-							<a href="#" id="resetSettingsToDefault" data-role="button" data-inline="true" data-theme="e" >Reset default</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<a href="#" id="saveSettings" data-role="button" data-inline="true" data-theme="e" data-icon="check">Save</a>
-						</td>
-						
-					</tr>
 				</table>
-			</div><!-- /content -->
+				
+			  </div> <!--  settings div -->
+			  <br/>
+			  <div style="margin-left:1%">
+							<a href="#" id="getServerSettings" data-role="button" data-inline="true" data-theme="e" >Get Server Settings</a>&nbsp;
+							<a href="#" id="resetSettingsToDefault" data-role="button" data-inline="true" data-theme="e" >Reset default</a>&nbsp;
+							<a href="#" id="saveSettings" data-role="button" data-inline="true" data-theme="e" data-icon="check">Save</a>
+			  </div>
+
 		</div><!-- /page  -->
 
 		<div id="historyPage" class="content_div" >
 			<div class="common-header" >	              
 	                <h1>History</h1> 
 	        </div>
-			<div  >
+			<div>
 					        <div class="row">
 					            <div class="col-sm-12" id="selectdiv">
 						            
-						            <table>
+						            <table id="historyTable">
 						            <tr>
-						            	<td width="40%"><select id="routeSelect" tabindex="1" width="50%"></select></td>
-						            	<td width="10%"><input type="button" id="refresh" value="Refresh" tabindex="4" class="btn btn-primary" data-theme="e" ></select></td>
+						            	<td width="70%"><select id="routeSelect" tabindex="1" ></select></td>
+						            	<td width="30%"><input type="button" id="refresh" value="Refresh" tabindex="4" class="btn btn-primary" data-theme="e" ></select></td>
 						            </tr>
 						            <tr>
-						            	<td colspan="3"><span id="messages"></span></td>
+						            	<td colspan="3"><span id="messages" style="font-size:10pt"></span></td>
 						            </tr>
 						            </table>
 					                
@@ -187,29 +182,29 @@
 			<div>
 			<table align="left" width="100%"  style="border-collapse:collapse">
 					<tr> 
-						<td width="5%">&nbsp;</td>
+						<td width="2%">&nbsp;</td>
 						<td align="left" width="40%"><label class="bold">Device Id</label></td>
 						<td width="90%" align="left" ><label id="deviceId">--</label></td>
 						<td width="20%" align="left" nowrap></td>
 					</tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
+						<td width="2%">&nbsp;</td>
 						<td align="left" width="40%"><label class="bold">Build version</label></td>
 						<td width="90%" align="left"><label id="appVersion"></label></td>
 					</tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
+						<td width="2%">&nbsp;</td>
 						<td align="left"><label class="bold">Status </label></td>
 						<td  width="90%" align="left"> <span id="connectionInfo">Internet </span>/&nbsp;<span id="locationInfo">Location</span></td>
 					</tr>
 				
 					<tr>
-						<td width="5%">&nbsp;</td>
+						<td width="2%">&nbsp;</td>
 						<td align="left" valign="top" nowrap><label class="bold">Server response</label> </td>
 						<td   width="90%" align="left"> <span id="serverResponse">--</span></td>
 					</tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
+						<td width="2%">&nbsp;</td>
 						<td align="left" valign="top" nowrap><label class="bold">Current location</label> </td>
 						<td   width="90%" align="left"> <span id="currentLocation">--</span>
 											<span id="gpsAddress"></span>
@@ -217,14 +212,14 @@
 					</tr>
 					
 					<tr>
-						<td width="5%">&nbsp;</td>
+						<td width="2%">&nbsp;</td>
 						<td align="left" nowrap><label class="bold">Send gps location</label></td>
 						<td  width="90%" align="left" valign="top">
 						<a href="#" id="submit-passcode" data-role="button" data-inline="true" data-theme="e">Submit</a>
 						</td>
 					</tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
+						<td width="2%">&nbsp;</td>
 						<td align="left" valign="top" nowrap><label class="bold">Update Latest App</label> </td>
 						<td  width="90%"  align="left" valign="top"> 
 							<a href="#" id="checkForUpdateApp" data-role="button" data-inline="true" data-theme="e" data-icon="check">Update App</a>&nbsp;
@@ -236,7 +231,7 @@
 				<table align="left" width="100%"  style="border-collapse:collapse">
 					<tr><td colspan="4"><hr/></td></tr>
 					<tr>
-						<td width="5%">&nbsp;</td>
+						<td width="2%">&nbsp;</td>
 						<td align="left"> <br/><b>Privacy Policy</b>
 						<label><p>This app collects and transmits your position. It will continue to run in the background unless you turn off the GPS toggle. Your position is sent with a unique id, but no other identifying information. Your data will not be resold or distributed to any third parties.</p>
 			            </label></td>
