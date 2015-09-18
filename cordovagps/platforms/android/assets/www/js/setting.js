@@ -78,19 +78,23 @@ var appSetting ={
 		
 		var debug = permStorage.getItem(KEY_DEBUG);
 		$('#debug').val(debug);
+		$('#debug').change();
 		app.debug = (debug == "true") ? true : false;
 		console.log(app.debug+ "debug :  "+ debug +", bool ="+  (debug == "true"));
 		
 		app.autostart = permStorage.getItem(KEY_AUTOSTART); 
 		console.log("autostart : "+app.autostart );
 		$('#autostart').val(app.autostart);
+		$('#autostart').change();
 		var appVersion = permStorage.getItem(KEY_APP_VERSION);
 		$('#appVersion').html(appVersion);
 		
 		app.turnGpsOnAutomatically =permStorage.getItem(KEY_GPS_TURN_ON_AUTOMATIC); 
 		app.turnInternetOnAutomatically =permStorage.getItem(KEY_INTERNET_TURN_ON_AUTOMATIC); 
 		$('#turnGpsOnAutomatically').val(app.turnGpsOnAutomatically);
+		$('#turnGpsOnAutomatically').change();
 		$('#turnInternetOnAutomatically').val(app.turnInternetOnAutomatically);
+		$('#turnInternetOnAutomatically').change();
 		console.log("turnGpsOnAutomatically : "+app.turnGpsOnAutomatically +", turnInternetOnAutomatically : "+ app.turnInternetOnAutomatically );
 		var settingType =permStorage.getItem(KEY_SETTING_TYPE); 
 		$("#settingType").html("("+settingType+")");
@@ -156,10 +160,10 @@ var appSetting ={
 		navigator.app.loadUrl(app.apkUpdateUrl, {openExternal : true});
 	},
 	getSettingsFromServer: function(){
-		app.showMessage("Getting settings from server");
+		   app.showMessage("Getting settings from server");
 	       if(app.checkConnection() == false){
 	    	   app.showMessage("No internet connection available to load settings");
-	    	   return;
+	    	   return false;
 	       }
 	       var settingUrlPath=  app.serverUrl + "/Setting/getSettingsJson?customerId="+ app.customerId;
 	       console.log("getSettingsFromServer :"+settingUrlPath);
@@ -176,7 +180,8 @@ var appSetting ={
 					console.log("errorThrown: " + errorThrown);
 					app.showMessage("error status: " + xhr.status + "<br/>errorThrown: " + errorThrown);
 				}
-	        });		
+	        });
+			return true;
 	}
 };
 

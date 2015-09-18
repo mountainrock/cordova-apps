@@ -4,7 +4,7 @@ var task ={
 		//jQuery.mobile.changePage(jQuery('#taskDetailsPage'));
 	},
 	getTasks : function() {  
-		   app.showMessage("Getting tasks");
+		   app.showMessage("Getting tasks. Please wait...");
 	       var isConnected = app.checkConnection();
 	       if(isConnected == false){
 	    	   app.showMessage("No internet connection available to load tasks");

@@ -28,7 +28,7 @@ app.submitToServer = function() {
 				app.checkLocation();
 				return;
 			}
-			var createGpsLocUrl = serverUrl + "/createGpsLocation";
+			var createGpsLocUrl = serverUrl + "/Gps/createGpsLocation";
 			$.ajax(createGpsLocUrl, {
 				contentType : "application/json",
 				type : "GET",
@@ -47,7 +47,7 @@ app.submitToServer = function() {
 					"eventtype": eventtype,
 					"date": date1,
 					"deviceId":device.uuid,
-					"customerId": app.CUSTOMER_ID
+					"customerId": app.customerId
 					
 					
 				},

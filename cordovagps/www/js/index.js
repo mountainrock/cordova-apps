@@ -1,7 +1,7 @@
-var APP_VERSION="1.5";
+var APP_VERSION="2.0";
 
 var app = {
-	CUSTOMER_ID : 1,  //default
+	customerId : 1,  //default
 	HIGH_GPS_ACCURACY : true,	// some emulators require true.
 	NAME : "GPS Tracker",
 	serverUrl: DEFAULT_SERVER_URL,
@@ -25,8 +25,6 @@ var app = {
 		this.bindEvents();
 		console.log("initFastClick()");
 		this.initFastClick();
-		console.log("initView()");
-		this.initView();
 		app.timeLastSubmit = (new Date().getTime() / 1000) - 60; 
 		
 		console.log("initialize() completes");
@@ -39,6 +37,8 @@ var app = {
 		app.checkConnection();
 		console.log("check location");
 		app.checkLocation();
+		console.log("initView()");
+		app.initView();
 		console.log("gps init()");
 		gps.init();
 		
@@ -92,6 +92,7 @@ var app = {
 			if(appVersion ==null || appVersion==undefined || APP_VERSION!=appVersion ){//init defaults
 				alert("NOTE : Application settings not configured for app version "+APP_VERSION+". Using defaults!");
 				appSetting.setDefaultSettings(permStorage);
+				appSetting.getSettingsFromServer();
 				appVersion = permStorage.getItem(KEY_APP_VERSION);
 				console.log("Saved default values for version : "+ appVersion);
 			}else{
@@ -101,6 +102,10 @@ var app = {
 			
 	},
 	checkConnection : function() {
+		if(navigator.connection==null || navigator.connection==undefined){
+			console.log("navigator undefined to check connection");
+			return;
+		}
 		var networkState = navigator.connection.type;
 
 		var states = {};
@@ -166,6 +171,7 @@ var app = {
 	    }
 	},
 	showMessage: function(str){
+		console.log(str);
 		var date1 =(new Date()).format("DD/MM HH:m:s");
 		 $("#statusMessage").html(date1 + " : "+ str );
 		 $("#statusMessage").show();
@@ -204,6 +210,12 @@ $(function() {
 	$("#resetSettingsToDefault").click(function() {
 		console.log("resetSettingsToDefault");
 		appSetting.resetSettingsToDefault();
+		gps.restart();
+		app.autostartup();
+	});
+	$("#getServerSettings").click(function() {
+		console.log("getServerSettings");
+		appSetting.getSettingsFromServer();
 		gps.restart();
 		app.autostartup();
 	});

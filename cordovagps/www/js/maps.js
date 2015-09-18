@@ -70,7 +70,7 @@
 
             // need to reset this for firefox
             routeSelect.selectedIndex = index;
-
+            $('#routeSelect').change();
             //showPermanentMessage('Please select a route below');
         }
     }
@@ -159,7 +159,7 @@
        }
        console.log("loadRoutesIntoDropdownBox :"+ serverUrl + "/getRoutesForUser?deviceId="+ device.uuid);
 		$.ajax({
-            url: serverUrl + "/getRoutesForUser?deviceId="+  device.uuid,
+            url: serverUrl + "/Gps/getRoutesForUser?deviceId="+  device.uuid,
             type: 'GET',
 			jsonpCallback :"loadRoutes",			
             dataType: 'jsonp',
@@ -179,7 +179,7 @@
              console.log("Loading route for :"+$("#routeSelect").val() );
         	var serverUrl= $('#serverUrl').val();
 			$.ajax({
-				url: serverUrl + "/getRoutesForMapBySession?sessionId="+ $('#routeSelect').val() + "&deviceId=" + device.uuid,
+				url: serverUrl + "/Gps/getRoutesForMapBySession?sessionId="+ $('#routeSelect').val() + "&deviceId=" + device.uuid,
 				type: 'GET',
 				jsonpCallback :"loadGPSLocations",			
 				dataType: 'jsonp',
@@ -252,7 +252,7 @@
             gpstrackerMarker.unbindPopup();
             
             gpstrackerMarker.on("click", function() {        
-                var url = serverUrl + '/getrouteformap.php?sessionid=' + sessionID;
+                var url = serverUrl + '/Gps/getrouteformap.php?sessionid=' + sessionID;
 
                 viewingAllRoutes = false;
  

@@ -1,4 +1,4 @@
-var APP_VERSION="1.5";
+var APP_VERSION="2.0";
 
 var app = {
 	customerId : 1,  //default
@@ -25,8 +25,6 @@ var app = {
 		this.bindEvents();
 		console.log("initFastClick()");
 		this.initFastClick();
-		console.log("initView()");
-		this.initView();
 		app.timeLastSubmit = (new Date().getTime() / 1000) - 60; 
 		
 		console.log("initialize() completes");
@@ -39,6 +37,8 @@ var app = {
 		app.checkConnection();
 		console.log("check location");
 		app.checkLocation();
+		console.log("initView()");
+		app.initView();
 		console.log("gps init()");
 		gps.init();
 		
@@ -92,6 +92,7 @@ var app = {
 			if(appVersion ==null || appVersion==undefined || APP_VERSION!=appVersion ){//init defaults
 				alert("NOTE : Application settings not configured for app version "+APP_VERSION+". Using defaults!");
 				appSetting.setDefaultSettings(permStorage);
+				appSetting.getSettingsFromServer();
 				appVersion = permStorage.getItem(KEY_APP_VERSION);
 				console.log("Saved default values for version : "+ appVersion);
 			}else{

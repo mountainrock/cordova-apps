@@ -44,12 +44,12 @@ var gps = {
 	    
 	    var serverUrl= $('#serverUrl').val();
 	    var deviceIdStr = device.uuid;
-	    var customerIdStr = app.CUSTOMER_ID;
+	    var customerIdStr = app.customerId;
 	    var turnGpsOnAuto = app.turnGpsOnAutomatically;
 	    var turnInternetOnAuto = app.turnInternetOnAutomatically;
 	    // BackgroundGeoLocation is highly configurable.
 	    gps.bgGeo.configure(callbackFn, failureFn, {
-	        url: serverUrl + "/createGpsLocationBackground", 
+	        url: serverUrl + "/Gps/createGpsLocationBackground", 
 	        params: {
 				deviceId : deviceIdStr,
 				customerId: customerIdStr,
@@ -95,11 +95,11 @@ var gps = {
 	restart : function() {
 		
 		if(gps.bgGeo!=null){
-			 console.log("Geo location watcher restarting");
+			app.showMessage("Geo location watcher restarting");
 			 gps.bgGeo.stop();
 			 gps.configureBackgroundGeo();
 			 gps.bgGeo.start();
-			 navigator.notification.alert("GPS watcher restarted ",null, app.NAME );
+			 app.showMessage("GPS watcher restarted ");
 		}
 	   
 	},

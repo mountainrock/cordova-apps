@@ -95,11 +95,11 @@ var gps = {
 	restart : function() {
 		
 		if(gps.bgGeo!=null){
-			 console.log("Geo location watcher restarting");
+			app.showMessage("Geo location watcher restarting");
 			 gps.bgGeo.stop();
 			 gps.configureBackgroundGeo();
 			 gps.bgGeo.start();
-			 navigator.notification.alert("GPS watcher restarted ",null, app.NAME );
+			 app.showMessage("GPS watcher restarted ");
 		}
 	   
 	},
