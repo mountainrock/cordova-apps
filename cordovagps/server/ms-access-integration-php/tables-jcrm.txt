@@ -1,0 +1,13 @@
+CREATE TABLE [EmployeeDevice] 
+(   [EmployeeID] INTEGER,
+   [DeviceID] TEXT(50)
+)
+
+EmployeeID	DeviceID
+0	92f51e498f121ea2
+
+CREATE TABLE [EmployeeDeviceTemp] 
+(   [UserName] TEXT(30),
+   [DeviceID] TEXT(50) 
+
+)

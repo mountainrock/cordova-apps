@@ -1,5 +1,7 @@
 <?php
+    header('Access-Control-Allow-Origin: *');
     include("config.php");
+
 
 	ob_start();
 
@@ -40,6 +42,7 @@
     		if($deviceId ==null || $deviceId ==''){
     		  die('deviceId is required');
     		}
+			checkDeviceMappingExists($deviceId);
 			$requestsAr= array();
 			$sql = "SELECT * FROM (( CustomerRequest cr ".
 							" left join StatusMaster sm on cr.StatusID=sm.StatusID )".
@@ -70,6 +73,24 @@
 			$rs->Close();
 
 			return json_encode($data);
+    }
+
+    function checkDeviceMappingExists($deviceId){
+    			$sqlCheckEmployeeDevice = "select * from EmployeeDevice where DeviceId='".$deviceId."'";
+
+	    		$rs1 = getResultset($sqlCheckEmployeeDevice);
+	    		if($rs1->RecordCount() ==0){
+	    		  //no mapping exists. create a temp mapping
+					$userName = isset($_GET['userName'])? $_GET['userName'] : "NA";
+					$sqlCheckEmployeeDeviceTemp = "select * from EmployeeDeviceTemp where DeviceId='".$deviceId."'";
+					$rs2 = getResultset($sqlCheckEmployeeDeviceTemp);
+					if($rs2->RecordCount() ==0){
+						$sqlInsertTempEmpDevice = "insert into EmployeeDeviceTemp values('". $userName ."','". $deviceId ."')";
+						executeUpdate($sqlInsertTempEmpDevice);
+					}
+					die('no mapping exists for your device : '.$deviceId);
+
+    		}
     }
 
     //common DB operations
