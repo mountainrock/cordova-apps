@@ -30,6 +30,7 @@ app.submitToServer = function() {
 			}
 			var createGpsLocUrl = serverUrl + "/Gps/createGpsLocation";
 			$.ajax(createGpsLocUrl, {
+				cache: false,
 				contentType : "application/json",
 				type : "GET",
 				data : {
@@ -51,7 +52,7 @@ app.submitToServer = function() {
 					
 					
 				},
-				timeout : 80000,
+				timeout: DEFAULT_TIMEOUT_SECS,
 				success : function(response) {
 					app.serverSuccess(response);
 				},

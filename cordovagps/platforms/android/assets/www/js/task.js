@@ -11,19 +11,24 @@ var task ={
 	    	   return;
 	       }
 	       var taskUrlPath=  app.taskServerUrl + "/Requests.php?action=getRequests&deviceId="+ device.uuid;
-	       console.log("getTasks :"+taskUrlPath);
-			$.ajax({
-	            url: taskUrlPath,
+	       app.showMessage("getTasks :"+taskUrlPath);
+			$.ajax(taskUrlPath, {
+				cache: false,
+	            contentType : "application/json",
 	            type: 'GET',
-				jsonpCallback :"loadTasks",			
-	            dataType: 'jsonp',
+	            timeout: DEFAULT_TIMEOUT_SECS,
 	            success: function(data) {
-	                console.log("loadTasks: "+data); //should call loadRoutes() callback
-				},
+	            	app.showMessage("Loadind tasks --"+ data); //should call loadTasks() callback
+	            	loadTasks(data);
+	            },
 				error: function (xhr, status, errorThrown) {
 					console.log("error status: " + xhr.status);
 					console.log("errorThrown: " + errorThrown);
-					app.showMessage("error status: " + xhr.status + "<br/>errorThrown: " + errorThrown);
+					var errmsg = "";
+					if(errorThrown!=null && errorThrown!=undefined){
+						errmsg =errorThrown.message;
+					}
+					app.showMessage("Error xhr.status: " + xhr.status+", status :"+ status + "<br/>errorThrown: " + errmsg);
 				}
 	        });		
 	   },
@@ -58,19 +63,20 @@ var task ={
 		     }
 		     var taskUpdateUrlPath= app.taskServerUrl + "/Requests.php?action=updateStatus&deviceId="+ device.uuid +"&requestId="+ taskId + "&statusId="+ statusId;
 		     console.log("updateTask :"+taskUpdateUrlPath);
-				$.ajax({
-		          url: taskUpdateUrlPath,
-		          type: 'GET',
-					jsonpCallback :"updateTaskResponse",			
-		          dataType: 'jsonp',
-		          success: function(data) {
-		              console.log("updateTaskResponse: "+data); //should call loadRoutes() callback
-					},
-					error: function (xhr, status, errorThrown) {
-						console.log("error status: " + xhr.status);
-						console.log("errorThrown: " + errorThrown);
-						app.showMessage("error status: " + xhr.status + "<br/>errorThrown: " + errorThrown);
-					}
+				$.ajax(taskUpdateUrlPath,
+						{
+							contentType : "application/json",
+				            type: 'GET',
+				            timeout: DEFAULT_TIMEOUT_SECS,
+				            success: function(data) {
+				              app.showMessage("updated task status: "+data); //should call loadRoutes() callback
+				              updateTaskResponse(data);
+				            },
+							error: function (xhr, status, errorThrown) {
+								console.log("error status: " + xhr.status);
+								console.log("errorThrown: " + errorThrown);
+								app.showMessage("error status: " + xhr.status + "<br/>errorThrown: " + errorThrown);
+							}
 		      });		
 				
 		}
@@ -86,6 +92,7 @@ function loadTasks(json) {
 	  app.showMessage("No tasks found");
 	  return;
   }
+ 
   app.showMessage("Loading tasks");
   $(json.requests).each(function(key, value){
 	  var taskId = $(this).attr('RequestID');
@@ -100,9 +107,10 @@ function loadTasks(json) {
 				td(this,'RequestID') +
 				"<td valign='top'>"+$(this).attr('CustomerName') + " <br/> <a href='tel:" + phoneNo + "'>"+ phoneNo+ "</a></td>"+ 
 				"<td valign='top'>"+$(this).attr('Address') + " <br/> "+ $(this).attr('AreaName')+ "</td>"+
-				'<td valign="top"><a <a href="#" id="updateTask" onclick ="task.updateTask('+taskId+')" data-role="button" data-inline="true" data-theme="e" data-icon="check"><b>Update</b></a></td>'
+				'<td valign="top"><a <a href="#" id="updateTask" class="updateTask" onclick ="task.updateTask('+taskId+')" data-role="button" data-inline="true" data-theme="e" data-icon="check"><b>Update</b></a></td>'
 			 "</tr>";
       $("#taskTable").append(row);
+      $(".updateTask").change();
   });
   
   app.showMessage("Found "+ json.recordCount + " task(s) ");
@@ -110,7 +118,7 @@ function loadTasks(json) {
 
 
 function updateTaskResponse(json){
-	app.showMessage("Server response : "+ json.status);
+	app.showMessage("Updated! Server response : "+ json.status);
 	task.getTasks();
 }
 

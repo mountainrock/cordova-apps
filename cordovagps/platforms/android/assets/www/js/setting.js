@@ -26,6 +26,7 @@ var DEFAULT_AUTOSTART = "true";
 var DEFAULT_GPS_TURN_ON_AUTOMATIC = "true";
 var DEFAULT_INTERNET_TURN_ON_AUTOMATIC = "true";
 var DEFAULT_SETTING_TYPE ="default";
+var DEFAULT_TIMEOUT_SECS=90 * 1000;
 
 var appSetting ={
 	setDefaultSettings: function(permStorage) {
@@ -167,14 +168,15 @@ var appSetting ={
 	       }
 	       var settingUrlPath=  app.serverUrl + "/Setting/getSettingsJson?customerId="+ app.customerId;
 	       console.log("getSettingsFromServer :"+settingUrlPath);
-			$.ajax({
-	            url: settingUrlPath,
+			$.ajax(settingUrlPath, {
+				cache: false,
+	            contentType : "application/json",
 	            type: 'GET',
-				jsonpCallback :"loadSettingsFromServer",			
-	            dataType: 'jsonp',
+	            timeout: DEFAULT_TIMEOUT_SECS,
 	            success: function(data) {
 	            	app.showMessage("Got settings from server sucessfully!");
-				},
+	            	loadSettingsFromServer(data);
+	            },
 				error: function (xhr, status, errorThrown) {
 					console.log("error status: " + xhr.status);
 					console.log("errorThrown: " + errorThrown);

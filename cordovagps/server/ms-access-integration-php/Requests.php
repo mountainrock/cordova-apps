@@ -1,5 +1,6 @@
 <?php
     header('Access-Control-Allow-Origin: *');
+    header('Content-Type: application/json');
     include("config.php");
 
 
@@ -11,17 +12,20 @@
 		if (isset($_REQUEST['jsonpCallback']) || isset($_REQUEST['callback'])){
 		    echo "loadTasks(".$customerRequestsJson.")";
 		}else{
+		//log(" $customerRequestsJson\n");
 		    echo $customerRequestsJson;
 		}
+
+
 
 	}
 	else if($_GET["action"] =="updateStatus"){
 		//eg: http://localhost/jcrm/Requests.php?action=updateStatus&requestId=1&statusId=2&deviceId=92f51e498f121ea2
 		updateRequestStatus();
 		if (isset($_REQUEST['jsonpCallback']) || isset($_REQUEST['callback'])){
-				    echo "updateTaskResponse({'status':'updated'})";
+				    echo 'updateTaskResponse({"status":"updated"})';
 		}else{
-				    echo "{'status':'updated'}";
+				    echo '{"status":"updated"}';
 		}
 
     }
@@ -38,6 +42,7 @@
     }
 
     function getCustomerRequests(){
+
     		$deviceId = $_GET['deviceId'];
     		if($deviceId ==null || $deviceId ==''){
     		  die('deviceId is required');
@@ -115,6 +120,11 @@
       // echo 'Connected to MS access '.$connstring.'<br/>';
 	   $conn->Open($connstring);
 	   return $conn;
+   }
+
+   function logi($str){
+	  error_log($str."\n", 3, "D:/Sandeep/tools/xampp/xampplite/htdocs/jcrm/my-errors.log");
+
    }
 
 ?>

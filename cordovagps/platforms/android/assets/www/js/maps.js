@@ -161,11 +161,11 @@
 		$.ajax({
             url: serverUrl + "/Gps/getRoutesForUser?deviceId="+  device.uuid,
             type: 'GET',
-			jsonpCallback :"loadRoutes",			
-            dataType: 'jsonp',
+            timeout: DEFAULT_TIMEOUT_SECS,
             success: function(data) {
                 console.log("loadRoutes: "+data); //should call loadRoutes() callback
-			},
+                loadRoutes(data);
+            },
 			error: function (xhr, status, errorThrown) {
 				console.log("error status: " + xhr.status);
 				console.log("errorThrown: " + errorThrown);
@@ -176,19 +176,20 @@
    
     function getRouteForMap() { 
         if (hasMap()) {
-             console.log("Loading route for :"+$("#routeSelect").val() );
+            console.log("Loading route for :"+$("#routeSelect").val() );
         	var serverUrl= $('#serverUrl').val();
 			$.ajax({
 				url: serverUrl + "/Gps/getRoutesForMapBySession?sessionId="+ $('#routeSelect').val() + "&deviceId=" + device.uuid,
 				type: 'GET',
-				jsonpCallback :"loadGPSLocations",			
-				dataType: 'jsonp',
+				timeout: DEFAULT_TIMEOUT_SECS,
 				success: function(data) {
 					console.log("loadGPSLocations : "+data);
+					loadGPSLocations(data);
 				},
 				error: function (xhr, status, errorThrown) {
 					console.log("error status: " + xhr.status);
 					console.log("errorThrown: " + errorThrown);
+					alert("Error : Check user is mapped to device? , status : "+ xhr.status+" , errorThrown :"+ errorThrown);
 				}
 			   });
 		        
@@ -267,6 +268,7 @@
                     url: url,
                     type: 'GET',
                     dataType: 'json',
+                    timeout: DEFAULT_TIMEOUT_SECS,
                     success: function(data) {
                         loadGPSLocations(data);
                     },

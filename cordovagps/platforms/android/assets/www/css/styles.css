@@ -82,14 +82,16 @@ body {
     .viewalldiv {
         text-align: right;
     }    
-}      
+}
+
+
 #map-canvas {
     border: 1px solid #000;
     width: 98%;
     height: 98%;    
 }
 #mapdiv { 
-    height: 420pt;
+    height: 420px;
 }
 #selectdiv {
        margin-bottom: 10px;
@@ -108,25 +110,22 @@ body {
 #settingsDiv{
  	 margin-left:1%;
 	 margin-right:1%;
-	 max-height:410pt;
 	 overflow-y:auto;
 	 overflow-x:hidden;
+	 max-height:400px;
 }
 #taskDiv{
  	 margin-left:1%;
 	 margin-right:1%;
-	 max-height:400pt;
 	 overflow-y:auto;
 	 overflow-x:hidden;
+	 max-height:400px;
 }
 
 #taskTable{
 	table-layout: fixed;
     width: 100%;
-    height:60%;
-}
-#taskTable thead{
-	
+    height:80%;
 }
 #taskTable th{
 	color: #E6E0E0;
@@ -137,6 +136,9 @@ body {
 	color:#1121C1;
 	font-size:18px;
 }
+.updateTask{
+	font-size:22px;
+}
 .oddRow{
  background: #FDFEE8;
 }
@@ -144,10 +146,10 @@ body {
     background: #fef8f8 none repeat scroll 0 0;
     border: 1px solid #fbdfe0;
     color: #ED646D;
-    font-size: 0.9em;
+    font-size: 10px;
     height: 20px;
-    margin-left: 20%;
-    margin-right: 20%;
+    margin-left: 5%;
+    margin-right: 5%;
     margin-top: 1%;
     padding: 1%;
 }
@@ -157,3 +159,34 @@ body {
     height:80%;
 }
 
+/*media height override . Do not move this*/
+@media only screen and (min-height : 700px) {
+	#settingsDiv{
+		 max-height:550px;
+	}
+	#taskDiv{
+		 max-height:550px;
+	}
+}
+
+@media only screen and (min-height : 1100px) {
+	#mapdiv { 
+  	  height: 900px;
+	}
+	#settingsDiv{
+		 max-height:950px;
+	}
+	#taskDiv{
+		 max-height:900px;
+	}
+	#statusMessage{
+		font-size:16px;
+		height:25px;
+	}
+	.updateTask{
+		font-size:25px;
+	}
+	h1 {
+	    font-size:40px;
+	}
+}
