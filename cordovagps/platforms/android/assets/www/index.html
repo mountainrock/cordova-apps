@@ -22,8 +22,8 @@
 	        </div>
 	        <div id="statusMessage" style="display:none;"></div>
 			<div id="taskDiv" >
-				<table id="taskTable" align="left" width="100%"  style="border-collapse:collapse;margin:5px" class="ui-responsive">
-					<tr class="headerRow"><th align="left" width="10%">&nbsp;Id</th> <th align="left" width="30%">Customer</th><th align="left" width="40%">Address</th><th align="left" width="15%">Action</th>
+				<table id="taskTable" align="left" width="100%"  style="border-collapse:collapse;padding:5px" class="ui-responsive">
+					<tr class="headerRow"><th align="left" width="10%">&nbsp;Id</th> <th align="left" width="30%">Customer</th><th align="left" width="40%">Address</th><th align="left" width="15%">Action</th><th width="2%">&nbsp;</th>
 					</tr>
 				</table>	
 			</div>
@@ -131,6 +131,11 @@
 		                    </select>
 		                  </td>
 					</tr>
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">Work hours</label></td>
+						<td width="90%" align="left" valign="top"><label id="workHours">--</label></td>
+					</tr>
 					
 				</table>
 				
@@ -181,11 +186,17 @@
 	        <br/>
 			<div>
 			<table align="left" width="100%"  style="border-collapse:collapse">
+			
 					<tr> 
 						<td width="2%">&nbsp;</td>
 						<td align="left" width="40%"><label class="bold">Device Id</label></td>
 						<td width="90%" align="left" ><label id="deviceId">--</label></td>
 						<td width="20%" align="left" nowrap></td>
+					</tr>
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">User Name</label></td>
+						<td width="90%" align="left" valign="top"><label id="userName">--</label></td>
 					</tr>
 					<tr>
 						<td width="2%">&nbsp;</td>

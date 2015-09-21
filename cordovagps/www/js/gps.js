@@ -59,6 +59,7 @@ var gps = {
 	        },
 	        headers: {                                  
 	        },
+	        workHours : app.workHours,
 	        desiredAccuracy: app.gpsDesiredAccuracy,
 	        locationTimeout : app.gpsMaxAge, //in seconds
 	        stationaryRadius: 20,

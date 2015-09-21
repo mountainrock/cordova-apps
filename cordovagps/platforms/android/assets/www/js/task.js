@@ -10,7 +10,7 @@ var task ={
 	    	   app.showMessage("No internet connection available to load tasks");
 	    	   return;
 	       }
-	       var taskUrlPath=  app.taskServerUrl + "/Requests.php?action=getRequests&deviceId="+ device.uuid;
+	       var taskUrlPath=  app.taskServerUrl + "/Requests.php?action=getRequests&deviceId="+ device.uuid+"&userName="+app.userName;
 	       app.showMessage("getTasks :"+taskUrlPath);
 			$.ajax(taskUrlPath, {
 				cache: false,
@@ -90,6 +90,9 @@ function loadTasks(json) {
   var i=0;
   if(json==null || json.recordCount ==0){
 	  app.showMessage("No tasks found");
+	  return;
+  }else if(json.error!=null){
+	  app.showMessage(json.error);
 	  return;
   }
  

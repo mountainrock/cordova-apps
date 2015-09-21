@@ -4,6 +4,8 @@ var app = {
 	customerId : 1,  //default
 	HIGH_GPS_ACCURACY : true,	// some emulators require true.
 	NAME : "GPS Tracker",
+	userName : null,
+	workHours : null,
 	serverUrl: DEFAULT_SERVER_URL,
 	taskServerUrl : DEFAULT_TASK_SERVER_URL,
 	apkUpdateUrl: DEFAULT_APK_UPDATE_URL,

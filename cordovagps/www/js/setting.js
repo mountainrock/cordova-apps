@@ -11,6 +11,8 @@ var KEY_INTERNET_TURN_ON_AUTOMATIC = "turnInternetOnAutomatically";
 var KEY_TASK_SERVER_URL="taskServerUrl";
 var KEY_APK_UPDATE_URL="apkUpdateUrl";
 var KEY_SETTING_TYPE ="settingType"; 
+var KEY_USERNAME ="userName";
+var KEY_WORK_HOURS ="workHours";
 
 var DEBUG_URL="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953";
 
@@ -27,6 +29,8 @@ var DEFAULT_GPS_TURN_ON_AUTOMATIC = "true";
 var DEFAULT_INTERNET_TURN_ON_AUTOMATIC = "true";
 var DEFAULT_SETTING_TYPE ="default";
 var DEFAULT_TIMEOUT_SECS=90 * 1000;
+var DEFAULT_USERNAME = "NA";
+var DEFAULT_WORK_HOURS ="NA";
 
 var appSetting ={
 	setDefaultSettings: function(permStorage) {
@@ -46,6 +50,8 @@ var appSetting ={
 		permStorage.setItem(KEY_GPS_TURN_ON_AUTOMATIC, DEFAULT_GPS_TURN_ON_AUTOMATIC);
 		permStorage.setItem(KEY_INTERNET_TURN_ON_AUTOMATIC, DEFAULT_INTERNET_TURN_ON_AUTOMATIC);
 		permStorage.setItem(KEY_SETTING_TYPE,DEFAULT_SETTING_TYPE);
+		permStorage.setItem(KEY_USERNAME,DEFAULT_USERNAME);
+		permStorage.setItem(KEY_WORK_HOURS,DEFAULT_WORK_HOURS);
 		
 	},
 	resetSettingsToDefault: function(){
@@ -99,6 +105,12 @@ var appSetting ={
 		console.log("turnGpsOnAutomatically : "+app.turnGpsOnAutomatically +", turnInternetOnAutomatically : "+ app.turnInternetOnAutomatically );
 		var settingType =permStorage.getItem(KEY_SETTING_TYPE); 
 		$("#settingType").html("("+settingType+")");
+		
+		app.userName = permStorage.getItem(KEY_USERNAME);
+		$("#userName").html(app.userName);
+		app.workHours = permStorage.getItem(KEY_WORK_HOURS);
+		$("#workHours").html(app.workHours);
+		
 	},
 	saveSettings: function(){
 		var permStorage=window.localStorage;
@@ -166,7 +178,7 @@ var appSetting ={
 	    	   app.showMessage("No internet connection available to load settings");
 	    	   return false;
 	       }
-	       var settingUrlPath=  app.serverUrl + "/Setting/getSettingsJson?customerId="+ app.customerId;
+	       var settingUrlPath=  app.serverUrl + "/Setting/getSettingsJson?customerId="+ app.customerId+"&deviceId="+ device.uuid;
 	       console.log("getSettingsFromServer :"+settingUrlPath);
 			$.ajax(settingUrlPath, {
 				cache: false,
@@ -206,6 +218,9 @@ function loadSettingsFromServer(json){
 	permStorage.setItem(KEY_GPS_TURN_ON_AUTOMATIC, json.autoTurnOnGps);
 	permStorage.setItem(KEY_INTERNET_TURN_ON_AUTOMATIC, json.autoTurnOnInternet);
 	permStorage.setItem(KEY_SETTING_TYPE,"server");
+	permStorage.setItem(KEY_USERNAME, json.userName);
+	permStorage.setItem(KEY_WORK_HOURS,json.workHours);
+	
 	appSetting.updateSettingsView(permStorage);
 	alert("Settings retreived from server!");
 }
