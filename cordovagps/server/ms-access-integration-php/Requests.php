@@ -33,11 +33,13 @@
     function updateRequestStatus(){
     		$statusId= $_GET['statusId'];
 		    $requestId= $_GET['requestId'];
+		    $deviceId= $_GET['deviceId'];
 		    if($statusId ==null || $requestId == null){
 			   die('statusId and requestId is required');
     		}
 			$updateSql ="update CustomerRequest set StatusID=".$statusId." where RequestID=".$requestId;
 			//TODO: log deviceId from which update was done
+			logi("Update request :: deviceId : " . $deviceId . ", statusId :" . $statusId. ", requestId : ".$requestId);
 			$result = executeUpdate($updateSql);
     }
 
@@ -45,7 +47,7 @@
 
     		$deviceId = $_GET['deviceId'];
     		if($deviceId ==null || $deviceId ==''){
-    		  die('deviceId is required');
+    		  die('{"error": "deviceId is required"}');
     		}
 			checkDeviceMappingExists($deviceId);
 			$requestsAr= array();
@@ -65,6 +67,7 @@
 										'Address' => $rs->Fields['Address']->value,
 										'Status' => $rs->Fields['StatusText']->value,
 										'NoOfLocks' => $rs->Fields['NoOfLocks']->value,
+										'RequestDate' => $rs->Fields['RequestDate']->value,
 										'AreaName' => $rs->Fields['AreaName']->value
 					);
 					//print $rs->Fields['CustomerName']->value .' - '. $rs->Fields['Address']->value . '<br />';
@@ -93,7 +96,7 @@
 						$sqlInsertTempEmpDevice = "insert into EmployeeDeviceTemp values('". $userName ."','". $deviceId ."')";
 						executeUpdate($sqlInsertTempEmpDevice);
 					}
-					die('no mapping exists for your device : '.$deviceId);
+					die('{"error": "No mapping exists for your device = '.$deviceId.'. Contact admin!"}');
 
     		}
     }
@@ -123,7 +126,7 @@
    }
 
    function logi($str){
-	  error_log($str."\n", 3, "D:/Sandeep/tools/xampp/xampplite/htdocs/jcrm/my-errors.log");
+	  error_log($str."\n", 3, $GLOBALS['logPath']);
 
    }
 
