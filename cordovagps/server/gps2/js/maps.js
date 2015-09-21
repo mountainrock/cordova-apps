@@ -1,5 +1,3 @@
-jQuery(document).ready(function($) {
-    'use strict';
     var routeSelect = document.getElementById('routeSelect');
     var map = document.getElementById('map-canvas');
     var autoRefresh = false;
@@ -7,6 +5,10 @@ jQuery(document).ready(function($) {
     var sessionIDArray = [];
     var viewingAllRoutes = false;
     var baseUrl = baseurl; 
+
+jQuery(document).ready(function($) {
+    'use strict';
+
    
     loadUsersIntoDropdownBox();
     
@@ -53,6 +55,9 @@ jQuery(document).ready(function($) {
         getAllRoutesForMap();
     });
     
+ 
+});
+
 
     function getAllRoutesForMap() {
        var mockJson = "";
@@ -520,5 +525,4 @@ new L.Icon({
         }
         return str;
     }
-    
-});
+   

@@ -8,7 +8,7 @@ include('./application/views/common/common-header.php');
 
 </head>
 <body>
-<body  class="login-page" style="color:black; background-image:url('<?php echo base_url();?>images/bg_blue.png');">
+<body  class="login-page" style="color:black; background:#043752;">
 <div class="container">
     <main id="content" class="widget-login-container" role="main">
         <div class="row">
@@ -35,9 +35,7 @@ include('./application/views/common/common-header.php');
 	                            <div class="form-group">
 	                                <input class="form-control" id="pswd" type="password" placeholder="Password" name="password" value="sandeep">
 	                            </div>
-	                            <div class="form-group">
-	                                <input class="form-control" id="pswd" type="customerId" placeholder="Customer Id" name="customerId" value="1">
-	                            </div>
+	                            
 	                            <div class="clearfix">
 	                                <div class="btn-toolbar pull-right">
 	                                <!--<button type="button" class="btn btn-default btn-sm">Create an Account</button>-->
@@ -83,7 +81,7 @@ include('./application/views/common/common-header.php');
     $('#logintodashboard').click(function () {
      $.post(url + "index.php/Auth/doLogin",  $( "#loginForm" ).serialize(), function (data) {           
            	if(data=="OK"){
-           	 window.location = url + "index.php/User/showManageUsers";
+           	 window.location = url + "index.php/Gps/showMap";
            	}else{
 	            $('#showerror').html(data);
 	            $('#showerror').show();

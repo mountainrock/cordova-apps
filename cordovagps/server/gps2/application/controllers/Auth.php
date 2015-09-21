@@ -25,7 +25,7 @@ class Auth extends CI_Controller {
 	{	
 		$this->form_validation->set_rules('userName', 'User Name', 'required');
            	$this->form_validation->set_rules('password', 'password', 'required');
-              	$this->form_validation->set_rules('customerId', 'customerId', 'required');
+              	
               	if ($this->form_validation->run() == FALSE){
                    echo validation_errors();
 	           exit;
@@ -33,8 +33,8 @@ class Auth extends CI_Controller {
             
 		$userName=   $_REQUEST['userName'];
 		$password=   $_REQUEST['password'];
-		$customerId=   $_REQUEST['customerId'];
-		$user1= $this->user->loginUser($userName,$password, $customerId);
+		
+		$user1= $this->user->loginUser($userName,$password);
 		
             	if($user1!=null){
             		$this->session->set_userdata("userName", $user1[0]->userName);

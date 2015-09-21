@@ -92,5 +92,8 @@
     <script src="<?php echo base_url(); ?>js/leaflet-plugins/bing.js"></script>
     <link rel="stylesheet" href="<?php echo base_url(); ?>js/leaflet-0.7.3/leaflet.css">    
     <link rel="stylesheet" href="<?php echo base_url(); ?>css/gps/styles.css">
+<script>
+loadCurrentUsersLocation();
+</script>
 </html>
     

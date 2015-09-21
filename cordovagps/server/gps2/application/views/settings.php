@@ -15,72 +15,26 @@
                                   <div id="response"></div>
 		                  <form id="frmSaveSettings" class="form-horizontal" method="post" action="<?php echo base_url() ?>index.php/Setting/saveSettings">
    		                      <input type="hidden" class="form-control" name="customerId" id="customerId" value="<?php echo $this->session->userdata('customerId') ?>">
-		                     <div class="form-group">
-		                        <label for="workHours" class="col-sm-2 control-label">Work hours</label>
-		                      
-		                           <div class="table-responsive">
-		                              <table class="table table-bordered table-striped table-condensed cf" >
-		                                 <tr>
-		                                    <td style="width:10%">Mon :</td>
-		                                    <td style="width:10%"> <input type="text" name="mon" id="mon" class="sliderText" value="9:30 AM - 6:00 PM"/></td>
-		                                    <td style="width:50%">
-		                                       <div class="flat-slider slider-range" id="slider-mon" ></div>
-		                                    </td>
-		                                    
-		                                 </tr>
-		                                 <tr>
-		                                    <td>Tue :</td>
-		                                    <td> <input type="text" name="tue" id="tue" class="sliderText" value="9:30 AM - 6:00 PM"/></td>
-		                                    <td>
-		                                       <div class="flat-slider slider-range" id="slider-tue" ></div>
-		                                    </td>
-		                                 </tr>
-		                                 <tr>
-		                                    <td>Wed :</td>
-		                                    <td> <input type="text" name="wed" id="wed" class="sliderText" value="9:30 AM - 6:00 PM"/></td>
-		                                    <td>
-		                                       <div class="flat-slider slider-range" id="slider-wed" ></div>
-		                                    </td>
-		                                 </tr>
-		                                 <tr>
-		                                    <td>Thu :</td>
-		                                    <td> <input type="text" name="thu" id="thu" class="sliderText" value="9:30 AM - 6:00 PM"/></td>
-		                                    <td>
-		                                       <div class="flat-slider slider-range" id="slider-thu"  ></div>
-		                                    </td>
-		                                 </tr>
-		                                 <tr>
-		                                    <td>Fri :</td>
-		                                    <td> <input type="text" name="fri" id="fri"  class="sliderText" value="9:30 AM - 6:00 PM"/></td>
-		                                    <td>
-		                                       <div class="flat-slider slider-range" id="slider-fri"  ></div>
-		                                    </td>
-		                                 </tr>
-		                                 <tr>
-		                                    <td>Sat :</td>
-		                                    <td> <input type="text" name="sat" id="sat"  class="sliderText" value="9:30 AM - 6:00 PM"/></td>
-		                                    <td>
-		                                       <div class="flat-slider slider-range" id="slider-sat"  ></div>
-		                                    </td>
-		                                 </tr>
-		                                 <tr>
-		                                    <td>Sun :</td>
-		                                    <td> <input type="text" name="sun" id="sun" class="sliderText" value="-"/></td>
-		                                    <td>
-		                                       <div class="flat-slider slider-range" id="slider-sun" ></div>
-		                                    </td>
-		                                 </tr>
-		                              </table>
-		                           </div> <!-- table -->
-		                        
-		                     </div>  <!-- form-group-->
+		                    
 		                     
 		                     <div class="form-group">
 		                       	<table>
 						<tr>
 							<td width="5%">&nbsp;</td>
 							<td align="left" nowrap><label class="bold">Server URL</label></td>
-							<td width="90%" align="left"><input id="serverUrl" name="serverUrl" type="text" value="<?php echo $settings['setting.serverUrl'];?>" style="width:70%"/></td>
+							<td width="90%" align="left"><input id="serverUrl" name="serverUrl" type="text" value="<?php echo $settings['serverUrl'];?>" style="width:70%"/></td>
+						</tr>
+						<tr><td colspan="4">&nbsp;</td></tr>
+						<tr>
+							<td width="5%">&nbsp;</td>
+							<td align="left" nowrap><label class="bold">Task Server URL</label></td>
+							<td width="90%" align="left"><input id="taskServerUrl" name="taskServerUrl" type="text" value="<?php echo $settings['taskServerUrl'];?>" style="width:70%"/></td>
+						</tr>
+						<tr><td colspan="4">&nbsp;</td></tr>
+						<tr>
+							<td width="5%">&nbsp;</td>
+							<td align="left" nowrap><label class="bold">APK Update URL</label></td>
+							<td width="90%" align="left"><input id="apkServerUrl" name="apkServerUrl" type="text" value="<?php echo $settings['apkServerUrl'];?>" style="width:70%"/></td>
 						</tr>
 						<tr><td colspan="4">&nbsp;</td></tr>
 						<tr>
@@ -92,20 +46,20 @@
 						<tr>
 							<td width="5%">&nbsp;</td>
 							<td align="left" nowrap ><label class="bold">Gps max age(seconds)</label></td>
-							<td width="90%" align="left"><input id="gpsMaxAge" name="gpsMaxAge" type="text" value="<?php echo $settings['setting.gpsMaxAge'];?>"/></td>
+							<td width="90%" align="left"><input id="gpsMaxAge" name="gpsMaxAge" type="text" value="<?php echo $settings['gpsMaxAge'];?>"/></td>
 						</tr>
 						<tr><td colspan="4">&nbsp;</td></tr>
 						<tr>
 							<td width="5%">&nbsp;</td>
 							<td align="left" nowrap ><label class="bold">Gps accuracy(mtrs)</label></td>
-							<td width="70%" align="left"><input id="gpsAccuracy" name="gpsAccuracy" type="text" value="<?php echo $settings['setting.gpsAccuracy'];?>"/>eg: 10,100,1000</td>
+							<td width="70%" align="left"><input id="gpsAccuracy" name="gpsAccuracy" type="text" value="<?php echo $settings['gpsAccuracy'];?>"/>eg: 10,100,1000</td>
 							<td width="20%" align="left" nowrap></td>
 						</tr>
 						<tr><td colspan="4">&nbsp;</td></tr>
 						<tr>
 							<td width="5%">&nbsp;</td>
 							<td align="left" nowrap><label class="bold">Gps distance filter(mtrs)</label></td>
-							<td width="70%" align="left"><input id="gpsDistanceFilter" name="gpsDistanceFilter" type="text" value="<?php echo $settings['setting.gpsDistanceFilter'];?>"/>eg: 10,20,etc</td>
+							<td width="70%" align="left"><input id="gpsDistanceFilter" name="gpsDistanceFilter" type="text" value="<?php echo $settings['gpsDistanceFilter'];?>"/>eg: 10,20,etc</td>
 							<td width="20%" align="left" nowrap></td>
 						</tr>
 						<tr><td colspan="4">&nbsp;</td></tr>
@@ -114,8 +68,8 @@
 							<td align="left"><label class="bold">GPS toggle button enabled</label></td>
 							<td width="90%" align="left">
 								<select id="locationToggle" name="locationToggle" >
-					                        <option value="false" <?php if($settings['setting.locationToggle'] == "false") echo " selected ";?>>Off</option>
-					                        <option value="true" <?php if($settings['setting.locationToggle'] == "true") echo " selected ";?>>On</option>
+					                        <option value="false" <?php if($settings['locationToggle'] == "false") echo " selected ";?>>Off</option>
+					                        <option value="true" <?php if($settings['locationToggle'] == "true") echo " selected ";?>>On</option>
 					                    </select>
 					               </td>
 						</tr>
@@ -125,8 +79,8 @@
 							<td align="left" nowrap><label class="bold">Debug</label></td>
 							<td width="90%" align="left">
 								<select id="debug" name="debug">
-					                        <option value="false" <?php if($settings['setting.debug'] == "false") echo " selected ";?>>Off</option>
-					                        <option value="true" <?php if($settings['setting.debug'] == "true") echo " selected ";?>>On</option>
+					                        <option value="false" <?php if($settings['debug'] == "false") echo " selected ";?>>Off</option>
+					                        <option value="true" <?php if($settings['debug'] == "true") echo " selected ";?>>On</option>
 					                    </select>
 					                  </td>
 						</tr>
@@ -135,16 +89,96 @@
 							<td width="5%">&nbsp;</td>
 							<td align="left" nowrap><label class="bold">Auto startup</label></td>
 							<td width="90%" align="left">
-								<select name="autostart" id="autostart" >
-			                        <option value="false" <?php if($settings['setting.autostart'] == "false") echo " selected ";?>>Off</option>
-			                        <option value="true" <?php if($settings['setting.autostart'] == "true") echo " selected ";?>>On</option>
-			                    </select>
-			                  </td>
-					</tr>
+							    <select name="autostart" id="autostart" >
+					                        <option value="false" <?php if($settings['autostart'] == "false") echo " selected ";?>>Off</option>
+					                        <option value="true" <?php if($settings['autostart'] == "true") echo " selected ";?>>On</option>
+					                    </select>
+					                 </td>
+						</tr>
+						<tr><td colspan="4">&nbsp;</td></tr>
+						<tr>
+							<td width="5%">&nbsp;</td>
+							<td align="left" nowrap><label class="bold">Auto start GPS</label></td>
+							<td width="90%" align="left">
+							    <select name="autoTurnOnGps" id="autoTurnOnGps" >
+					                        <option value="false" <?php if($settings['autoTurnOnGps'] == "false") echo " selected ";?>>Off</option>
+					                        <option value="true" <?php if($settings['autoTurnOnGps'] == "true") echo " selected ";?>>On</option>
+					                    </select>
+					                 </td>
+						</tr>
 					</table>
 		                     </div>
 		                     
-		                     
+		                      <div class="form-group">
+		                       
+		                      
+		                           <div class="table-responsive">
+		                              <table class="table table-bordered table-striped table-condensed cf" >
+		                               <tr>
+		                              	    <td width="5%">&nbsp;</td>
+		                                    <td colspan=4 align=left> <label for="workHours" class="bold">Work hours</label></td>
+		                                 </tr>
+		                                 <tr>
+		                                    <td width="5%">&nbsp;</td>
+		                                    <td style="width:10%">Mon :</td>
+		                                    <td style="width:10%"> <input type="text" name="mon" id="mon" class="sliderText" value="9:30 AM - 6:00 PM"/></td>
+		                                    <td style="width:50%">
+		                                       <div class="flat-slider slider-range" id="slider-mon" ></div>
+		                                    </td>
+		                                    
+		                                 </tr>
+		                                 <tr>
+		                                    <td width="5%">&nbsp;</td>
+		                                    <td>Tue :</td>
+		                                    <td> <input type="text" name="tue" id="tue" class="sliderText" value="9:30 AM - 6:00 PM"/></td>
+		                                    <td>
+		                                       <div class="flat-slider slider-range" id="slider-tue" ></div>
+		                                    </td>
+		                                 </tr>
+		                                 <tr>
+		                                    <td width="5%">&nbsp;</td>
+		                                    <td>Wed :</td>
+		                                    <td> <input type="text" name="wed" id="wed" class="sliderText" value="9:30 AM - 6:00 PM"/></td>
+		                                    <td>
+		                                       <div class="flat-slider slider-range" id="slider-wed" ></div>
+		                                    </td>
+		                                 </tr>
+		                                 <tr>
+		                                    <td width="5%">&nbsp;</td>
+		                                    <td>Thu :</td>
+		                                    <td> <input type="text" name="thu" id="thu" class="sliderText" value="9:30 AM - 6:00 PM"/></td>
+		                                    <td>
+		                                       <div class="flat-slider slider-range" id="slider-thu"  ></div>
+		                                    </td>
+		                                 </tr>
+		                                 <tr>
+		                                    <td width="5%">&nbsp;</td>
+		                                    <td>Fri :</td>
+		                                    <td> <input type="text" name="fri" id="fri"  class="sliderText" value="9:30 AM - 6:00 PM"/></td>
+		                                    <td>
+		                                       <div class="flat-slider slider-range" id="slider-fri"  ></div>
+		                                    </td>
+		                                 </tr>
+		                                 <tr>
+		                                    <td width="5%">&nbsp;</td>
+		                                    <td>Sat :</td>
+		                                    <td> <input type="text" name="sat" id="sat"  class="sliderText" value="9:30 AM - 6:00 PM"/></td>
+		                                    <td>
+		                                       <div class="flat-slider slider-range" id="slider-sat"  ></div>
+		                                    </td>
+		                                 </tr>
+		                                 <tr>
+		                                    <td width="5%">&nbsp;</td>
+		                                    <td>Sun :</td>
+		                                    <td> <input type="text" name="sun" id="sun" class="sliderText" value="-"/></td>
+		                                    <td>
+		                                       <div class="flat-slider slider-range" id="slider-sun" ></div>
+		                                    </td>
+		                                 </tr>
+		                              </table>
+		                           </div> <!-- table -->
+		                        
+		                     </div>  <!-- form-group-->
 		                     
 		                     <div class="form-group">
 		                        <div class="col-sm-offset-2 col-sm-10">
@@ -196,7 +230,7 @@
 <script>
 $(document).ready(function (){
 
-        var workHours ='<?php echo $settings['setting.workHours'];?>';
+        var workHours ='<?php echo $settings['workHours'];?>';
         var workHoursAr = workHours.split(",");
         var weekDays=["mon","tue","wed","thu","fri","sat","sun"];
 

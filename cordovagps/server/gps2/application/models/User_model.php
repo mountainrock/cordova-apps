@@ -6,11 +6,10 @@ class User_model extends CI_Model {
 		parent::__construct();
 	}
     
-	function loginUser($userName,$password, $customerId){
+	function loginUser($userName,$password){
 		$this->db->select('userId,userName,deviceId,phoneNumber,created,customerId')
 			->where('userName',$userName)
-			->where('password',$password)
-			->where('customerId',$customerId);
+			->where('password',$password);
 			
 		 return $this->db->get('user')->result(); 
 	}
@@ -37,6 +36,14 @@ class User_model extends CI_Model {
 	    echo'<div class="alert alert-success">One record inserted Successfully</div>';
 	    exit;
 	}
+        
+       function getUserName($deviceId){
+           
+            $this->db->select('userName')
+			->where('deviceId',$deviceId);
+	   
+	    return $this->db->get('user')->result();
+       }
 	
 	function updateUser($id, $data) {
 		$this->db->where('userId', $id );
