@@ -455,8 +455,6 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */
 	protected function _limit($sql)
 	{
-		$c = version_compare($this->version(), 123, 111);	
-		echo "version ".$this->version()."<br/>";
 		$limit = $this->qb_offset + $this->qb_limit;
 
 		// As of SQL Server 2005 (9.0.*) ROW_NUMBER() is supported,
