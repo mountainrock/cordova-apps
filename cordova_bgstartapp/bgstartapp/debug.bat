@@ -1,0 +1,1 @@
+adb logcat -v time StartAppService:I CordovaLog:D AndroidRuntime:E ActivityThread:E *:S
