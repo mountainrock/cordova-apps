@@ -1,9 +1,12 @@
 package com.bri8.cordova.bgloc;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Calendar;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -44,6 +47,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Message;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.provider.Settings;
@@ -52,7 +56,7 @@ import android.widget.Toast;
 import static java.lang.Math.*;
 
 public class LocationUpdateService extends Service implements LocationListener {
-    private static final String TAG = "LocationUpdateService";
+    public static final String TAG = "LocationUpdateService";
     private static final String STATIONARY_REGION_ACTION        = "com.bri8.cordova.bgloc.STATIONARY_REGION_ACTION";
     private static final String STATIONARY_ALARM_ACTION         = "com.bri8.cordova.bgloc.STATIONARY_ALARM_ACTION";
     private static final String SINGLE_LOCATION_UPDATE_ACTION   = "com.bri8.cordova.bgloc.SINGLE_LOCATION_UPDATE_ACTION";
@@ -88,14 +92,19 @@ public class LocationUpdateService extends Service implements LocationListener {
     private Integer distanceFilter = 30; //in meters
     private Integer scaledDistanceFilter;
     private Integer locationTimeout = 30;
-    private Boolean isDebugging;
+    private Boolean isDebugging= false;
     private String notificationTitle = "Background checking";
     private String notificationText = "ENABLED";
-    private Boolean stopOnTerminate;
-    private boolean isGpsTurnedOnbyUser;
+    private Boolean isGpsTurnedOnbyUser;
+    private boolean isInternetTurnedOnbyUser;
     private boolean turnGpsOnAutomatically;
     private boolean turnInternetOnAutomatically;
+    private String workHours;
+    private java.util.Map  workHoursMap = new java.util.LinkedHashMap();
     
+    String eventType;
+    Context ctx=this;
+
     private static Timer gpsTurnOntimer = new Timer();
 
     private ToneGenerator toneGenerator;
@@ -107,7 +116,9 @@ public class LocationUpdateService extends Service implements LocationListener {
     private ConnectivityManager connectivityManager;
     private NotificationManager notificationManager;
     public static TelephonyManager telephonyManager = null;
+    private Intent onStartIntent = new Intent();
 
+    private boolean isPostingLocations = false;
     @Override
     public IBinder onBind(Intent intent) {
         // TODO Auto-generated method stub
@@ -160,21 +171,28 @@ public class LocationUpdateService extends Service implements LocationListener {
         criteria.setBearingRequired(false);
         criteria.setSpeedRequired(true);
         criteria.setCostAllowed(true);
-        
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG, "Received start id " + startId + ": " + intent);
+        Log.i(TAG, "LocationUpsateService Started " + startId + ": " + intent);
+        if(isDebugging)
+        	Toast.makeText(this, "LocationUpsateService Started", Toast.LENGTH_LONG).show();
         if (intent != null) {
             try {
                 params = new JSONObject(intent.getStringExtra("params"));
                 headers = new JSONObject(intent.getStringExtra("headers"));
+                onStartIntent.putExtra("params", intent.getStringExtra("params"));
+                onStartIntent.putExtra("headers", intent.getStringExtra("headers"));
+
                 turnGpsOnAutomatically = Boolean.parseBoolean(params.getString("turnGpsOnAutomatically"));
                 turnInternetOnAutomatically  = Boolean.parseBoolean(params.getString("turnInternetOnAutomatically"));
-              
+                eventType = params.getString("eventtype");
+                workHours = params.getString("workHours");
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
+            	 Log.e(TAG, "Error onStartCommand : "+ e.getMessage());
                 e.printStackTrace();
             }
             url = intent.getStringExtra("url");
@@ -186,7 +204,7 @@ public class LocationUpdateService extends Service implements LocationListener {
             isDebugging = Boolean.parseBoolean(intent.getStringExtra("isDebugging"));
             notificationTitle = intent.getStringExtra("notificationTitle");
             notificationText = intent.getStringExtra("notificationText");
-            
+
             // Build a Notification required for running service in foreground.
             Intent main = new Intent(this, BackgroundGpsPlugin.class);
             main.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -218,22 +236,75 @@ public class LocationUpdateService extends Service implements LocationListener {
         Log.i(TAG, "- notificationText: "   + notificationText);
         Log.i(TAG, "- turnGpsOnAutomatically: "   + turnGpsOnAutomatically);
         Log.i(TAG, "- turnInternetOnAutomatically: "   + turnInternetOnAutomatically);
+        Log.i(TAG, "- workHours: "   + workHours);
+        if(workHours!=null){
+        	workHoursMap = TimerUtils.getWorkHoursMap(workHours);
+        }
         
+
         this.setPace(false);
-        Toast.makeText(this, "Background location tracking started : debug = "+ isDebugging, Toast.LENGTH_SHORT).show();
+        if(isDebugging)
+        	Toast.makeText(this, "Background location tracking started : debug = "+ isDebugging, Toast.LENGTH_SHORT).show();
 
         // the below turn/on off without user permission is based on a user setting!!!
-        //turn on or off GPS toggled based on locationTimeout interval 
-        
-        if(turnGpsOnAutomatically){
-        	int scheduleGpsOnInterval = locationTimeout -5; //GPS turn on interval in case its off
-        	Log.i(TAG, " Scheduling to turnGpsOnAutomatically: " + turnGpsOnAutomatically +", scheduleGpsOnInterval(secs) :"+ scheduleGpsOnInterval);
-			gpsTurnOntimer.scheduleAtFixedRate(new GpsTurnOnTask(), 0, scheduleGpsOnInterval * 1000);
-        }
+        //turn on or off GPS toggled based on locationTimeout interval
+
+        scheduleGpsTurnOnAutomatically();
         //We want this service to continue running until it is explicitly stopped
         return START_REDELIVER_INTENT;
     }
-    
+
+
+
+	private void scheduleGpsTurnOnAutomatically() {
+		if(turnGpsOnAutomatically){
+        	final int scheduleGpsOnInterval = locationTimeout - 5; //GPS turn on interval in case its off
+        	final int gpsTurnOffIntervalGap = 20;
+        	Log.i(TAG, " Scheduling to turnGpsOnAutomatically: " + turnGpsOnAutomatically +", scheduleGpsOnInterval(secs) :"+ scheduleGpsOnInterval);
+			//gpsTurnOntimer.scheduleAtFixedRate(new GpsTurnOnTask(), 0, 20 * 1000); //scheduleGpsOnInterval
+			final Handler handlerGpsOn = new Handler();
+			final Handler handlerGpsOff = new Handler();
+			
+			// turn off gps/internet after 30 seconds automatically.
+			final Runnable gpsTurnOffTask = new Runnable() {
+				   @Override
+				   public void run() {
+					   try {
+							Log.i(TAG, "GpsTurnOffTask called from post delayed");
+							if(workHours!=null && TimerUtils.isTimeInRange(workHoursMap) == false){
+								turnGPSOff();
+							}else{
+								Log.i(TAG, "Not turning off GPS during non Work hours");
+							}
+						} catch (Exception e) {
+							Log.e(TAG, "Exception GpsTurnOffTask handler :" + e.getMessage(), e);
+						}
+				   }
+			};
+			// turn on gps/internet automatically.
+			Runnable gpsTurnOnTask = new Runnable() {
+				   @Override
+				   public void run() {
+					   try {
+							Log.i(TAG, "GpsTurnOnTask called from post delayed");
+							if(workHours!=null && TimerUtils.isTimeInRange(workHoursMap) == false){
+								turnGPSOn();
+								handlerGpsOn.postDelayed(this, scheduleGpsOnInterval *1000);
+								handlerGpsOff.postDelayed(gpsTurnOffTask, (scheduleGpsOnInterval+gpsTurnOffIntervalGap) *1000);
+							}else{
+								Log.i(TAG, "Not turning on GPS during non Work hours");
+							}
+						} catch (Exception e) {
+							Log.e(TAG, "Exception GpsTurnOnTask handler :" + e.getMessage(), e);
+						}
+				   }
+				};
+			handlerGpsOn.postDelayed(gpsTurnOnTask, scheduleGpsOnInterval *1000);
+			handlerGpsOff.postDelayed(gpsTurnOffTask, (scheduleGpsOnInterval+gpsTurnOffIntervalGap) *1000);
+			turnGPSOn();
+        }
+	}
+
 
     @TargetApi(16)
     private Notification buildForegroundNotification(Notification.Builder builder) {
@@ -286,17 +357,17 @@ public class LocationUpdateService extends Service implements LocationListener {
 
         // Temporarily turn on super-aggressive geolocation on all providers when acquiring velocity or stationary location.
         if (isAcquiringSpeed || isAcquiringStationaryLocation) {
-        	
+
             locationAcquisitionAttempts = 0;
-            
+
+            Log.i(TAG, String.format("Aggressive ON :isAquiringSpeed : %s,isStationary = %s ", isAcquiringSpeed , isAcquiringStationaryLocation));
             if (isDebugging) {
-            	Log.i(TAG, String.format("Aggressive ON :isAquiringSpeed : %s,isStationary = %s ", isAcquiringSpeed , isAcquiringStationaryLocation));
-                Toast.makeText(this, String.format("Aggressive ON :isAquiringSpeed : %s,isStationary = %s ", isAcquiringSpeed , isAcquiringStationaryLocation), Toast.LENGTH_SHORT).show();
+            	Toast.makeText(this, String.format("Aggressive ON :isAquiringSpeed : %s,isStationary = %s ", isAcquiringSpeed , isAcquiringStationaryLocation), Toast.LENGTH_SHORT).show();
             }
            List<String> matchingProviders = locationManager.getAllProviders();
 			/*
-            * 
-            Note: the below would use all available providers. Not using this to avoid duplicate gps positions when aquiring speed. 
+            *
+            Note: the below would use all available providers. Not using this to avoid duplicate gps positions when aquiring speed.
            */
             Log.i(TAG, String.format(" Using GPS providers: %s",matchingProviders ));
             if(matchingProviders!=null && matchingProviders.contains("gps")){
@@ -304,18 +375,18 @@ public class LocationUpdateService extends Service implements LocationListener {
             }else{ //try all available providers except passive
 	            for (String provider: matchingProviders) {
 	                if (provider != LocationManager.PASSIVE_PROVIDER) {
-	                    //locationManager.requestLocationUpdates(provider, 0, 0, this); 
+	                    //locationManager.requestLocationUpdates(provider, 0, 0, this);
 	                	locationManager.requestLocationUpdates(provider, locationTimeout/2 * 1000, 0, this);   //timeout is half the normal timeout
-	                   
+
 	                }
 	            }
             }
            // locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria, true), locationTimeout/2 * 1000, 0, this);   //timeout is half the normal timeout
-            
+
         } else {
+        	Log.i(TAG, String.format("Normal ON :locationTimeout %s, scaledDistanceFilter :%s", locationTimeout,scaledDistanceFilter));
         	if (isDebugging) {
-        		Log.i(TAG, String.format("Normal ON :locationTimeout %s, scaledDistanceFilter :%s", locationTimeout,scaledDistanceFilter));
-                Toast.makeText(this, String.format("Normal ON :locationTimeout %s, scaledDistanceFilter :%s", locationTimeout,scaledDistanceFilter ), Toast.LENGTH_SHORT).show();
+        		Toast.makeText(this, String.format("Normal ON :locationTimeout %s, scaledDistanceFilter :%s", locationTimeout,scaledDistanceFilter ), Toast.LENGTH_SHORT).show();
             }
             locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria, true), locationTimeout*1000, scaledDistanceFilter, this);
         }
@@ -387,7 +458,7 @@ public class LocationUpdateService extends Service implements LocationListener {
     }
 
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "- onLocationChanged: " + location.getLatitude() + "," + location.getLongitude() + ", accuracy: " + location.getAccuracy() + ", isMoving: " + isMoving + ", speed: " + location.getSpeed());
+        Log.d(TAG, "- onLocationChanged: provider : "+location.getProvider()+" :: " + location.getLatitude() + "," + location.getLongitude() + ", accuracy: " + location.getAccuracy() + ", isMoving: " + isMoving + ", speed: " + location.getSpeed());
 
         if (!isMoving && !isAcquiringStationaryLocation && stationaryLocation==null) {
             // Perhaps our GPS signal was interupted, re-acquire a stationaryLocation now.
@@ -453,10 +524,6 @@ public class LocationUpdateService extends Service implements LocationListener {
         // Go ahead and cache, push to server
         lastLocation = location;
         persistLocation(location);
-        
-        if (false == isGpsTurnedOnbyUser && turnGpsOnAutomatically){
-    		turnGPSOff();
-    	}
 
         if (this.isNetworkConnected()) {
             Log.d(TAG, "Scheduling location network post");
@@ -505,7 +572,7 @@ public class LocationUpdateService extends Service implements LocationListener {
         locationManager.removeUpdates(this);
         stationaryLocation = location;
 
-        Log.i(TAG, "- startMonitoringStationaryRegion (" + location.getLatitude() + "," + location.getLongitude() + "), accuracy:" + location.getAccuracy());
+        Log.i(TAG, "- startMonitoringStationaryRegion ( provider : "+location.getProvider()+" :: latlong:" + location.getLatitude() + "," + location.getLongitude() + "), accuracy:" + location.getAccuracy());
 
         // Here be the execution of the stationary region monitor
         locationManager.addProximityAlert(
@@ -658,6 +725,8 @@ public class LocationUpdateService extends Service implements LocationListener {
             }
         }
     };
+
+
     /**
     * TODO Experimental, hoping to implement some sort of "significant changes" system here like ios based upon cell-tower changes.
     */
@@ -712,6 +781,7 @@ public class LocationUpdateService extends Service implements LocationListener {
             location.put("altitude", l.getAltitude());
             location.put("recorded_at", dao.dateToString(l.getRecordedAt()));
             params.put("location", location);
+            params.put("eventtype", eventType+"-"+ l.getProvider());
 
             Log.i(TAG, "location: " + location.toString());
 
@@ -766,8 +836,9 @@ public class LocationUpdateService extends Service implements LocationListener {
 
     @Override
     public void onDestroy() {
+    	cleanUp();
         Log.w(TAG, "------------------------------------------ Destroyed Location update Service");
-        cleanUp();
+       // setupAlarmManager();
         super.onDestroy();
     }
     private void cleanUp() {
@@ -789,6 +860,9 @@ public class LocationUpdateService extends Service implements LocationListener {
             }
         }
         stopForeground(true);
+        if(isGpsTurnedOnbyUser!=null && isGpsTurnedOnbyUser ==false){
+        	turnGPSOff();
+        }
         wakeLock.release();
     }
 
@@ -799,17 +873,133 @@ public class LocationUpdateService extends Service implements LocationListener {
         super.onTaskRemoved(rootIntent);
     }
 
+
+
+    public void turnGPSOn()
+    {
+    	try{
+    		
+    		Log.i(TAG, "Called turnGPSOn");
+	        String provider = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+	        if(!provider.contains("gps") && turnGpsOnAutomatically)
+	            {
+	        	Log.i(TAG, "\tTurning on GPS tracking automatically");
+	        	isGpsTurnedOnbyUser = false;
+	        	// Toast.makeText(this, "Turning on GPS tracking", Toast.LENGTH_SHORT).show();
+	            //if gps is disabled
+	        	if(RootHelper.isRooted()){
+					RootHelper.grantSecureSettings(this);
+				}
+	        	Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
+		        intent.putExtra("enabled", true);
+		        this.sendBroadcast(intent);
+	            Log.i(TAG, "\t\tSending broadcast to turn on GPS tracking automatically");
+	        }else{
+	        	Log.i(TAG, "\tGPS tracking already turned on by user");
+	        	isGpsTurnedOnbyUser = true;
+	        }
+
+	        if(turnInternetOnAutomatically){
+	        	Log.i(TAG, "*\t\tChecking to turn on internet automatically");
+				setMobileDataEnabled(true);
+			}
+    	}catch(Exception e){
+    		Log.e(TAG, "Exception turnGPSOn :"+ e.getMessage(),e);
+    	}
+    }
+
+    public void turnGPSOff()
+    {
+    	Log.i(TAG, "******OFFF **** ");
+    	Log.i(TAG, "Called turnGPSOff");
+    	try{
+    		if(isNetworkConnected()){
+    			schedulePostLocations();
+    		}
+    		
+	        String provider = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+	        //provider.contains("gps") &&
+	        if(isGpsTurnedOnbyUser == false){ //if gps is enabled and not turned on by user
+	        	Log.i(TAG, "\t\tTurning off GPS tracking automatically isGpsTurnedOnbyUser : "+ isGpsTurnedOnbyUser);
+	        	if(RootHelper.isRooted()){
+					RootHelper.grantSecureSettings(this);
+				}
+	        	Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
+	        	intent.putExtra("enabled", false);
+	        	sendBroadcast(intent);
+	        }else{
+	        	Log.i(TAG, "\t\tNot Turning off GPS as its not started programatically isGpsTurnedOnbyUser : "+ isGpsTurnedOnbyUser +", provider : "+ provider);
+	        }
+	        Log.i(TAG, "  \t\tCheck to turn off internet : turnInternetOnAutomatically="+turnInternetOnAutomatically+", isInternetTurnedOnbyUser="+isInternetTurnedOnbyUser);
+	        if(turnInternetOnAutomatically && isInternetTurnedOnbyUser ==false){
+	        	Log.i(TAG, "  \t\tCheck and turn off internet");
+				setMobileDataEnabled(false);
+			}
+	    }catch(Exception e){
+			Log.e(TAG, "Exception turnGPSOff :"+ e.getMessage(),e);
+		}
+    }
+
+    private void setMobileDataEnabled( boolean enableInternet)  {
+    	Context context = this;
+    	try {
+    		Log.i(TAG, "  \t\tCalled setMobileDataEnabled() : " + enableInternet);
+    		if(isNetworkConnected() && enableInternet == true ){
+    			Log.i(TAG, "  \t\t Network already connected");
+    			isInternetTurnedOnbyUser = true;
+    			if(isDebugging){
+    				Toast.makeText(context, "Super GPS: Internet already connected", Toast.LENGTH_SHORT).show();
+    			}
+    			return;
+    		}
+    		if(enableInternet ==false && isPostingLocations){
+    			Thread.sleep(5*1000); //wait till posting is complete
+    		}
+    		RootHelper.setMobileDataEnabled(this, enableInternet);
+
+	        if(enableInternet){
+	        	isInternetTurnedOnbyUser = false;
+	        }
+	        Log.i(TAG, "  \t\t Internet turned automatically to : isInternetTurnedOnbyUser :"+isInternetTurnedOnbyUser);
+    	 } catch (Exception e) {
+             // TODO Auto-generated catch block
+              Toast.makeText(context, "Super GPS : setMobileDataEnabled : "+e.getMessage(), Toast.LENGTH_SHORT).show();
+
+         }
+    }
+
     private class PostLocationTask extends AsyncTask<Object, Integer, Boolean> {
 
         @Override
         protected Boolean doInBackground(Object...objects) {
-            Log.d(TAG, "Executing PostLocationTask#doInBackground");
-            LocationDAO locationDAO = DAOFactory.createLocationDAO(LocationUpdateService.this.getApplicationContext());
-            for (com.bri8.cordova.bgloc.data.Location savedLocation : locationDAO.getAllLocations()) {
-                Log.d(TAG, "Posting saved location");
-                if (postLocation(savedLocation, locationDAO)) {
-                    locationDAO.deleteLocation(savedLocation);
-                }
+            Log.i(TAG, "Executing PostLocationTask#doInBackground : isPostingLocations : "+ isPostingLocations);
+			try {
+				if (isPostingLocations == false) {
+					isPostingLocations = true;
+					LocationDAO locationDAO = DAOFactory.createLocationDAO(LocationUpdateService.this.getApplicationContext());
+					com.bri8.cordova.bgloc.data.Location[] allLocations = locationDAO.getAllLocations();
+					if (allLocations != null)
+						Log.i(TAG, "\t\t Found locations to post:  " + allLocations.length);
+
+					for (com.bri8.cordova.bgloc.data.Location savedLocation : allLocations) {
+						Log.d(TAG, "Posting saved location");
+						if (postLocation(savedLocation, locationDAO)) {
+							locationDAO.deleteLocation(savedLocation);
+						}
+					}
+					Log.i(TAG, "\t\t\t Calling turn off GPS isGpsTurnedOnbyUser : " + isGpsTurnedOnbyUser + ",turnGpsOnAutomatically : " + turnGpsOnAutomatically);
+					if (false == isGpsTurnedOnbyUser && turnGpsOnAutomatically) {
+						Log.i(TAG, "\t\t\t Calling turn off GPS");
+						turnGPSOff();
+					}
+				}else{
+					Log.i(TAG,"***Not Posting location to server as isPostingLocations : "+ isPostingLocations);
+				}
+			}catch (Exception e) {
+				e.printStackTrace();
+				Log.i(TAG, "\t\t\t Failed : "+ e.getMessage());
+            }finally{
+            	isPostingLocations = false;
             }
             return true;
         }
@@ -818,82 +1008,6 @@ public class LocationUpdateService extends Service implements LocationListener {
             Log.d(TAG, "PostLocationTask#onPostExecture");
         }
     }
-    
-    public void turnGPSOn()
-    {
-    	try{
-	        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
-	        intent.putExtra("enabled", true);
-	        this.sendBroadcast(intent);
-	        String provider = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-	        if(!provider.contains("gps") && turnGpsOnAutomatically)
-	            { 
-	        	Log.i(TAG, "  Turning on GPS tracking automatically");
-	        	isGpsTurnedOnbyUser = false;
-	        	// Toast.makeText(this, "Turning on GPS tracking", Toast.LENGTH_SHORT).show();
-	            //if gps is disabled
-	            final Intent poke = new Intent();
-	            poke.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider"); 
-	            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
-	            poke.setData(Uri.parse("3")); 
-	            Log.i(TAG, "   Sending broadcast to turn on GPS tracking automatically");
-	            this.sendBroadcast(poke);
-	        }else{
-	        	Log.i(TAG, "  GPS tracking already turned on by user");
-	        	isGpsTurnedOnbyUser = true;
-	        }
-    	}catch(Exception e){
-    		Log.e(TAG, "Exception turnGPSOn :"+ e.getMessage(),e);
-    	}
-    }
-    
-    public void turnGPSOff()
-    {
-    	Log.i(TAG, "called turnGPSOff");
-    	try{
-	        String provider = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-	        //provider.contains("gps") && 
-	        if(isGpsTurnedOnbyUser == false){ //if gps is enabled and not turned on by user
-	        	Log.i(TAG, "Turning off GPS tracking automatically isGpsTurnedOnbyUser : "+ isGpsTurnedOnbyUser);
-	        	final Intent poke = new Intent();
-	            poke.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
-	            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
-	            poke.setData(Uri.parse("3")); 
-	            this.sendBroadcast(poke);
-	        }else{
-	        	Log.i(TAG, "Not Turning off GPS as its not started programatically isGpsTurnedOnbyUser : "+ isGpsTurnedOnbyUser +", provider : "+ provider);
-	        }
-	    }catch(Exception e){
-			Log.e(TAG, "Exception turnGPSOff :"+ e.getMessage(),e);
-		}
-    }
 
-	private class GpsTurnOnTask extends TimerTask {
 
-		public void run() {
-			try {
-				if (Looper.myLooper() == null) {
-					Looper.prepare();
-				}
-				final Handler handler = new Handler();
-				handler.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							Log.i(TAG, " GpsTurnOnTask called ");
-							turnGPSOn();
-							handler.removeCallbacks(this);
-							Looper.myLooper().quit();
-						} catch (Exception e) {
-							Log.e(TAG, "Exception GpsTurnOnTask handler :" + e.getMessage(), e);
-						}
-					}
-				}, 1000);
-
-				Looper.loop();
-			} catch (Exception e) {
-				Log.e(TAG, "Exception GpsTurnOnTask :" + e.getMessage(), e);
-			}
-		}
-	}  
 }

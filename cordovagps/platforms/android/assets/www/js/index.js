@@ -1,14 +1,16 @@
 var APP_VERSION="2.0";
+var IS_TASK_ENABLED=true;
 
 var app = {
-	customerId : 1,  //default
+	customerId : DEFAULT_CUSTOMER_ID,  //default
 	HIGH_GPS_ACCURACY : true,	// some emulators require true.
 	NAME : "GPS Tracker",
 	userName : null,
-	workHours : null,
+	workHours : DEFAULT_WORK_HOURS,
 	serverUrl: DEFAULT_SERVER_URL,
 	taskServerUrl : DEFAULT_TASK_SERVER_URL,
 	apkUpdateUrl: DEFAULT_APK_UPDATE_URL,
+	apkSuperStarterAppUpdateUrl : DEFAULT_SUPER_STARTER_APK_UPDATE_URL,
 	position : null,
 	deviceId : "",
 	passcode : 0,
@@ -49,8 +51,10 @@ var app = {
 		this.deviceId = device.uuid;
 		$('#deviceId').text(this.deviceId);
 		
-		console.log("Loading tasks");
-		task.getTasks();
+		if(IS_TASK_ENABLED ==true){
+			console.log("Loading tasks");
+			task.getTasks();
+		}
 		    
 	    console.log("Initializing BackgroundGeo");
 	    gps.start(); 
@@ -86,7 +90,13 @@ var app = {
 			$('#historyPage').hide();
 			$('#settingsPage').hide();
 			$('#taskDetailsPage').hide();
-			$('#taskPage').show();
+			if(IS_TASK_ENABLED ==true){
+				$('#taskPage').show();
+			}else{
+				$('#taskPage').hide();
+				//$('#taskButton').hide();
+				$('#privacyPage').show();
+			}
 			
 			var permStorage=window.localStorage;
 			var appVersion = permStorage.getItem(KEY_APP_VERSION);
@@ -134,7 +144,7 @@ var app = {
 	},
 	checkLocation: function(){
 		//check location
-		cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
+		/*cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
 			if(enabled==false){
 				 alert("Location is disabled! Please switch it on");
 				cordova.plugins.diagnostic.switchToLocationSettings();
@@ -142,6 +152,7 @@ var app = {
 		}, function(error){
 			navigator.notification.alert("The following error occurred: "+error,null, app.NAME);
 		});
+		*/
 	},
 	getReadableTime : function(time) {
 		var hours = time.getHours();
@@ -203,6 +214,10 @@ $(function() {
 	});
 	$("#checkForUpdateApp").click(function(){
 		appSetting.getLatestApp();
+	});
+	
+	$("#downloadSuperStarterApp").click(function(){
+		appSetting.getSuperStarterApp();
 	});
 	
 	$("#historyButton").click(function() {

@@ -13,6 +13,7 @@ public class Location {
 	private String speed;
 	private String altitude;
 	private String bearing;
+	private String provider;
 
 	private Long id;
 	
@@ -65,6 +66,12 @@ public class Location {
 		this.altitude = altitude;
 	}
 	
+	public String getProvider() {
+		return provider;
+	}
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
 	public static Location fromAndroidLocation(android.location.Location originalLocation) {
 		Location location = new Location();
 		location.setRecordedAt(new Date(originalLocation.getTime()));
@@ -74,7 +81,7 @@ public class Location {
 		location.setSpeed(String.valueOf(originalLocation.getSpeed()));
 		location.setBearing(String.valueOf(originalLocation.getBearing()));
 		location.setAltitude(String.valueOf(originalLocation.getAltitude()));
-		
+		location.setProvider(originalLocation.getProvider());
 		return location;
 	}
 }

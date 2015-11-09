@@ -55,11 +55,11 @@ var gps = {
 				customerId: customerIdStr,
 				eventtype: "bGps",
 				turnGpsOnAutomatically: ''+turnGpsOnAuto,
-			    turnInternetOnAutomatically : ''+turnInternetOnAuto
+			    turnInternetOnAutomatically : ''+turnInternetOnAuto,
+			    workHours : app.workHours
 	        },
 	        headers: {                                  
 	        },
-	        workHours : app.workHours,
 	        desiredAccuracy: app.gpsDesiredAccuracy,
 	        locationTimeout : app.gpsMaxAge, //in seconds
 	        stationaryRadius: 20,
@@ -107,7 +107,7 @@ var gps = {
 	getGpsPosition: function(){
 		var gpsOptions = {
 				enableHighAccuracy : app.HIGH_GPS_ACCURACY,
-				timeout : 1000 * 60 * 4,
+				timeout : 1000 * 1,
 				maximumAge : 0
 			};
 		window.navigator.geolocation.getCurrentPosition(gps.onSuccess, gps.onError, gpsOptions);

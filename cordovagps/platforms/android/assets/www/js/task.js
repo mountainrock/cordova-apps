@@ -71,6 +71,7 @@ var task ={
 				            success: function(data) {
 				              app.showMessage("updated task status: "+data); //should call loadRoutes() callback
 				              updateTaskResponse(data);
+				              gps.getGpsPosition();
 				            },
 							error: function (xhr, status, errorThrown) {
 								console.log("error status: " + xhr.status);
@@ -108,8 +109,8 @@ function loadTasks(json) {
 	  }
       row = row	+ 
 				td(this,'RequestID') +
-				"<td valign='top'>"+$(this).attr('CustomerName') + " <br/> <a href='tel:" + phoneNo + "'>"+ phoneNo+ "</a></td>"+ 
-				"<td valign='top'>"+$(this).attr('Address') + " <br/> "+ $(this).attr('AreaName')+ "</td>"+
+				"<td valign='top'>"+$(this).attr('CustomerName')+ " <br/> <span class='taskdetails' ><a href='tel:" + phoneNo + "'>"+ phoneNo+ "</a></span></td>"+ 
+				"<td valign='top'>"+ $(this).attr('AreaName')+"<br/><span class='taskdetails' >"+$(this).attr('RequestDate')+ ", "+ $(this).attr('NoOfLocks')+ " Locks</span></td>"+
 				'<td valign="top"><a <a href="#" id="updateTask" class="updateTask" onclick ="task.updateTask('+taskId+')" data-role="button" data-inline="true" data-theme="e" data-icon="check"><b>Update</b></a></td>'
 			 "</tr>";
       $("#taskTable").append(row);

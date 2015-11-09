@@ -95,7 +95,7 @@ public class BackgroundGpsPlugin extends CordovaPlugin {
 
         return result;
     }
-
+    
     /**
      * Override method in CordovaPlugin.
      * Checks to see if it should turn off
