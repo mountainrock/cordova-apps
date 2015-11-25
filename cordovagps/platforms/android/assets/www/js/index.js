@@ -22,6 +22,7 @@ var app = {
     debug : false,
     autostart : true,
     turnGpsOnAutomatically : DEFAULT_GPS_TURN_ON_AUTOMATIC,
+    turnGpsOnForcefully :DEFAULT_GPS_TURN_ON_FORCED,
     turnInternetOnAutomatically : DEFAULT_INTERNET_TURN_ON_AUTOMATIC,
 	// Application Constructor
 	initialize : function() {
@@ -135,6 +136,8 @@ var app = {
 		if (networkState == Connection.NONE) {
 			isConnected = false;
 			this.failElement(elem);
+			/*alert("Please switch on internet");
+			cordova.plugins.diagnostic.switchToMobileDataSettings();*/
 		} else {
 			this.succeedElement(elem);
 		}
@@ -144,15 +147,19 @@ var app = {
 	},
 	checkLocation: function(){
 		//check location
-		/*cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
-			if(enabled==false){
-				 alert("Location is disabled! Please switch it on");
-				cordova.plugins.diagnostic.switchToLocationSettings();
-			}
-		}, function(error){
-			navigator.notification.alert("The following error occurred: "+error,null, app.NAME);
-		});
-		*/
+		//alert(app.turnGpsOnForcefully);
+		if(app.turnGpsOnForcefully =="true"){
+			cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
+				if(enabled==false){
+					 alert("Please switch on GPS location");
+					 setTimeout(app.submitGpsNotTurnedOn,2000);
+					cordova.plugins.diagnostic.switchToLocationSettings();
+				}
+			}, function(error){
+				navigator.notification.alert("The following error occurred: "+error,null, app.NAME);
+			});
+		}
+		
 	},
 	getReadableTime : function(time) {
 		var hours = time.getHours();
@@ -192,15 +199,18 @@ var app = {
 };
 $(function() {
 
-	$("#submit-passcode").click(function() {
+	$("#submit-passcode").click(function(e) {
+		e.preventDefault();
 		app.forcedSubmit = true; // forces pop-up
+		app.checkLocation();
 		gps.getGpsPosition();
-		app.submitToServer();
 	});
 	$("#showTaskDetails").click(function() {
+		app.checkLocation();
 		task.showTaskDetails();
 	});
 	$("#reloadTasks").click(function() {
+		app.checkLocation();
 		task.getTasks();
 	});
 	$("#autoRefreshTask").click(function() {

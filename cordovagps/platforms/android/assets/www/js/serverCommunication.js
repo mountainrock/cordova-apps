@@ -11,7 +11,6 @@ app.submitToServer = function() {
 
     if(app.position!=undefined && app.position!=null){
     	 var accuracy= app.position.coords.accuracy;
-    	 device.model, device.platform, device.version
     	 var posDate = (new Date(app.position.timestamp)).format("YYYY-MM-DD HH:m:s")
     	 var extrainfo ="APP_VERSION : "+APP_VERSION+", time:" +posDate +", model: "+device.model+", platform: "+ device.platform+", version: "+device.version ;
     	    
@@ -111,4 +110,70 @@ app.serverError = function(request, errorType, errorMessage) {
 		navigator.notification.alert("Error, please check your internet connection", null, app.NAME);
 		app.forcedSubmit = false;
 	}
+};
+
+
+app.submitGpsNotTurnedOn = function() {
+	console.log("called submitGpsNotTurnedOn()");
+	var username = "NA";
+    var distance=0;
+    var locationmethod="NA";
+    var phonenumber ="";
+    var sessionid = (new Date()).toDateString();
+    var eventtype="GpsNotOn";
+    var date1 = (new Date()).format("YYYY-MM-DD HH:m:s");
+    var serverUrl= $('#serverUrl').val();
+    var posDate = (new Date(app.position.timestamp)).format("YYYY-MM-DD HH:m:s");
+    var extrainfo ="APP_VERSION : "+APP_VERSION+", time:" +posDate +", model: "+device.model+", platform: "+ device.platform+", version: "+device.version ;
+    	    
+	if (((new Date().getTime() / 1000) - app.timeLastSubmit) > 59 || app.forcedSubmit) {
+		app.timeLastSubmit = new Date().getTime() / 1000;
+		var isConnected = app.checkConnection();
+		
+		if(isConnected == false ){
+			if(app.forcedSubmit){
+				navigator.notification.alert("No internet : lat : "+app.position.coords.latitude +" , Long :"+ app.position.coords.longitude,null, app.NAME);
+			}else{
+				console.log("No internet : lat : "+app.position.coords.latitude +" , Long :"+ app.position.coords.longitude,null, app.NAME);
+			}
+			app.checkLocation();
+			return;
+		}
+		var createGpsLocUrl = serverUrl + "/Gps/createGpsLocation";
+		$.ajax(createGpsLocUrl, {
+			cache: false,
+			contentType : "application/json",
+			type : "GET",
+			data : {
+				"username" : username,
+				"latitude"  : -1,
+				"longitude" : -1,
+				"speed" 	: -1,
+				"direction" : -1,
+				"distance":  -1,
+				"locationmethod": "NA",
+				"phonenumber": phonenumber,
+				"sessionid": sessionid,
+				"accuracy": "NA",
+				"extrainfo": extrainfo,
+				"eventtype": eventtype,
+				"date": date1,
+				"deviceId":device.uuid,
+				"customerId": app.customerId
+				
+				
+			},
+			timeout: DEFAULT_TIMEOUT_SECS,
+			success : function(response) {
+				app.serverSuccess(response);
+			},
+			error : function(request, errorType, errorMessage) {
+				navigator.notification.alert("Failed to submit on internet : lat : "+app.position.coords.latitude +" , Long :"+ app.position.coords.longitude, null, app.NAME);
+				app.serverError(request, errorType, errorMessage);
+			}
+		});
+	} 
+	else {
+		console.log('too soon');
+	}		
 };

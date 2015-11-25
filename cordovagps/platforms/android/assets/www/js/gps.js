@@ -107,27 +107,29 @@ var gps = {
 	getGpsPosition: function(){
 		var gpsOptions = {
 				enableHighAccuracy : app.HIGH_GPS_ACCURACY,
-				timeout : 1000 * 1,
-				maximumAge : 0
+				timeout : 1000 * 60,
+				maximumAge : 3000
 			};
+		console.log("Called getGpsPosition() " + gpsOptions);
 		window.navigator.geolocation.getCurrentPosition(gps.onSuccess, gps.onError, gpsOptions);
 	},
 	onSuccess : function(position) {
 		// reset error counter
 		gpsErrorCount = 0;
-
+		console.log("Called getGpsPosition--onSuccess() "+ position);
 		app.position = position;
 		var latitude = position.coords.latitude;
 		var longitude = position.coords.longitude;
-		displayCityName(latitude.toString(), longitude.toString(), "gpsAddress");
 		
 		app.submitToServer();
+		displayCityName(latitude.toString(), longitude.toString(), "gpsAddress");
 
 		$('#locationInfo').removeClass("fail").addClass("success");
 		$("#currentLocation").html('Lat: ' + latitude.toFixed(3) + ',' + ' Long: ' + longitude.toFixed(3) + '<br/>');
 				//+ 'Last Update: ' + app.getReadableTime(position.timestamp));
 	},
 	onError : function(error) {
+		console.log("Called getGpsPosition--onError()" + error.message);
 		gps.gpsErrorCount++;
 
 		if (gps.gpsErrorCount > 3) {
@@ -135,9 +137,9 @@ var gps = {
 			elem.innerHTML = ('There is an error, restarting GPS. ' + app.getReadableTime(new Date()) + "<br/> message:" + error.message);
 			console.log('error with GPS: error.code: ' + error.code + ' Message: ' + error.message);
 
-			// Restart GPS listener, fixes most issues.
+			/*// Restart GPS listener, fixes most issues.
 			gps.stop();
-			gps.start();
+			gps.start();*/
 		}
 	}
 };

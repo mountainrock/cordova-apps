@@ -10,6 +10,7 @@ var task ={
 	    	   app.showMessage("No internet connection available to load tasks");
 	    	   return;
 	       }
+	       app.checkLocation();
 	       var taskUrlPath=  app.taskServerUrl + "/Requests.php?action=getRequests&deviceId="+ device.uuid+"&userName="+app.userName;
 	       app.showMessage("getTasks :"+taskUrlPath);
 			$.ajax(taskUrlPath, {
@@ -40,11 +41,13 @@ var task ={
 	        task.intervalID = setInterval(task.getTasks, 60 * 1000);          
 	   },
 	  updateTask: function(taskId){
+		    app.checkLocation();
 			$("#taskId").val(taskId);
 			navigator.notification.confirm("Confirm task status for Id :"+ taskId, task.confirmUpdateTask, "Confirm Task", ["Complete","Hold","Cancel"]);
 			
 		},
 	 confirmUpdateTask: function(buttonIndex){
+		    app.checkLocation();
 			console.log('You selected button ' + buttonIndex);
 			 var taskId = $("#taskId").val();
 			 var statusId =null;
@@ -122,6 +125,7 @@ function loadTasks(json) {
 
 
 function updateTaskResponse(json){
+	app.checkLocation();
 	app.showMessage("Updated! Server response : "+ json.status);
 	task.getTasks();
 }
