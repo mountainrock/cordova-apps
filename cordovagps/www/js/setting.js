@@ -7,6 +7,7 @@ var KEY_GPS_DISTANCE_FILTER="gpsDistanceFilter";
 var KEY_APP_VERSION="appVersion";
 var KEY_AUTOSTART ="autostart";
 var KEY_GPS_TURN_ON_AUTOMATIC = "turnGpsOnAutomatically";
+var KEY_GPS_TURN_ON_FORCED = "turnGpsOnForced";
 var KEY_INTERNET_TURN_ON_AUTOMATIC = "turnInternetOnAutomatically";
 var KEY_TASK_SERVER_URL="taskServerUrl";
 var KEY_APK_UPDATE_URL="apkUpdateUrl";
@@ -16,21 +17,25 @@ var KEY_WORK_HOURS ="workHours";
 
 var DEBUG_URL="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953";
 
-var DEFAULT_SERVER_URL="http://bri8school.in/demo/gps2/index.php";
-var DEFAULT_TASK_SERVER_URL="http://jsoft.duckdns.org:8085/jcrm";
-var DEFAULT_APK_UPDATE_URL="http://bri8school.in/app/superGps2-latest.apk";
+//europa settings
+var DEFAULT_SERVER_URL="http://gpstracker.run/europa/index.php"
+var DEFAULT_TASK_SERVER_URL="http://europa-mysore.duckdns.org:8085/jcrm";
+var DEFAULT_APK_UPDATE_URL="http://gpstracker.run/europa/apk/superGps2-latest.apk"
 var DEFAULT_CUSTOMER_ID="1";
+var DEFAULT_SUPER_STARTER_APK_UPDATE_URL ="http://gpstracker.run/europa/apk/superStarter-latest.apk";
+	
 var DEFAULT_DEBUG="false";
-var DEFAULT_GPS_MAX_AGE=300; //seconds - configurable
+var DEFAULT_GPS_MAX_AGE=180; //seconds - configurable
 var DEFAULT_DESIRED_ACCURACY = 10; //10=high, 100= medium, 1000 = low - configurable
-var DEFAULT_DISTANCE_FILTER = 20; // in meters - configurable
+var DEFAULT_DISTANCE_FILTER = 10; // in meters - configurable
 var DEFAULT_AUTOSTART = "true";
 var DEFAULT_GPS_TURN_ON_AUTOMATIC = "true";
+var DEFAULT_GPS_TURN_ON_FORCED = "true";
 var DEFAULT_INTERNET_TURN_ON_AUTOMATIC = "true";
 var DEFAULT_SETTING_TYPE ="default";
 var DEFAULT_TIMEOUT_SECS=90 * 1000;
 var DEFAULT_USERNAME = "NA";
-var DEFAULT_WORK_HOURS ="NA";
+var DEFAULT_WORK_HOURS ="9:00 - 19:30,9:00 - 22:30,9:00 - 22:30,9:00 - 22:30,9:00 - 22:30,9:00 - 22:30,9:00 - 22:30";
 
 var appSetting ={
 	setDefaultSettings: function(permStorage) {
@@ -52,6 +57,8 @@ var appSetting ={
 		permStorage.setItem(KEY_SETTING_TYPE,DEFAULT_SETTING_TYPE);
 		permStorage.setItem(KEY_USERNAME,DEFAULT_USERNAME);
 		permStorage.setItem(KEY_WORK_HOURS,DEFAULT_WORK_HOURS);
+		permStorage.setItem(KEY_GPS_TURN_ON_FORCED,DEFAULT_GPS_TURN_ON_FORCED);
+		
 		
 	},
 	resetSettingsToDefault: function(){
@@ -102,7 +109,10 @@ var appSetting ={
 		$('#turnGpsOnAutomatically').change();
 		$('#turnInternetOnAutomatically').val(app.turnInternetOnAutomatically);
 		$('#turnInternetOnAutomatically').change();
-		console.log("turnGpsOnAutomatically : "+app.turnGpsOnAutomatically +", turnInternetOnAutomatically : "+ app.turnInternetOnAutomatically );
+		$('#turnGpsOnForced').val(app.turnGpsOnForcefully);
+		$('#turnGpsOnForced').change();
+		
+		console.log("turnGpsOnForced : "+app.turnGpsOnForcefully +", turnGpsOnAutomatically : "+app.turnGpsOnAutomatically +", turnInternetOnAutomatically : "+ app.turnInternetOnAutomatically );
 		var settingType =permStorage.getItem(KEY_SETTING_TYPE); 
 		$("#settingType").html("("+settingType+")");
 		
@@ -121,15 +131,17 @@ var appSetting ={
 		var gpsMaxAge = $('#gpsMaxAge').val();
 		var gpsDistanceFilter = $('#gpsDistanceFilter').val();
 		var gpsAccuracy = $('#gpsAccuracy').val();
-		app.autostart =$("#autostart").val();
-		app.turnGpsOnAutomatically = $('#turnGpsOnAutomatically').val();
-		app.turnInternetOnAutomatically = $('#turnInternetOnAutomatically').val();
 		var apkUpdateUrl = $('#apkUpdateUrl').val();
 		console.log("Validating settings");
-		if( (gpsMaxAge) =="" || (permStorage)=="" || taskServerUrl=="" || (serverUrl)=="" || (customerId)=="" || gpsDistanceFilter=="" || gpsAccuracy =="" ){
+		if( (gpsMaxAge) =="" || (permStorage)=="" || apkUpdateUrl=="" || taskServerUrl=="" || (serverUrl)=="" || (customerId)=="" || gpsDistanceFilter=="" || gpsAccuracy =="" ){
 			alert("Fields can't be empty");
 			return;
 		}
+		app.autostart =$("#autostart").val();
+		app.turnGpsOnAutomatically = $('#turnGpsOnAutomatically').val();
+		app.turnInternetOnAutomatically = $('#turnInternetOnAutomatically').val();
+		app.turnGpsOnForcefully = $('#turnGpsOnForced').val();
+		
 		permStorage.setItem(KEY_SERVER_URL, serverUrl);
 		permStorage.setItem(KEY_TASK_SERVER_URL, taskServerUrl);
 		permStorage.setItem(KEY_APK_UPDATE_URL, apkUpdateUrl);
@@ -140,9 +152,10 @@ var appSetting ={
 		permStorage.setItem(KEY_GPS_DESIRED_ACCURACY, gpsAccuracy);
 		permStorage.setItem(KEY_AUTOSTART, app.autostart);
 		
-		permStorage.setItem(KEY_GPS_TURN_ON_AUTOMATIC, this.turnGpsOnAutomatically);
-		permStorage.setItem(KEY_INTERNET_TURN_ON_AUTOMATIC, this.turnInternetOnAutomatically);
-	
+		permStorage.setItem(KEY_GPS_TURN_ON_AUTOMATIC, app.turnGpsOnAutomatically);
+		permStorage.setItem(KEY_INTERNET_TURN_ON_AUTOMATIC, app.turnInternetOnAutomatically);
+		permStorage.setItem(KEY_GPS_TURN_ON_FORCED,app.turnGpsOnForcefully);
+		
 		app.serverUrl = serverUrl;
 		app.taskServerUrl = taskServerUrl;
 		app.apkUpdateUrl = apkUpdateUrl;
@@ -171,6 +184,11 @@ var appSetting ={
 	getLatestApp: function(){
 		console.log("getLatestApp() "+ app.apkUpdateUrl);
 		navigator.app.loadUrl(app.apkUpdateUrl, {openExternal : true});
+	},
+	getSuperStarterApp: function(){
+		console.log("getSuperStarterApp() "+ app.apkUpdateUrl);
+		navigator.app.loadUrl(app.apkSuperStarterAppUpdateUrl, {openExternal : true});
+		
 	},
 	getSettingsFromServer: function(){
 		   app.showMessage("Getting settings from server");
@@ -220,6 +238,7 @@ function loadSettingsFromServer(json){
 	permStorage.setItem(KEY_SETTING_TYPE,"server");
 	permStorage.setItem(KEY_USERNAME, json.userName);
 	permStorage.setItem(KEY_WORK_HOURS,json.workHours);
+	permStorage.setItem(KEY_GPS_TURN_ON_FORCED,json.turnGpsOnForcefully);
 	
 	appSetting.updateSettingsView(permStorage);
 	alert("Settings retreived from server!");

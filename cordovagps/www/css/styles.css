@@ -135,10 +135,15 @@ body {
 #taskTable td{
 	color:#1121C1;
 	font-size:18px;
+	text-transform:capitalize;
 }
 .updateTask{
 	font-size:22px;
 }
+.taskdetails{
+   font-size: 0.7em;
+}
+
 .oddRow{
  background: #FDFEE8;
 }
@@ -158,6 +163,8 @@ body {
     width: 100%;
     height:80%;
 }
+
+
 
 /*media height override . Do not move this*/
 @media only screen and (min-height : 700px) {

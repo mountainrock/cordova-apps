@@ -10,6 +10,7 @@ var task ={
 	    	   app.showMessage("No internet connection available to load tasks");
 	    	   return;
 	       }
+	       app.checkLocation();
 	       var taskUrlPath=  app.taskServerUrl + "/Requests.php?action=getRequests&deviceId="+ device.uuid+"&userName="+app.userName;
 	       app.showMessage("getTasks :"+taskUrlPath);
 			$.ajax(taskUrlPath, {
@@ -40,11 +41,13 @@ var task ={
 	        task.intervalID = setInterval(task.getTasks, 60 * 1000);          
 	   },
 	  updateTask: function(taskId){
+		    app.checkLocation();
 			$("#taskId").val(taskId);
 			navigator.notification.confirm("Confirm task status for Id :"+ taskId, task.confirmUpdateTask, "Confirm Task", ["Complete","Hold","Cancel"]);
 			
 		},
 	 confirmUpdateTask: function(buttonIndex){
+		    app.checkLocation();
 			console.log('You selected button ' + buttonIndex);
 			 var taskId = $("#taskId").val();
 			 var statusId =null;
@@ -71,6 +74,7 @@ var task ={
 				            success: function(data) {
 				              app.showMessage("updated task status: "+data); //should call loadRoutes() callback
 				              updateTaskResponse(data);
+				              gps.getGpsPosition();
 				            },
 							error: function (xhr, status, errorThrown) {
 								console.log("error status: " + xhr.status);
@@ -108,8 +112,8 @@ function loadTasks(json) {
 	  }
       row = row	+ 
 				td(this,'RequestID') +
-				"<td valign='top'>"+$(this).attr('CustomerName') + " <br/> <a href='tel:" + phoneNo + "'>"+ phoneNo+ "</a></td>"+ 
-				"<td valign='top'>"+$(this).attr('Address') + " <br/> "+ $(this).attr('AreaName')+ "</td>"+
+				"<td valign='top'>"+$(this).attr('CustomerName')+ " <br/> <span class='taskdetails' ><a href='tel:" + phoneNo + "'>"+ phoneNo+ "</a></span></td>"+ 
+				"<td valign='top'>"+ $(this).attr('AreaName')+"<br/><span class='taskdetails' >"+$(this).attr('RequestDate')+ ", "+ $(this).attr('NoOfLocks')+ " Locks</span></td>"+
 				'<td valign="top"><a <a href="#" id="updateTask" class="updateTask" onclick ="task.updateTask('+taskId+')" data-role="button" data-inline="true" data-theme="e" data-icon="check"><b>Update</b></a></td>'
 			 "</tr>";
       $("#taskTable").append(row);
@@ -121,6 +125,7 @@ function loadTasks(json) {
 
 
 function updateTaskResponse(json){
+	app.checkLocation();
 	app.showMessage("Updated! Server response : "+ json.status);
 	task.getTasks();
 }

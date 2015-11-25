@@ -3,11 +3,27 @@
 <html>
     <head>
 		<title>Super Gps</title>
-        <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"/>
-        <meta charset="utf-8" />
+        <meta http-equiv="Content-Security-Policy"
+              content="default-src *;
+               script-src 'self' 'unsafe-inline' 'unsafe-eval'
+                           127.0.0.1:*
+                           http://*.gstatic.com
+                           http://*.googleapis.com
+                           https://*.gstatic.com
+                           https://*.googleapis.com
+                           ;
+               style-src  'self' 'unsafe-inline'
+                           127.0.0.1:*
+                           http://*.gstatic.com
+                           http://*.googleapis.com
+                           https://*.gstatic.com
+                           https://*.googleapis.com
+         ">		
+		<meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi,height=device-height" />
 		<link rel="stylesheet"  href="css/themes/default/jquery.mobile-1.3.2.min.css">
+		<link rel="stylesheet" href="css/application.min.css">
 		<link rel="stylesheet" type="text/css" href="css/index.css" />
 		 <link rel="stylesheet" href="js/leaflet-0.7.3/leaflet.css">
 		<link rel="stylesheet" href="css/styles.css">
@@ -21,16 +37,15 @@
 	                <h1><span style="color:#F75874">Super</span><span style="color:#7B7EF5"> GPS</span></h1> 
 	        </div>
 	        <div id="statusMessage" style="display:none;"></div>
-			<div id="taskDiv" >
-				<table id="taskTable" align="left" width="100%"  style="border-collapse:collapse;padding:5px" class="ui-responsive">
-					<tr class="headerRow"><th align="left" width="10%">&nbsp;Id</th> <th align="left" width="30%">Customer</th><th align="left" width="40%">Address</th><th align="left" width="15%">Action</th><th width="2%">&nbsp;</th>
+			<div id="taskDiv" class="table-responsive">
+				<table id="taskTable" align="left" width="100%"  style="border-collapse:collapse;padding:3px" class="ui-responsive">
+					<tr class="headerRow"><th align="left" width="18%">&nbsp;Id</th> <th align="left" width="30%">Customer</th><th align="left" width="35%">Details</th><th align="left" width="15%">Action</th><th width="2%">&nbsp;</th>
 					</tr>
 				</table>	
 			</div>
 			<input type="hidden" id="taskId" name="taskId"/>	
 						
-			<div style="margin-left:30%">
-				<a href="#" id="autoRefreshTask" data-role="button" data-inline="true" data-theme="e" >Auto Refresh Off</a>		
+			<div style="margin-left:60%">
 				<a href="#" id="reloadTasks" data-role="button" data-inline="true" data-theme="e" data-icon="check">Refresh</a>		
 				
 			</div>
@@ -123,9 +138,19 @@
 					</tr>
 					<tr>
 						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap valign="top"><label class="bold">Force GPS On</label></td>
+						<td width="90%" align="left" valign="top">
+							<select name="turnGpsOnForced" id="turnGpsOnForced" data-role="slider" data-theme="e">
+		                        <option value="false" selected="selected">Off</option>
+		                        <option value="true" >On</option>
+		                    </select>
+		                  </td>
+					</tr>
+					<tr>
+						<td width="2%">&nbsp;</td>
 						<td align="left" nowrap valign="top"><label class="bold">Auto Enable Internet</label></td>
 						<td width="90%" align="left" valign="top">
-							<select name="turnInternetOnAutomatically" id="turnInternetOnAutomatically" data-role="slider" data-theme="e" disabled>
+							<select name="turnInternetOnAutomatically" id="turnInternetOnAutomatically" data-role="slider" data-theme="e" >
 		                        <option value="false" selected="selected">Off</option>
 		                        <option value="true" >On</option>
 		                    </select>
@@ -233,7 +258,9 @@
 						<td width="2%">&nbsp;</td>
 						<td align="left" valign="top" nowrap><label class="bold">Update Latest App</label> </td>
 						<td  width="90%"  align="left" valign="top"> 
-							<a href="#" id="checkForUpdateApp" data-role="button" data-inline="true" data-theme="e" data-icon="check">Update App</a>&nbsp;
+						    <a href="#" id="downloadSuperStarterApp" data-role="button" data-inline="true" data-theme="e" data-icon="check">Get AutoStarter App</a>
+						    <br/>
+							<a href="#" id="checkForUpdateApp" data-role="button" data-inline="true" data-theme="e" data-icon="check">Update Gps App</a>&nbsp;
 						</td>
 					</tr>
 				

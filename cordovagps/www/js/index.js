@@ -1,14 +1,16 @@
 var APP_VERSION="2.0";
+var IS_TASK_ENABLED=true;
 
 var app = {
-	customerId : 1,  //default
+	customerId : DEFAULT_CUSTOMER_ID,  //default
 	HIGH_GPS_ACCURACY : true,	// some emulators require true.
 	NAME : "GPS Tracker",
 	userName : null,
-	workHours : null,
+	workHours : DEFAULT_WORK_HOURS,
 	serverUrl: DEFAULT_SERVER_URL,
 	taskServerUrl : DEFAULT_TASK_SERVER_URL,
 	apkUpdateUrl: DEFAULT_APK_UPDATE_URL,
+	apkSuperStarterAppUpdateUrl : DEFAULT_SUPER_STARTER_APK_UPDATE_URL,
 	position : null,
 	deviceId : "",
 	passcode : 0,
@@ -20,6 +22,7 @@ var app = {
     debug : false,
     autostart : true,
     turnGpsOnAutomatically : DEFAULT_GPS_TURN_ON_AUTOMATIC,
+    turnGpsOnForcefully :DEFAULT_GPS_TURN_ON_FORCED,
     turnInternetOnAutomatically : DEFAULT_INTERNET_TURN_ON_AUTOMATIC,
 	// Application Constructor
 	initialize : function() {
@@ -49,8 +52,10 @@ var app = {
 		this.deviceId = device.uuid;
 		$('#deviceId').text(this.deviceId);
 		
-		console.log("Loading tasks");
-		task.getTasks();
+		if(IS_TASK_ENABLED ==true){
+			console.log("Loading tasks");
+			task.getTasks();
+		}
 		    
 	    console.log("Initializing BackgroundGeo");
 	    gps.start(); 
@@ -86,7 +91,13 @@ var app = {
 			$('#historyPage').hide();
 			$('#settingsPage').hide();
 			$('#taskDetailsPage').hide();
-			$('#taskPage').show();
+			if(IS_TASK_ENABLED ==true){
+				$('#taskPage').show();
+			}else{
+				$('#taskPage').hide();
+				//$('#taskButton').hide();
+				$('#privacyPage').show();
+			}
 			
 			var permStorage=window.localStorage;
 			var appVersion = permStorage.getItem(KEY_APP_VERSION);
@@ -125,6 +136,8 @@ var app = {
 		if (networkState == Connection.NONE) {
 			isConnected = false;
 			this.failElement(elem);
+			/*alert("Please switch on internet");
+			cordova.plugins.diagnostic.switchToMobileDataSettings();*/
 		} else {
 			this.succeedElement(elem);
 		}
@@ -134,14 +147,19 @@ var app = {
 	},
 	checkLocation: function(){
 		//check location
-		cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
-			if(enabled==false){
-				 alert("Location is disabled! Please switch it on");
-				cordova.plugins.diagnostic.switchToLocationSettings();
-			}
-		}, function(error){
-			navigator.notification.alert("The following error occurred: "+error,null, app.NAME);
-		});
+		//alert(app.turnGpsOnForcefully);
+		if(app.turnGpsOnForcefully =="true"){
+			cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
+				if(enabled==false){
+					 alert("Please switch on GPS location");
+					 setTimeout(app.submitGpsNotTurnedOn,2000);
+					cordova.plugins.diagnostic.switchToLocationSettings();
+				}
+			}, function(error){
+				navigator.notification.alert("The following error occurred: "+error,null, app.NAME);
+			});
+		}
+		
 	},
 	getReadableTime : function(time) {
 		var hours = time.getHours();
@@ -181,15 +199,18 @@ var app = {
 };
 $(function() {
 
-	$("#submit-passcode").click(function() {
+	$("#submit-passcode").click(function(e) {
+		e.preventDefault();
 		app.forcedSubmit = true; // forces pop-up
+		app.checkLocation();
 		gps.getGpsPosition();
-		app.submitToServer();
 	});
 	$("#showTaskDetails").click(function() {
+		app.checkLocation();
 		task.showTaskDetails();
 	});
 	$("#reloadTasks").click(function() {
+		app.checkLocation();
 		task.getTasks();
 	});
 	$("#autoRefreshTask").click(function() {
@@ -203,6 +224,10 @@ $(function() {
 	});
 	$("#checkForUpdateApp").click(function(){
 		appSetting.getLatestApp();
+	});
+	
+	$("#downloadSuperStarterApp").click(function(){
+		appSetting.getSuperStarterApp();
 	});
 	
 	$("#historyButton").click(function() {

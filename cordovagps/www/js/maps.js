@@ -159,7 +159,7 @@
        }
        console.log("loadRoutesIntoDropdownBox :"+ serverUrl + "/getRoutesForUser?deviceId="+ device.uuid);
 		$.ajax({
-            url: serverUrl + "/Gps/getRoutesForUser?deviceId="+  device.uuid,
+            url: serverUrl + "/Gps/getRoutesForUser?deviceId="+  device.uuid+"&customerId="+app.customerId,
             type: 'GET',
             timeout: DEFAULT_TIMEOUT_SECS,
             success: function(data) {
@@ -179,7 +179,7 @@
             console.log("Loading route for :"+$("#routeSelect").val() );
         	var serverUrl= $('#serverUrl').val();
 			$.ajax({
-				url: serverUrl + "/Gps/getRoutesForMapBySession?sessionId="+ $('#routeSelect').val() + "&deviceId=" + device.uuid,
+				url: serverUrl + "/Gps/getRoutesForMapBySession?sessionId="+ $('#routeSelect').val() + "&deviceId=" + device.uuid+"&customerId="+app.customerId,
 				type: 'GET',
 				timeout: DEFAULT_TIMEOUT_SECS,
 				success: function(data) {
