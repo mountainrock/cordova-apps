@@ -12,7 +12,7 @@ import android.util.Log;
 public class TimerUtils {
 
 	public static void main(String[] args) {
-		String encoded = "9:00 - 22:30,9:00 - 22:30,9:00 - 22:30,9:00 - 22:30,9:00 - 22:30,9:00 - 22:30,9:00 - 22:30 ";// sunday,monday, tues..
+		String encoded = "9:00 - 21:30,9:00 - 22:30,9:00 - 22:30,9:00 - 22:30,9:00 - 22:30,9:00 - 22:30,9:00 - 21:00";// sunday,monday, tues..
 		java.util.Map<Integer, List<String>> workHoursMap = getWorkHoursMap(encoded);
 		System.out.println(workHoursMap);
 		boolean isTimeInRange= isTimeInRange(workHoursMap);
@@ -33,6 +33,7 @@ public class TimerUtils {
 	}
 
 	public static boolean isTimeInRange(java.util.Map<Integer, List<String>> workHoursMap) {
+		Log.i(LocationUpdateService.TAG ,"Checking isTimeInRange :"+ workHoursMap);
 		Calendar now = Calendar.getInstance();
 		int day = now.get(Calendar.DAY_OF_WEEK);
 		List<String> timeRange = workHoursMap.get(day);
@@ -42,9 +43,11 @@ public class TimerUtils {
 		Date date = parseDate(currentHour + ":" + currentMinute);
 		Date dateCompareOne = parseDate(timeRange.get(0));
 		Date dateCompareTwo = parseDate(timeRange.get(1));
-
+		
+		
 		boolean isTimeInRange = dateCompareOne.before(date) && dateCompareTwo.after(date);
-		Log.i(LocationUpdateService.TAG, "Not turning on GPS during non Work hours");
+		Log.i(LocationUpdateService.TAG ,String.format("Checking isTimeInRange : day: %s, today : %s, time start : %s , timeEnd : %s, result : %s",day, date, dateCompareOne, dateCompareTwo , isTimeInRange));
+
 		return isTimeInRange;
 	}
 

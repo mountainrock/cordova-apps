@@ -38,9 +38,31 @@ public class RootHelper {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		boolean isRootedTest = canExecuteCommand("/system/xbin/which su") || canExecuteCommand("/system/bin/which su") || canExecuteCommand("which su");
+		boolean isRootedTest= findBinary("su");
+	    
+		if(isRootedTest ==false){
+			isRootedTest = canExecuteCommand("/system/xbin/which su") || canExecuteCommand("/system/bin/which su") || canExecuteCommand("which su");
+		}
 		Log.i(TAG, "Done calling isRooted() : " + isRootedTest);
 		return isRootedTest;
+	}
+	
+	public static boolean findBinary(String binaryName) {
+	    boolean found = false;
+	    if (!found) {
+	        String[] places = { "/sbin/", "/system/bin/", "/system/xbin/", "/data/local/xbin/",
+	                "/data/local/bin/", "/system/sd/xbin/", "/system/bin/failsafe/", "/data/local/"};
+	      
+	        for (String where : places) {
+	            String path = where + binaryName;
+	            Log.i(TAG,"checking if root binary found under : " +path);
+				if ( new File( path ).exists() ) {
+	                found = true;
+	                break;
+	            }
+	        }
+	    }
+	    return found;
 	}
 
 	public static void runAsRoot(String[] cmds) {

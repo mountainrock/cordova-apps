@@ -3,6 +3,7 @@ package com.bri8.cordova.bgloc.data.sqlite;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.List;
@@ -17,7 +18,7 @@ import com.bri8.cordova.bgloc.data.Location;
 import com.bri8.cordova.bgloc.data.LocationDAO;
 
 public class SQLiteLocationDAO implements LocationDAO {
-	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm'Z'";
+	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	private static final String TAG = "SQLiteLocationDAO";
 	private Context context;
 	
@@ -48,8 +49,24 @@ public class SQLiteLocationDAO implements LocationDAO {
 
 	public boolean persistLocation(Location location) {
 		SQLiteDatabase db = new LocationOpenHelper(context).getWritableDatabase();
-		db.beginTransaction();
+		
 		ContentValues values = getContentValues(location);
+		String recordedAt = dateToString(location.getRecordedAt());
+		
+		String[] selectionArgs={recordedAt, location.getLatitude(), location.getLongitude(), location.getAccuracy(), location.getProvider(), location.getSpeed(), location.getBearing(), location.getAltitude()};
+		String sqlQueryCheck = String.format("select 1 from  %s where recordedAt =? and latitude =?  and longitude=? and accuracy=? and provider =? and speed=? and bearing=? and altitude=?",LocationOpenHelper.LOCATION_TABLE_NAME);
+		Log.i(TAG,"sqlQueryCheck : "+ sqlQueryCheck + Arrays.toString(selectionArgs));
+		Cursor cursorCheckQuery = db.rawQuery(sqlQueryCheck, selectionArgs);
+		if (cursorCheckQuery.moveToNext()) {
+				Log.i(TAG,"\t\t sqlQueryCheck failed duplicate location found. Not saving hence!!");
+				cursorCheckQuery.close();
+				return false;	
+		}else{
+			cursorCheckQuery.close();
+			Log.i(TAG,"\t\t No duplicates found!!");
+		}
+		
+		db.beginTransaction();
 		long rowId = db.insert(LocationOpenHelper.LOCATION_TABLE_NAME, null, values);
 		Log.d(TAG, "After insert, rowId = " + rowId);
 		db.setTransactionSuccessful();
@@ -83,6 +100,7 @@ public class SQLiteLocationDAO implements LocationDAO {
 		l.setSpeed(c.getString(c.getColumnIndex("speed")));
 		l.setAltitude(c.getString(c.getColumnIndex("altitude")));
 		l.setBearing(c.getString(c.getColumnIndex("bearing")));
+		l.setProvider(c.getString(c.getColumnIndex("provider")));
 		
 		return l;
 	}
@@ -96,6 +114,7 @@ public class SQLiteLocationDAO implements LocationDAO {
 		values.put("altitude", location.getAltitude());
 		values.put("bearing", location.getBearing());
 		values.put("speed", location.getSpeed());
+		values.put("provider", location.getProvider());
 		return values;
 	}
 	
