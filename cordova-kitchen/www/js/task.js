@@ -60,7 +60,7 @@ var task ={
 								$("#baristaCode").val(tableDetail.baristaCode);
 								$("#barista").val(tableDetail.salesMan);
 								$('#invoiceNoTxt').text(tableDetail.invoiceNo);
-							  $("#addOrder,#confirmOrder,#addNewOrder").hide();
+							  $(".hideOnViewItem").hide();
 				            },
 							error: function (xhr, status, errorThrown) {
 								console.log("error status: " + xhr.status);
@@ -83,6 +83,7 @@ var task ={
 									    + "<td>"+orders[i].qty+"</td>"
 									    + "<td>"+orders[i].price+"</td>"
 									    + "<td>"+orders[i].total+"</td>"
+										+ "<td><span class='icon hideOnViewItem' onclick='task.deleteItem("+orders[i].index+")'><span class='glyphicon glyphicon-trash'></span></span></td>"
 									    + "</tr>";
 					  totalAmount = totalAmount + eval(orders[i].total);
 					  totalQty = totalQty + eval(orders[i].qty);
@@ -101,7 +102,15 @@ var task ={
 		  addOrder : function(){
 					var orderObject = new Object();
 					var index = task.orders.length;
-					
+					var isValid = validator.element( "#product" );
+					isValid = isValid && validator.element( "#productNo" );
+					if($("#productNo").val() =='' ){
+					   alert("Invalid product selected. Product doesnt exist in database");	
+					   isValid = false;
+					}
+					if(!isValid){
+					  return;
+					}
 					orderObject.productNo = $("#productNo").val();
 					orderObject.productCode = $("#productCode").val();
 					orderObject.productDesc = $("#product").val();
@@ -116,12 +125,22 @@ var task ={
 					task.reloadOrders(task.orders);  
 		  
 		  },
+		  deleteItem : function(idx){
+					for(i=0;i<task.orders.length;i++){
+						if(task.orders[i].index == idx){
+							task.orders.splice(i, 1);
+						}
+					}
+					for(i=0;i<task.orders.length;i++){
+						task.orders[i].index= i+1;
+					}
+					task.reloadOrders(task.orders);
+		  },
 		  confirmOrder : function(){
 					var tableDetail = task.tableDetail;
 					var isValid = validator.element( "#table" );
-					isValid = isValid & validator.element( "#barista" );
+					isValid = isValid && validator.element( "#barista" );
 					if(!isValid){
-						
 					  return;
 					}
 					if(task.orders ==null || task.orders.length ==0){
@@ -190,10 +209,10 @@ function loadTasks(json) {
 	  }
       row = row	+
 				"<td valign='top'><span class='taskdetails' > <a href='#' id='loadInvoice' class='loadInvoice' onclick ='task.loadInvoice(" + taskId + ")' ><b>"+$(this).attr('CafeTableName')+"</b></a></span></td>"+
-				td(this,'InvoiceNo') +
+				"<td valign='top'><span class='taskdetails' > <a href='#'  onclick ='task.loadInvoice(" + taskId + ")' ><b>"+$(this).attr('InvoiceNo')+"</b></a></span></td>"+
 				"<td valign='top'><span class='taskdetails' >"+$(this).attr('InvoiceDate')+"</span></td>"+ 
 				"<td valign='top'><span class='taskdetails' >"+$(this).attr('TotalQty')+"</span></td>"+ 
-				"<td valign='top'><span class='taskdetails' >"+$(this).attr('InvoiceAmount')+"</span></td>"+ 
+				"<td valign='top'><span class='taskdetails' >"+$(this).attr('InvoiceAmount')+"</span></td>"
 							 "</tr>";
       $("#taskTable").append(row);
       $(".updateTask").change();

@@ -1,4 +1,4 @@
-var APP_VERSION="1.1";
+var APP_VERSION="1.2";
 var device;
 var app = {
 	customerId : DEFAULT_CUSTOMER_ID,  //default
