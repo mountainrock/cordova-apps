@@ -137,38 +137,51 @@ header('Content-Type: application/json');
 			$invoiceNo= $tableDetail->invoiceNo;
 
     		if($invoiceNo==null){
+				try {
+				    $conn = getConnection();
+				    $conn->BeginTrans();
 
-				$baristaCode = $tableDetail->baristaCode;
-				$cafeTableID =  $tableDetail->cafeTableID;
-				$barista= $tableDetail->barista;
-				$totalQty= $tableDetail->totalQty;
-				$totalItems= $tableDetail->totalItems;
-				$totalAmount= $tableDetail->totalAmount;
-				$guid =create_guid('');
+					$baristaCode = $tableDetail->baristaCode;
+					$cafeTableID =  $tableDetail->cafeTableID;
+					$barista= $tableDetail->barista;
+					$totalQty= $tableDetail->totalQty;
+					$totalItems= $tableDetail->totalItems;
+					$totalAmount= $tableDetail->totalAmount;
+					$guid =create_guid('');
 
-				$nextInvoiceNo = getNextInvoiceNo();
-				$invoiceNo = $nextInvoiceNo;
-				logi("Take new order request :: deviceId : $deviceId , nextInvoiceNo : $nextInvoiceNo, productNo : $productNo, baristaCode : $baristaCode, cafeTableID: $cafeTableID, barista: $barista, product : $product, otherDesc : $otherDesc, qty: $qty, price : $price , total: $total" );
-				$invoiceDateTime = date("m/d/Y h:i:s a", time());
-				$insertSql ="insert into SInvoiceHeader(InvoiceNo, InvoiceType, InvoiceDate, InvoiceAmount, TotalQty, SalesMan, UpdateUser, UpdateDate,CancelledInvoice, CafeTableID, POSGUID) values($nextInvoiceNo,'O', Date(), $totalAmount, $totalQty, '$barista', '$deviceId', #$invoiceDateTime#, 1, $cafeTableID, '$guid')";
-				executeUpdate($insertSql);
+					$nextInvoiceNo = getNextInvoiceNo();
+					$invoiceNo = $nextInvoiceNo;
+					logi("Take new order request :: deviceId : $deviceId , nextInvoiceNo : $nextInvoiceNo, baristaCode : $baristaCode, cafeTableID: $cafeTableID, barista: $barista" );
 
-				foreach($orders as $order){
+					$invoiceDateTime = date("m/d/Y h:i:s a", time());
+					$insertSql ="insert into SInvoiceHeader(InvoiceNo, InvoiceType, InvoiceDate, InvoiceAmount, TotalQty, SalesMan, UpdateUser, UpdateDate,CancelledInvoice, CafeTableID, POSGUID) values($nextInvoiceNo,'O', Date(), $totalAmount, $totalQty, '$barista', '$deviceId', #$invoiceDateTime#, 1, $cafeTableID, '$guid')";
+					executeUpdate2($conn, $insertSql);
 
-							$productNo= $order->productNo;
-							$product= $order->productDesc;
-							$other= $order->otherDesc;
-							$qty= $order->qty;
-							$price = $order->price;
-							$total = $order->total;
-							$index = $order->index;
+					foreach($orders as $order){
 
-							$insertSqlDetail = "insert into SInvoiceDetail(LineNo, InvoiceNo,InvoiceType, ProductDesc,Qty, Price, LineAmount, ProductNo, OtherDesc, LineDisAmt, LineDisPer, FreeQty, MRP,RefNo, RefDate) values($index, $nextInvoiceNo, 'O', '$product', $qty, $price, $total,$productNo,'$other',0,0,0,0, $nextInvoiceNo, #$invoiceDateTime# )";
-							executeUpdate($insertSqlDetail);
+								$productNo= $order->productNo;
+								$product= $order->productDesc;
+								$other= $order->otherDesc;
+								$qty= $order->qty;
+								$price = $order->price;
+								$total = $order->total;
+								$index = $order->index;
+
+								$insertSqlDetail = "insert into SInvoiceDetail(LineNo, InvoiceNo,InvoiceType, ProductDesc,Qty, Price, LineAmount, ProductNo, OtherDesc, LineDisAmt, LineDisPer, FreeQty, MRP,RefNo, RefDate) values($index, $nextInvoiceNo, 'O', '$product', $qty, $price, $total,$productNo,'$other',0,0,0,0, $nextInvoiceNo, #$invoiceDateTime# )";
+								executeUpdate2($conn, $insertSqlDetail);
+					}
+				    $conn->CommitTrans();
+				    $conn->Close();
+					//TODO: update SInvoiceHeader total qty and amount
+					 echo '{"status": "New order added successfully  : ' . $nextInvoiceNo . '", "id" : "'.$invoiceNo.'"}';
+				 }catch (Exception $e) {
+				 	 $conn->RollbackTrans();
+				 	 $conn->Close();
+					logi($e->getMessage());
+					echo 'Caught exception: ',  $e->getMessage(), "\n";
 				}
 
-				//TODO: update SInvoiceHeader total qty and amount
-				 echo '{"status": "New order added successfully  : ' . $nextInvoiceNo . '", "id" : "'.$invoiceNo.'"}';
+
 			}else{
 				//handle update order in future here!!
 			}

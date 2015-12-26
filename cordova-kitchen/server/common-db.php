@@ -34,6 +34,11 @@
    		   return $result;
     }
 
+    function executeUpdate2($conn, $sql){
+   		   $result = $conn->Execute($sql);
+   		   return $result;
+    }
+
     function getResultset($sql){
 			$conn = getConnection();
 			$rs = new COM('ADODB.Recordset') or die('Coult not make rs');
@@ -65,7 +70,7 @@
    }
 
    function create_guid($namespace = '') {
-		static $guid = '';
+		/*static $guid = '';
 		$uid = uniqid("", true);
 		$data = $namespace;
 		$data .= $_SERVER['REQUEST_TIME'];
@@ -85,7 +90,8 @@
 				'-' .
 				substr($hash, 20, 12)
 				;
-		return $guid;
+		return $guid;*/
+		return uniqid();
   	}
 
    function logi($str){
