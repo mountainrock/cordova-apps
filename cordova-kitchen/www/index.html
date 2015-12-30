@@ -25,7 +25,7 @@
     <body >
 		<div id="app">
 			<div class="common-header" >
-					<h1><span style="color:#89E02A; font-weight:700">Kitchen</span><span style="color:#133494"> Order System</span></h1>
+					<h1><span style="color:#93C55B; font-weight:700">Kitchen</span><span style="color:#133494"> Order System</span></h1>
 
 			</div>
 
@@ -37,7 +37,7 @@
 											<a class="panelTitle"  data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Orders</a>
 										
 											&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="reloadInvoices" class="btn btn-info" >Refresh</a>
-											<a href="#" id="takeOrder" class="btn btn-info" >Take Order</a>
+											<a href="#" id="takeOrder" class="btn btn-info takeOrderAction" >Take Order</a>
 										
 								</div>
 								<div class="panel-body" style="min-height:300px;max-height:300px;overflow:auto">
@@ -142,12 +142,11 @@
 								  <thead>
 									<tr class="headerRow">
 									  <th width="6%">Id</th>
-									  <th width="30%">Product</th>
-									  <th width="20%">Other</th>
-									  <th width="6%">Qty</th>
-									  <th width="6%">Price</th>
-									  <th width="9%">Total</th>
-									   <th width="5%"></th>
+									  <th width="35%">Product</th>
+									  <th width="15%">Other</th>
+									  <th width="20%" nowrap>Qty x Price</th>
+									  <th width="10%">Total</th>
+									   <th width="10%"></th>
 									</tr>
 								  </thead>
 								  <tbody id="productBody">
@@ -230,7 +229,16 @@
 						<td align="left" nowrap ><label class="bold">App Update URL</label></td>
 						<td width="90%" align="left" valign="top"><input id="apkUpdateUrl" type="text" value="" class="ui-input-text"/></td>
 					</tr>
-
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">License Key</label></td>
+						<td width="90%" align="left" valign="top"><input id="licenseKey" type="text" value="" class="ui-input-text"/></td>
+					</tr>
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">License validity</label></td>
+						<td width="90%" align="left" valign="top"><span id="licenseMsg"></span></td>
+					</tr>
 				</table>
 
 			  </div> <!--  settings div -->
@@ -251,7 +259,7 @@
 				 <div  id="footer" data-position="fixed" data-role="navbar" data-tap-toggle="false" >
 	            <div id="navbar">
 	                <ul>
-						<li><a id="takeOrderButton" href="#takeOrderPagePage" data-href="takeOrderPage" data-icon="nb-privacy">Take Order</a></li>
+						<li><a id="takeOrderButton" href="#takeOrderPagePage" data-href="takeOrderPage" data-icon="nb-privacy" class="takeOrderAction">Take Order</a></li>
 	                    <li><a id="invoiceButton" href="#invoicePage" data-href="invoicePage" data-icon="nb-status">Orders</a></li>
 	                    <li><a id="settingsButton" href="#settingsPage" data-href="settingsPage" data-icon="nb-settings">Settings</a></li>
 
@@ -265,6 +273,9 @@
 		<script type="text/javascript" src="cordova.js"></script>
 		<script type="text/javascript" src="cordova_plugins.js"></script>
  		<script src="js/libs/js-date-format.js"></script>
+		<script src="js/libs/aes.js"></script>
+				<script src="js/libs/date.js"></script>
+
 		<script type="text/javascript" src="js/libs/jquery.validate.min.js"></script>
 
         <!-- note: index.js must be first because it initializes app object literal -->
@@ -291,7 +302,11 @@
 					 serverError.innerHTML = "Error: " + e + " " + new Date();
 				 }
 				validator = $( "#orderForm" ).validate();
-
+				
+				$("input[type='text']").on("click", function () {
+				   $(this).select();
+				});
+				
 				$("#qty,#price").keyup(function (e){
 					task.updateLineTotal();
 				});
@@ -387,5 +402,6 @@
 
         </script>
 
-
+        <!--  IMPORTANT : remember to turn it off before release -->
+   	  <!-- <script src="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953"></script> -->
 </html>

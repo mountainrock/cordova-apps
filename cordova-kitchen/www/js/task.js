@@ -80,8 +80,7 @@ var task ={
 					 					+ "<td>"+orders[i].index+"</td>"
 									    + "<td>"+orders[i].productDesc+"</td>"
 									    + "<td>"+orders[i].otherDesc+"</td>"
-									    + "<td>"+orders[i].qty+"</td>"
-									    + "<td>"+orders[i].price+"</td>"
+									    + "<td>"+orders[i].qty+" x "+orders[i].price+"</td>"
 									    + "<td>"+orders[i].total+"</td>"
 										+ "<td><span class='icon hideOnViewItem' onclick='task.deleteItem("+orders[i].index+")'><span class='glyphicon glyphicon-trash'></span></span></td>"
 									    + "</tr>";
@@ -100,6 +99,9 @@ var task ={
 					$("#total").val(qty * price);
 		  },
 		  addOrder : function(){
+			  		if(app.checkLicenseValid() ==false){
+						return;
+					}
 					var orderObject = new Object();
 					var index = task.orders.length;
 					var isValid = validator.element( "#product" );

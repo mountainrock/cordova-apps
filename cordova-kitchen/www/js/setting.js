@@ -8,10 +8,12 @@ var KEY_APK_UPDATE_URL="apkUpdateUrl";
 var KEY_SETTING_TYPE ="settingType"; 
 var KEY_USERNAME ="userName";
 
+var KEY_LICENSE ="licenseKey";
+
 //europa settings
-var DEFAULT_SERVER_URL="http://bri8school.in/demo/kos/index.php"
+var DEFAULT_SERVER_URL="http://192.168.1.100:90/cafe"
 var DEFAULT_TASK_SERVER_URL="http://192.168.1.100:90/cafe/";
-var DEFAULT_APK_UPDATE_URL="http://bri8school.in/demo/kos/apk/kos-latest.apk"
+var DEFAULT_APK_UPDATE_URL="http://192.168.1.100:90/app/kos-latest.apk"
 var DEFAULT_CUSTOMER_ID="1";
 	
 var DEFAULT_DEBUG="false";
@@ -22,6 +24,7 @@ var DEFAULT_INTERNET_TURN_ON_AUTOMATIC = "true";
 var DEFAULT_SETTING_TYPE ="default";
 var DEFAULT_TIMEOUT_SECS=90 * 1000;
 var DEFAULT_USERNAME = "NA";
+var DEFAULT_LICENSE ="Please insert!!";
 
 var appSetting ={
 	setDefaultSettings: function(permStorage) {
@@ -34,6 +37,7 @@ var appSetting ={
 		permStorage.setItem(KEY_DEBUG, DEFAULT_DEBUG);
 		permStorage.setItem(KEY_CUSTOMER_ID, DEFAULT_CUSTOMER_ID);
 		permStorage.setItem(KEY_USERNAME,DEFAULT_USERNAME);
+		permStorage.setItem(KEY_LICENSE, DEFAULT_LICENSE);
 		
 		
 	},
@@ -53,12 +57,15 @@ var appSetting ={
 		app.taskServerUrl= permStorage.getItem(KEY_TASK_SERVER_URL);
 		app.customerId = permStorage.getItem(KEY_CUSTOMER_ID);
 		app.apkUpdateUrl = permStorage.getItem(KEY_APK_UPDATE_URL);
-
+		app.licenseKey = permStorage.getItem(KEY_LICENSE);
+		
 		$('#serverUrl').val(app.serverUrl);
 		$('#taskServerUrl').val(app.taskServerUrl);
 		$('#apkUpdateUrl').val(app.apkUpdateUrl);
 		$('#customerId').val(app.customerId);
-
+		$("#licenseKey").val(app.licenseKey);
+		var licenseExpiry = appSetting.decryptedLicense(app.licenseKey);
+		$("#licenseMsg").html(licenseExpiry);
 			
 		var debug = permStorage.getItem(KEY_DEBUG);
 		$('#debug').val(debug);
@@ -76,13 +83,14 @@ var appSetting ={
 	},
 	saveSettings: function(){
 		var permStorage=window.localStorage;
-		var serverUrl = $('#serverUrl').val();
+		var serverUrl = $('#taskServerUrl').val();
 		var taskServerUrl = $('#taskServerUrl').val();
 		var debug = $('#debug').val();
 		var customerId = $('#customerId').val();
 		var apkUpdateUrl = $('#apkUpdateUrl').val();
+		var licenseKey = $('#licenseKey').val();
 		console.log("Validating settings");
-		if(  (permStorage)=="" || apkUpdateUrl=="" || taskServerUrl=="" || (serverUrl)=="" ){
+		if(  (permStorage)=="" || apkUpdateUrl=="" || taskServerUrl=="" || (serverUrl)=="" || licenseKey =="" ){
 			alert("Fields can't be empty");
 			return;
 		}
@@ -92,6 +100,7 @@ var appSetting ={
 		permStorage.setItem(KEY_APK_UPDATE_URL, apkUpdateUrl);
 		permStorage.setItem(KEY_DEBUG, debug);
 		permStorage.setItem(KEY_CUSTOMER_ID, customerId);
+		permStorage.setItem(KEY_LICENSE, licenseKey);
 	
 
 		app.serverUrl = serverUrl;
@@ -126,7 +135,7 @@ var appSetting ={
 	    	   app.showMessage("No internet connection available to load settings");
 	    	   return false;
 	       }
-	       var settingUrlPath=  app.serverUrl + "/Setting/getSettingsJson?customerId="+ app.customerId+"&deviceId="+ device.uuid;
+	       var settingUrlPath=  app.serverUrl + "/getSettingsJson.php?action=getSettings&deviceId="+ device.uuid;
 	       console.log("getSettingsFromServer :"+settingUrlPath);
 			$.ajax(settingUrlPath, {
 				cache: false,
@@ -144,6 +153,20 @@ var appSetting ={
 				}
 	        });
 			return true;
+	},
+	isLicenseValid : function(){
+			var license = $("#licenseKey").val();
+			console.log("license check ");
+			var decryptedLicense = appSetting.decryptedLicense(license);
+			console.log("license expiry: "+ decryptedLicense);
+			var expiryDate = new Date(Date.parse(decryptedLicense));
+			var now = Date.now();
+			var isLicenseValid = now <= expiryDate;
+			return isLicenseValid;
+	},
+	decryptedLicense : function(encoded){
+		var decryptedLicense = CryptoJS.AES.decrypt(encoded,"Secret").toString(CryptoJS.enc.Utf8);
+		return decryptedLicense;
 	}
 };
 
@@ -160,6 +183,7 @@ function loadSettingsFromServer(json){
 	
 	permStorage.setItem(KEY_SETTING_TYPE,"server");
 	permStorage.setItem(KEY_USERNAME, json.userName);
+	permStorage.setItem(KEY_LICENSE, json.license);
 	
 	appSetting.updateSettingsView(permStorage);
 	alert("Settings retreived from server!");

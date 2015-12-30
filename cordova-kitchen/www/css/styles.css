@@ -136,7 +136,7 @@ div.ui-input-text {
 }
 
 .headerRow{
- background: #133494 none repeat scroll 0 0;
+ background: #5d8fc2;
  height: 20px;
 }
 #settingsDiv{
@@ -193,7 +193,7 @@ table td{
 #productTable td{
 	color:#1121C1;
 	font-size:12px;
-	text-transform:capitalize;
+	text-transform:none;
 }
 .updateTask{
 	font-size:15px;

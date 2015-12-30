@@ -1,12 +1,16 @@
-var APP_VERSION="1.2";
-var device;
+var APP_VERSION="1.31";
+if(window.location!=null && window.location.hostname=="localhost"){
+	var device,navigator;
+}
 var app = {
 	customerId : DEFAULT_CUSTOMER_ID,  //default
 	NAME : "Kitchen Order",
-	userName : null,
+	userName : "--",
 	serverUrl: DEFAULT_SERVER_URL,
 	taskServerUrl : DEFAULT_TASK_SERVER_URL,
 	apkUpdateUrl: DEFAULT_APK_UPDATE_URL,
+	licenseKey : DEFAULT_LICENSE,
+	isLicenseValid : false,
 	deviceId : "",
     debug : false,
   	// Application Constructor
@@ -15,41 +19,64 @@ var app = {
 		this.bindEvents();
 		console.log("initFastClick()");
 		this.initFastClick();
-		
+
 		console.log("initialize() completes");
-		
-		// TODO: comment below this in device.
-		device = new Object();
-        device.uuid= '92f51e498f121ea2';
-		app.onDeviceReady(); 
-		
+
+		// TODO: this is required only for browser testing and not on device. This is required to work with local browser for development
+		if(window.location!=null && window.location.hostname=="localhost"){
+			device = new Object();
+			device.uuid= '92f51e498f121ea2';
+			navigator = new Object();
+			navigator.splashscreen  = {hide : function(){
+												$(this).hide();
+											 }
+										};
+			app.onDeviceReady();
+			taskServerUrl = "http://localhost:90/cafe/";
+	    }
+
 	},
 	onDeviceReady : function() {
 		console.log("onDeviceReady called");
 		//jQuery.mobile.changePage(jQuery('#taskPage'));
-		
+
 		console.log("check net connection");
 		app.checkConnection();
-		
+
 		console.log("initView()");
 		app.initView();
-		
+
+		console.log("Validate license");
+
+
 		console.log("device id "+device.uuid);
 		window.localStorage.setItem("deviceId", device.uuid);
 		app.deviceId = device.uuid;
-		$('#deviceId').text(this.deviceId);
-		
+		$('#deviceId').text(app.deviceId);
+
 		console.log("Loading tasks");
 		task.getTasks();
-		
+
 	    navigator.splashscreen.hide();
+		app.checkLicenseValid();
 	    console.log("onDeviceReady() completes");
 
+	},
+	checkLicenseValid : function(){
+		
+		if(!app.isLicenseValid){
+           app.isLicenseValid = appSetting.isLicenseValid();
+		   if(!app.isLicenseValid)
+			alert("Your license is invalid or expired! Please check from settings screen!");
+		}
+		
+		return app.isLicenseValid;
+	
 	},
 	bindEvents : function() {
 		document.addEventListener('deviceready', this.onDeviceReady, false);
 	},
-	
+
 	initFastClick : function() {
 		window.addEventListener('load', function() {
 			FastClick.attach(document.body);
@@ -58,30 +85,30 @@ var app = {
 	initView : function() {
 			console.log("Initializing view");
 			app.showPage('takeOrderPage');
-			
+
 			var permStorage=window.localStorage;
 			var appVersion = permStorage.getItem(KEY_APP_VERSION);
-			
+
 			if(appVersion ==null || appVersion==undefined || APP_VERSION!=appVersion ){//init defaults
 				alert("NOTE : Application settings not configured for app version "+APP_VERSION+". Using defaults!");
 				appSetting.setDefaultSettings(permStorage);
-				// appSetting.getSettingsFromServer(); //TODO: THIS needs server to be configured
+			    appSetting.getSettingsFromServer(); //TODO: THIS needs server to be configured
 				appVersion = permStorage.getItem(KEY_APP_VERSION);
 				console.log("Saved default values for version : "+ appVersion);
 			}else{
 				console.log("Using settings for version : "+ appVersion);
 			}
 			appSetting.updateSettingsView(permStorage);
-			
+
 	},
 	showPage : function(pageId){
 		$('#invoicePage').hide();
 		$('#takeOrderPage').hide();
 		$('#infoPage').hide();
 		$('#settingsPage').hide();
-		
+
 		$('#'+pageId).show();
-	
+
 	},
 	checkConnection : function() {
 		if(navigator.connection==null || navigator.connection==undefined){
@@ -111,7 +138,7 @@ var app = {
 			this.succeedElement(elem);
 		}
 		$('#connectionInfo').html( 'Internet: ' + states[networkState]);
-		
+
 		return isConnected;
 	},
 	getReadableTime : function(time) {
@@ -148,6 +175,9 @@ $(function() {
 		task.getTasks();
 	});
 	$("#takeOrder,#takeOrderButton").click(function() {
+		if(app.checkLicenseValid() ==false){
+			return;
+		}
 		app.showPage('takeOrderPage');
 		$("#addOrder,#confirmOrder,#addNewOrder").show();
 		$("#productBody,#totalItems,#totalQty,#totalAmount,#invoiceNoTxt").html("");
@@ -163,17 +193,24 @@ $(function() {
 	});
 	$("#settingsButton").click(function() {
 		app.showPage('settingsPage');
-	});	
+	});
 	$("#saveSettings").click(function() {
 		appSetting.saveSettings();
-	});	
-	
-	
+	});
+	$("#resetSettingsToDefault").click(function() {
+		appSetting.resetSettingsToDefault();
+	});
+	$("#getServerSettings").click(function() {
+		appSetting.getSettingsFromServer();
+	});
+
+
+
 	$(document).delegate('.ui-navbar a', 'click', function() {
 		$(this).addClass('ui-btn-active');
 		$('.content_div').hide();
 		$('#' + $(this).attr('data-href')).show();
 	});
-	
+
 });
 
