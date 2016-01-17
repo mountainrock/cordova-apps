@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+		<title>BLE Demo</title>
+        <meta http-equiv="Content-Security-Policy"
+              content="default-src *;
+               script-src 'self' 'unsafe-inline' 'unsafe-eval'
+                           127.0.0.1:* http://*.gstatic.com http://*.googleapis.com https://*.gstatic.com https://*.googleapis.com
+                           https://*.google.com http://*.google.com
+                           ;
+               style-src  'self' 'unsafe-inline' 127.0.0.1:* http://*.gstatic.com http://*.googleapis.com https://*.gstatic.com https://*.googleapis.com
+         ">
+		<meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" /> <!-- target-densitydpi=device-dpi -->
+
+		<link rel="stylesheet"  href="css/themes/default/jquery.mobile-1.3.2.min.css">
+		<link rel="stylesheet" href="css/application.min.css">
+		<link rel="stylesheet" type="text/css" href="css/index.css" />
+		<link rel="stylesheet" href="css/styles.css">
+
+    </head>
+    <body >
+		<div id="app">
+			<div class="common-header" >
+					<h1><span style="color:#93C55B; font-weight:700">BLE </span><span style="color:#133494">Demo</span></h1>
+
+			</div>
+			<div  id="scanPage" class="content_div" > <!-- Scan BLE -->
+
+				<div class="panel-group" id="accordion">
+							<div class="panel panel-primary">
+								<div class="panel-heading">
+								</div>
+								<div id="collapseOne" class="panel-collapse collapse in">
+									<div class="panel-body" >
+									<div id="response" style="display:none;max-height:80px;overflow-y:scroll;overflow-x:none" class="small alert-success"></div>
+									<div id="showerror" style="display:none;max-height:80px;overflow-y:scroll;overflow-x:none" class="small alert-danger"></div>
+
+
+									<div class="row">
+											   <div class="form-group col-md-12">
+													<a id="scanBle" class="btn btn-primary">Start Scan BLE devices</a>
+													<a id="scanStopBle" class="btn btn-success">Stop Scan</a>
+
+														<p id="scan-status">Scanning Paused</p>
+												</div>
+										</div>
+<br/>
+										<div class="row">
+												   <div class="form-group col-md-12">
+												   <a id="drawOnCanvas" onclick="app.drawOnCanvas()" class="btn btn-primary">Draw canvas</a>
+
+														<canvas id="myCanvas" width="200" height="100"></canvas>
+													</div>
+										</div>
+
+
+									</div>
+								</div>
+							</div>
+					</div>
+
+
+
+
+			</div><!-- /page  -->
+
+
+
+				<div  id="settingsPage" class="content_div" >
+			<div class="text-center" >
+	                <h4>Settings <span id="settingType"></span></h4>
+	        </div>
+			<div id="settingsDiv" >
+
+				<table align="left" width="100%"  style="border-collapse:collapse; font-size:12px">
+
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left" width="40%"><label class="bold">Device Id</label></td>
+						<td width="90%" align="left" ><label id="deviceId">--</label></td>
+						<td width="20%" align="left" nowrap></td>
+					</tr>
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">User Name</label></td>
+						<td width="90%" align="left" valign="top"><label id="userName">--</label></td>
+					</tr>
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left" width="40%"><label class="bold">Build version</label></td>
+						<td width="90%" align="left"><label id="appVersion"></label></td>
+					</tr>
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left"><label class="bold">Status </label></td>
+						<td  width="90%" align="left"> <span id="connectionInfo">Internet </span></td>
+					</tr>
+
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left" valign="top" nowrap><label class="bold">Server response</label> </td>
+						<td   width="90%" align="left"> <span id="serverResponse">--</span></td>
+					</tr>
+
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left" valign="top" nowrap><label class="bold">Update Latest App</label> </td>
+						<td  width="90%"  align="left" valign="top">
+							<a href="#" id="checkForUpdateApp"  class="btn btn-primary">Update  App</a>&nbsp;
+						</td>
+					</tr>
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">Task Server URL</label></td>
+						<td width="90%" align="left" valign="top"><input id="taskServerUrl" type="text" value="" class="ui-input-text"/></td>
+					</tr>
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">App Update URL</label></td>
+						<td width="90%" align="left" valign="top"><input id="apkUpdateUrl" type="text" value="" class="ui-input-text"/></td>
+					</tr>
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">License Key</label></td>
+						<td width="90%" align="left" valign="top"><input id="licenseKey" type="text" value="" class="ui-input-text"/></td>
+					</tr>
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td align="left" nowrap ><label class="bold">License validity</label></td>
+						<td width="90%" align="left" valign="top"><span id="licenseMsg"></span></td>
+					</tr>
+				</table>
+
+			  </div> <!--  settings div -->
+			  <br/>
+			  <div style="margin-left:1%">
+							<a href="#" id="getServerSettings" class="btn btn-info" >Server Settings</a>&nbsp;
+							<a href="#" id="resetSettingsToDefault"  class="btn btn-info" >Reset</a>&nbsp;
+							<a href="#" id="saveSettings"  class="btn btn-primary">Save</a>
+			  </div>
+			  <div style="margin-left:1%" class=""><br/>
+							   <p style="font-size:12px">&copy; 2015 Bri8Core Ltd. All Rights Reserved.</p>
+			  </div>
+
+		</div><!-- /page  -->
+
+		</div>
+
+				 <div  id="footer" data-position="fixed" data-role="navbar" data-tap-toggle="false" >
+	            <div id="navbar">
+									<div class="row">
+										   <div class="form-group col-md-1 pull-right">
+												<a id="settingsButton" href="#settingsPage" data-href="settingsPage" data-icon="nb-settings">Settings</a>
+											</div>
+									</div>
+
+	            </div><!-- /navbar -->
+	        </div><!-- /footer -->
+</body>
+		<script type="text/javascript" src="js/libs/fastclick.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" src="js/libs/jquery.mobile-1.3.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="cordova_plugins.js"></script>
+ 		<script src="js/libs/js-date-format.js"></script>
+		<script src="js/libs/aes.js"></script>
+				<script src="js/libs/date.js"></script>
+
+		<script type="text/javascript" src="js/libs/jquery.validate.min.js"></script>
+
+        <!-- note: index.js must be first because it initializes app object literal -->
+        <script src="js/setting.js"></script>
+        <script src="js/task.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+         <!-- Date picker -->
+       <script src="js/libs/jquery-ui-1.11.2.js"></script>
+       <link rel="stylesheet" href="css/jquery-ui-1.11.css">
+
+
+	     <script type="text/javascript">
+		 var validator =null;
+
+		 $(document).ready(function (){
+
+				 try{
+					app.initialize();
+				 }catch(e){
+				 alert("An error occured "+e);
+					 console.log("An error occured "+e);
+					 var serverError = document.getElementById('serverResponse');
+					 $(serverError).removeClass("success");
+					 $(serverError).addClass("fail");
+					 serverError.innerHTML = "Error: " + e + " " + new Date();
+				 }
+
+
+		  });
+
+
+        </script>
+
+        <!--  IMPORTANT : remember to turn it off before release -->
+   	 <!--script src="http://jsconsole.com/remote.js?FF53D2D5-E2A7-46C9-B9C6-B7F5D5CA8953"></script -->
+</html>
